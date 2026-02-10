@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Procession Queue Control - Dark Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F26F21", // FPT Greenwich Orange
+                        "fg-orange": "#F26F21",
+                        "bg-dark-deep": "#0A0C10",
+                        "bg-dark-card": "#161B22",
+                        "bg-dark-border": "#30363D",
+                        "ready-vibrant": "#00FF94",
+                        "waiting-vibrant": "#38BDF8",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --primary-color: #F26F21;
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #0A0C10;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="dark:bg-bg-dark-deep text-slate-100 min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-bg-dark-deep/90 backdrop-blur-xl border-b border-bg-dark-border">
+<div class="flex items-center p-4 justify-between max-w-md mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer">chevron_left</span>
+<div>
+<h2 class="text-lg font-semibold leading-tight tracking-tight text-white">Procession Queue</h2>
+<div class="flex items-center gap-1.5">
+<span class="flex h-1.5 w-1.5 rounded-full bg-ready-vibrant animate-pulse"></span>
+<span class="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-bold">System Online</span>
+</div>
+</div>
+</div>
+<button class="flex items-center justify-center rounded-full w-10 h-10 bg-bg-dark-card border border-bg-dark-border text-slate-300 active:bg-slate-700">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+</button>
+</div>
+</header>
+<main class="flex-1 max-w-md mx-auto w-full pb-36">
+<div class="grid grid-cols-2 gap-3 p-4">
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-bg-dark-card border border-bg-dark-border">
+<p class="text-ready-vibrant text-[10px] font-bold uppercase tracking-widest">In Position</p>
+<div class="flex items-baseline gap-1">
+<p class="text-white text-3xl font-bold">45</p>
+<p class="text-slate-500 text-xs">/ 120</p>
+</div>
+<div class="w-full bg-slate-800 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-ready-vibrant h-full w-[37.5%]"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-2xl p-4 bg-bg-dark-card border border-bg-dark-border">
+<p class="text-waiting-vibrant text-[10px] font-bold uppercase tracking-widest">Waiting</p>
+<div class="flex items-baseline gap-1">
+<p class="text-white text-3xl font-bold">75</p>
+<p class="text-slate-500 text-xs">Left</p>
+</div>
+<div class="w-full bg-slate-800 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-waiting-vibrant h-full w-[62.5%]"></div>
+</div>
+</div>
+</div>
+<div class="px-4 py-2">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+<span class="material-symbols-outlined text-slate-500 text-[20px]">search</span>
+</div>
+<input class="block w-full h-12 pl-11 bg-bg-dark-card border-bg-dark-border border rounded-2xl text-slate-100 focus:ring-1 focus:ring-fg-orange focus:border-fg-orange transition-all placeholder:text-slate-600" placeholder="Search by name or ID..." type="text"/>
+</div>
+</div>
+<div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center rounded-full bg-fg-orange px-6 shadow-lg shadow-fg-orange/20">
+<span class="text-white text-xs font-bold">ALL</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center rounded-full bg-bg-dark-card border border-bg-dark-border px-5">
+<span class="text-slate-400 text-xs font-semibold">WAITING</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center rounded-full bg-bg-dark-card border border-bg-dark-border px-5">
+<span class="text-slate-400 text-xs font-semibold">READY</span>
+</button>
+</div>
+<div class="flex items-center justify-between px-4 mt-2 mb-3">
+<h3 class="text-slate-500 text-[11px] font-bold uppercase tracking-[0.15em]">Marching Sequence</h3>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-slate-600">drag_handle</span>
+<span class="text-[10px] text-slate-600 font-medium">Drag to reorder</span>
+</div>
+</div>
+<div class="space-y-2.5 px-4">
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-bg-dark-card border border-bg-dark-border group active:scale-[0.98] transition-all">
+<div class="text-slate-700">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-white truncate uppercase tracking-tight">Nguyen Van An</p>
+<p class="text-xs text-slate-500 font-mono mt-0.5">ID: GCH210456</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-2.5 py-1 rounded-md bg-ready-vibrant/10 border border-ready-vibrant/20 text-ready-vibrant text-[10px] font-black uppercase tracking-wider">
+                        READY
+                    </span>
+<div class="w-10 h-5 bg-ready-vibrant/20 rounded-full p-0.5 flex items-center justify-end">
+<div class="w-4 h-4 bg-ready-vibrant rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-bg-dark-card border border-bg-dark-border group">
+<div class="text-slate-700">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-white truncate uppercase tracking-tight">Tran Thi Minh</p>
+<p class="text-xs text-slate-500 font-mono mt-0.5">ID: GCH210992</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-2.5 py-1 rounded-md bg-waiting-vibrant/10 border border-waiting-vibrant/20 text-waiting-vibrant text-[10px] font-black uppercase tracking-wider">
+                        WAITING
+                    </span>
+<div class="w-10 h-5 bg-slate-800 rounded-full p-0.5 flex items-center justify-start">
+<div class="w-4 h-4 bg-slate-600 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-bg-dark-card border border-bg-dark-border group">
+<div class="text-slate-700">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-white truncate uppercase tracking-tight">Le Hoang Phuc</p>
+<p class="text-xs text-slate-500 font-mono mt-0.5">ID: GCH200123</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-2.5 py-1 rounded-md bg-ready-vibrant/10 border border-ready-vibrant/20 text-ready-vibrant text-[10px] font-black uppercase tracking-wider">
+                        READY
+                    </span>
+<div class="w-10 h-5 bg-ready-vibrant/20 rounded-full p-0.5 flex items-center justify-end">
+<div class="w-4 h-4 bg-ready-vibrant rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-bg-dark-card border border-bg-dark-border group">
+<div class="text-slate-700">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-white truncate uppercase tracking-tight">Vo Thi Lan</p>
+<p class="text-xs text-slate-500 font-mono mt-0.5">ID: GCH210884</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-2.5 py-1 rounded-md bg-waiting-vibrant/10 border border-waiting-vibrant/20 text-waiting-vibrant text-[10px] font-black uppercase tracking-wider">
+                        WAITING
+                    </span>
+<div class="w-10 h-5 bg-slate-800 rounded-full p-0.5 flex items-center justify-start">
+<div class="w-4 h-4 bg-slate-600 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-2xl bg-bg-dark-card border border-bg-dark-border group">
+<div class="text-slate-700">
+<span class="material-symbols-outlined">drag_indicator</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold text-white truncate uppercase tracking-tight">Dang Minh Khoa</p>
+<p class="text-xs text-slate-500 font-mono mt-0.5">ID: GCH210777</p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="px-2.5 py-1 rounded-md bg-waiting-vibrant/10 border border-waiting-vibrant/20 text-waiting-vibrant text-[10px] font-black uppercase tracking-wider">
+                        WAITING
+                    </span>
+<div class="w-10 h-5 bg-slate-800 rounded-full p-0.5 flex items-center justify-start">
+<div class="w-4 h-4 bg-slate-600 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-bg-dark-deep via-bg-dark-deep/95 to-transparent">
+<div class="max-w-md mx-auto space-y-4">
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ready-vibrant text-[16px]">sensors</span>
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Live Broadcast</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] text-slate-500">Auto-update ON</span>
+<div class="w-6 h-3 bg-ready-vibrant/20 rounded-full flex items-center justify-end px-0.5">
+<div class="w-2 h-2 bg-ready-vibrant rounded-full"></div>
+</div>
+</div>
+</div>
+<button class="w-full bg-fg-orange hover:bg-[#FF843D] text-white font-bold h-14 rounded-2xl flex items-center justify-center gap-3 shadow-[0_8px_30px_rgb(242,111,33,0.3)] transition-all active:scale-[0.97] active:shadow-none">
+<span class="material-symbols-outlined font-bold">bolt</span>
+<span class="tracking-widest text-sm">SYNC TO STAGE</span>
+</button>
+<div class="h-6"></div> 
+</div>
+</div>
+
+</body></html>

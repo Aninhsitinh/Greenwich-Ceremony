@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Home Dashboard - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a47c2",
+                        "accent": "#f97316",
+                        "surface": "#1a1f2e",
+                        "background-dark": "#0a0d14",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --orange-gradient: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            --dark-gradient: linear-gradient(180deg, #1a1f2e 0%, #0a0d14 100%);
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #0a0d14;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .premium-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        .orange-glow {
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="dark:bg-background-dark text-white font-display">
+<div class="sticky top-0 z-50 flex items-center bg-background-dark/80 backdrop-blur-xl border-b border-white/5 p-4 justify-between">
+<div class="flex size-10 shrink-0 items-center overflow-hidden rounded-full border border-white/10">
+<div class="bg-center bg-no-repeat aspect-square bg-cover size-full" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC40JvLrcqVhaf2r63Lw2giPgpdzD3SDEvyRkEd3vvUntX67rX6E-ClccJY3uQwKkRo4x4C600nHNwU9KJ99u5xvgGRWrUWvz9bmUT0jMr5lR4Ev5RZKD6Tzf6WrGgi8qXoLBxKQKir4mViDMyNS5kKtXxW38rsWCCwD-yF_rVIPmq1Fu7i3vQ3m3xg80jSo9oCZrwdq5sauDqdMF7wZqoijEbdoRkoUW5BZC_bi4uB-ZtQIP_QQFt6BcRQM-BveghavrgyIpRqig");'></div>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-white text-base font-bold leading-tight tracking-tight uppercase">Greenwich</h2>
+<span class="text-[10px] text-accent font-bold tracking-[0.2em] uppercase">University</span>
+</div>
+<div class="flex w-10 items-center justify-end">
+<button class="relative flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-white/5 border border-white/10 text-white">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2.5 right-2.5 flex h-2 w-2 rounded-full bg-accent border-2 border-background-dark"></span>
+</button>
+</div>
+</div>
+<main class="flex flex-col pb-28">
+<div class="flex p-6">
+<div class="flex w-full items-center gap-5">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-16 w-16 border-2 border-accent/30 p-0.5" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAVTUrg18-KZrRaUuaEZCIyeK1Oe8zLQv40oIzJc1QHh7vkmpoMvU2sBYnTLXID33cwuNht_v6Sk07dKgruPmD4nEEJsvs1kO7n4WXKoAvxylm0U9-UN39gmErFcEFoeF3E1KlKjVD-o20X_8n4ByFlsXiAvloYVOGJblkUoEzseCQlgDrLG5CyKu8ICfFEn8SBiK1xF-WzZLIrw-Uhf7ZHveYncEfdH6-VeD0NpfcXondCv1lyCQM3SljuGI4RoK3W7pW8JkTg4g");'></div>
+<div class="absolute -bottom-1 -right-1 bg-accent rounded-full p-1 border-2 border-background-dark">
+<span class="material-symbols-outlined text-[12px] text-white block font-bold">verified</span>
+</div>
+</div>
+<div class="flex flex-col">
+<p class="text-white/50 text-xs font-medium tracking-wide uppercase">Student Profile</p>
+<p class="text-white text-2xl font-bold leading-tight">Alex Johnson</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-white/5 px-2 py-0.5 rounded text-[10px] font-bold text-accent border border-accent/20">CLASS OF 2024</span>
+<span class="text-white/30 text-[10px]">•</span>
+<span class="text-white/40 text-[10px]">ID: GW00923</span>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-2">
+<div class="relative overflow-hidden rounded-2xl p-6 orange-glow bg-gradient-to-br from-accent/20 to-transparent border border-accent/30">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-accent/10 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-5">
+<h3 class="text-xs font-bold text-accent uppercase tracking-[0.1em]">Graduation Ceremony</h3>
+<span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-white/70">In Progress</span>
+</div>
+<div class="flex gap-3">
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-xl bg-white/5 border border-white/10">
+<p class="text-white text-2xl font-bold">12</p>
+</div>
+<p class="text-white/40 text-[9px] uppercase font-bold tracking-widest">Days</p>
+</div>
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-xl bg-white/5 border border-white/10">
+<p class="text-white text-2xl font-bold">08</p>
+</div>
+<p class="text-white/40 text-[9px] uppercase font-bold tracking-widest">Hrs</p>
+</div>
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-xl bg-white/5 border border-white/10">
+<p class="text-white text-2xl font-bold">45</p>
+</div>
+<p class="text-white/40 text-[9px] uppercase font-bold tracking-widest">Min</p>
+</div>
+<div class="flex grow basis-0 flex-col items-center gap-2">
+<div class="flex h-16 w-full items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/20">
+<p class="text-white text-2xl font-bold">12</p>
+</div>
+<p class="text-accent text-[9px] uppercase font-bold tracking-widest">Sec</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-6 pt-8 pb-4">
+<h3 class="text-white text-sm font-bold uppercase tracking-widest opacity-60">Quick Access</h3>
+</div>
+<div class="grid grid-cols-4 gap-3 px-4 py-2">
+<div class="flex flex-col items-center gap-3">
+<button class="flex aspect-square w-full items-center justify-center rounded-2xl premium-card active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-accent text-3xl">how_to_reg</span>
+</button>
+<p class="text-[10px] font-bold text-center text-white/60 uppercase tracking-tighter">Register</p>
+</div>
+<div class="flex flex-col items-center gap-3">
+<button class="flex aspect-square w-full items-center justify-center rounded-2xl premium-card active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-accent text-3xl">payments</span>
+</button>
+<p class="text-[10px] font-bold text-center text-white/60 uppercase tracking-tighter">Payment</p>
+</div>
+<div class="flex flex-col items-center gap-3">
+<button class="flex aspect-square w-full items-center justify-center rounded-2xl premium-card active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-accent text-3xl">event_seat</span>
+</button>
+<p class="text-[10px] font-bold text-center text-white/60 uppercase tracking-tighter">Book Seats</p>
+</div>
+<div class="flex flex-col items-center gap-3">
+<button class="flex aspect-square w-full items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-orange-600 shadow-lg shadow-accent/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl">qr_code_2</span>
+</button>
+<p class="text-[10px] font-bold text-center text-accent uppercase tracking-tighter">My Ticket</p>
+</div>
+</div>
+<div class="px-6 pt-10 pb-4">
+<h3 class="text-white text-sm font-bold uppercase tracking-widest opacity-60">Ceremony Schedule</h3>
+<div class="mt-8 flex flex-col gap-0 border-l border-white/10 ml-1.5 pl-8">
+<div class="relative pb-8">
+<div class="absolute -left-[37px] top-0 h-4 w-4 rounded-full bg-accent border-4 border-background-dark shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
+<p class="text-[10px] font-bold text-accent uppercase tracking-widest mb-1">08:00 AM</p>
+<h4 class="font-bold text-sm text-white">Gown Collection &amp; Registration</h4>
+<p class="text-xs text-white/50 mt-1">Main Lobby, Block A</p>
+</div>
+<div class="relative pb-8">
+<div class="absolute -left-[37px] top-0 h-4 w-4 rounded-full bg-white/20 border-4 border-background-dark"></div>
+<p class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">09:30 AM</p>
+<h4 class="font-bold text-sm text-white/80">Ceremony Commences</h4>
+<p class="text-xs text-white/40 mt-1">Grand Hall, Level 3</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[37px] top-0 h-4 w-4 rounded-full bg-white/20 border-4 border-background-dark"></div>
+<p class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">12:30 PM</p>
+<h4 class="font-bold text-sm text-white/80">Photo Session &amp; Lunch</h4>
+<p class="text-xs text-white/40 mt-1">University Courtyard</p>
+</div>
+</div>
+</div>
+<div class="px-6 pt-10 pb-4">
+<div class="flex justify-between items-center">
+<h3 class="text-white text-sm font-bold uppercase tracking-widest opacity-60">Updates</h3>
+<span class="text-accent text-xs font-bold uppercase tracking-wider">View All</span>
+</div>
+</div>
+<div class="flex overflow-x-auto gap-4 px-4 py-2 no-scrollbar">
+<div class="flex-none w-72 premium-card rounded-2xl overflow-hidden">
+<div class="h-32 bg-center bg-cover relative" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkdnG6A3hmWLslPqJo6U2yYswcxTVB1dEEV2Ued8ak8i3f4hZ-GFqzhYQRNkmDsGpPst_waxjUBS82oafnH7MBohnwqinbVc_exL3dURUSTwObNJx148Eo3XeBQLszquu_dx3xR1Fitr6pgLbi81gleNKXXenKcbsP0L0yXhoyE1eGG42TcPfYxaILlaenE6u_39A-jz4mr5S3SGAsR4sbtuzT8-ae_bzY7HKeb_j9mc1c1YVjbTg_zntzwcS-qNYnMD_07MGhYA');">
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute top-3 left-3 bg-red-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Urgent</div>
+</div>
+<div class="p-4">
+<h4 class="text-sm font-bold text-white leading-snug line-clamp-1">Final Gown Fitting Schedule</h4>
+<p class="text-xs text-white/50 mt-2 line-clamp-2 leading-relaxed">Book your slot before the 15th of June to ensure size availability.</p>
+</div>
+</div>
+<div class="flex-none w-72 premium-card rounded-2xl overflow-hidden">
+<div class="h-32 bg-center bg-cover relative" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCzq5NjDaoTAtjgVdKmPcNzBB_eeQXI36UlfRQnf7QYsmQsFACwf0G8nXhu8aLS-m4GOPYiDEtOCf5kMjBM0_k5V9K2NUAwi4cX-WEj45i2LTwqc_aJor1qg7L6gzshzCUiPkJvHEr4R__OtrHTJ1C8hO1ase1Q9pu57uOmzQn8a3Lew7Te1CjPADtNZNPHMyKwZcNQZTOER4ukDwEMq5QiIdxT_nL4vwKZEyqF7N4O_063Lyz9wTm8EAg_nRmtG5cpuj4ZGtVZXw');">
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute top-3 left-3 bg-accent px-2 py-0.5 rounded text-[10px] font-black uppercase">New</div>
+</div>
+<div class="p-4">
+<h4 class="text-sm font-bold text-white leading-snug line-clamp-1">Invitation for Guest Passes</h4>
+<p class="text-xs text-white/50 mt-2 line-clamp-2 leading-relaxed">Each student is entitled to 2 complimentary guest passes.</p>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 right-0 bg-background-dark/90 backdrop-blur-2xl border-t border-white/5 px-8 py-4 flex justify-between items-center z-50 rounded-t-3xl shadow-2xl">
+<button class="flex flex-col items-center gap-1.5 text-accent">
+<span class="material-symbols-outlined text-[26px] fill-1">home</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-white/30">
+<span class="material-symbols-outlined text-[26px]">calendar_today</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Schedule</span>
+</button>
+<div class="flex flex-col items-center -mt-10">
+<div class="bg-accent rounded-full h-14 w-14 flex items-center justify-center shadow-[0_8px_20px_rgba(249,115,22,0.4)] border-[6px] border-background-dark">
+<span class="material-symbols-outlined text-white text-[28px]">confirmation_number</span>
+</div>
+</div>
+<button class="flex flex-col items-center gap-1.5 text-white/30">
+<span class="material-symbols-outlined text-[26px]">newspaper</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">News</span>
+</button>
+<button class="flex flex-col items-center gap-1.5 text-white/30">
+<span class="material-symbols-outlined text-[26px]">person</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Profile</span>
+</button>
+</div>
+
+</body></html>

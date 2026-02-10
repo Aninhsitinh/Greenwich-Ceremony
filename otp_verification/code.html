@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OTP Verification - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a47c2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        /* Hide spin buttons for Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Hide spin buttons for Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex justify-center items-center p-4">
+<!-- Mobile Screen Container -->
+<div class="w-full max-w-[390px] h-[844px] bg-white dark:bg-background-dark shadow-2xl rounded-[3rem] overflow-hidden relative border-[8px] border-slate-900 dark:border-slate-800 flex flex-col">
+<!-- Status Bar Area (iOS Style) -->
+<div class="h-12 w-full flex justify-between items-center px-8 pt-4">
+<span class="text-sm font-semibold dark:text-white">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[18px] dark:text-white">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[18px] dark:text-white">wifi</span>
+<span class="material-symbols-outlined text-[18px] dark:text-white">battery_full</span>
+</div>
+</div>
+<!-- Top Navigation -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between">
+<div class="text-[#111318] dark:text-white flex size-12 shrink-0 items-center justify-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">OTP Verification</h2>
+</div>
+<div class="flex-1 overflow-y-auto px-6 pt-8">
+<!-- Illustration / Logo Area -->
+<div class="flex justify-center mb-8">
+<div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-4xl">mark_email_read</span>
+</div>
+</div>
+<!-- Headline -->
+<h3 class="text-[#111318] dark:text-white tracking-light text-2xl font-bold leading-tight text-center pb-2">Verify Email</h3>
+<!-- Body Text -->
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-relaxed pb-8 text-center">
+                Enter the 4-digit code sent to your student email <br/>
+<span class="font-medium text-primary">s*******@fpt.edu.vn</span>
+</p>
+<!-- OTP Input Section -->
+<div class="flex justify-center py-6">
+<fieldset class="relative flex gap-4">
+<input autofocus="" class="flex h-16 w-14 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-2 border-slate-200 dark:border-slate-700 bg-transparent dark:text-white rounded-xl transition-all" max="9" maxlength="1" type="number"/>
+<input class="flex h-16 w-14 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-2 border-slate-200 dark:border-slate-700 bg-transparent dark:text-white rounded-xl transition-all" max="9" maxlength="1" type="number"/>
+<input class="flex h-16 w-14 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-2 border-slate-200 dark:border-slate-700 bg-transparent dark:text-white rounded-xl transition-all" max="9" maxlength="1" type="number"/>
+<input class="flex h-16 w-14 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary border-2 border-slate-200 dark:border-slate-700 bg-transparent dark:text-white rounded-xl transition-all" max="9" maxlength="1" type="number"/>
+</fieldset>
+</div>
+<!-- Timer Component -->
+<div class="flex justify-center items-center gap-2 py-4">
+<p class="text-slate-400 text-sm font-normal">Resend code in</p>
+<div class="flex gap-1 items-center bg-primary/5 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+<p class="text-primary text-sm font-bold tracking-tight">00:55</p>
+</div>
+</div>
+</div>
+<!-- Fixed Bottom Action Area -->
+<div class="p-6 pb-12 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800">
+<button class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                Verify
+            </button>
+<div class="mt-4 text-center">
+<button class="text-slate-400 text-sm font-medium hover:text-primary transition-colors">
+                    Didn't receive the code? <span class="text-primary/50 cursor-not-allowed">Resend</span>
+</button>
+</div>
+</div>
+<!-- iOS Home Indicator -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+</div>
+</body></html>

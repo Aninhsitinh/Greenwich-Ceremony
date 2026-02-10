@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reset New Password</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0a47c2",
+              "background-light": "#f5f6f8",
+              "background-dark": "#101622",
+              "success": "#10b981"
+            },
+            fontFamily: {
+              "display": ["Lexend"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex justify-center">
+<!-- Mobile Container (Simulating Phone) -->
+<div class="relative flex min-h-screen w-full max-w-[430px] flex-col bg-white dark:bg-background-dark overflow-x-hidden shadow-2xl">
+<!-- TopAppBar -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="text-[#111318] dark:text-white flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Reset Password</h2>
+</div>
+<!-- HeadlineText -->
+<div class="px-4 pt-6 pb-2">
+<h3 class="text-[#111318] dark:text-white tracking-light text-2xl font-bold leading-tight text-left">Create a new password</h3>
+</div>
+<!-- BodyText -->
+<div class="px-4 pb-6">
+<p class="text-[#606e8a] dark:text-gray-400 text-base font-normal leading-normal">Your new password must be different from previously used passwords to ensure account security.</p>
+</div>
+<!-- Input Fields Section -->
+<div class="flex flex-col gap-2">
+<!-- TextField: New Password -->
+<div class="flex flex-col gap-4 px-4 py-3">
+<label class="flex flex-col w-full">
+<p class="text-[#111318] dark:text-gray-200 text-sm font-medium leading-normal pb-2">New Password</p>
+<div class="flex w-full items-stretch rounded-lg group">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-14 placeholder:text-[#606e8a] p-[15px] rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal transition-all" placeholder="••••••••" type="password" value="MyStrongPass123!"/>
+<div class="text-[#606e8a] dark:text-gray-400 flex border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 items-center justify-center pr-[15px] rounded-r-lg border-l-0 cursor-pointer">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+</div>
+</label>
+</div>
+<!-- TextField: Confirm Password -->
+<div class="flex flex-col gap-4 px-4 py-3">
+<label class="flex flex-col w-full">
+<p class="text-[#111318] dark:text-gray-200 text-sm font-medium leading-normal pb-2">Confirm New Password</p>
+<div class="flex w-full items-stretch rounded-lg">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 focus:border-primary h-14 placeholder:text-[#606e8a] p-[15px] rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal transition-all" placeholder="••••••••" type="password"/>
+<div class="text-[#606e8a] dark:text-gray-400 flex border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 items-center justify-center pr-[15px] rounded-r-lg border-l-0 cursor-pointer">
+<span class="material-symbols-outlined">visibility_off</span>
+</div>
+</div>
+</label>
+</div>
+</div>
+<!-- Password Requirements Checklist -->
+<div class="px-4 py-4 flex flex-col gap-3">
+<p class="text-[#111318] dark:text-gray-200 text-sm font-semibold mb-1">Password Requirements</p>
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center bg-success/10 text-success rounded-full p-0.5">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+<p class="text-sm text-success font-medium">At least 8 characters</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center bg-success/10 text-success rounded-full p-0.5">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+<p class="text-sm text-success font-medium">At least one uppercase letter</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 rounded-full p-0.5">
+<span class="material-symbols-outlined text-sm">close</span>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">At least one special character (@, #, $, etc.)</p>
+</div>
+</div>
+<!-- Spacer -->
+<div class="flex-1"></div>
+<!-- Action Button -->
+<div class="p-4 pb-10">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl text-base shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                Update Password
+            </button>
+<p class="text-center text-[#606e8a] dark:text-gray-400 text-sm mt-4 cursor-pointer hover:text-primary">
+                Back to Login
+            </p>
+</div>
+</div>
+</body></html>

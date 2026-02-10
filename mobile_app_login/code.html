@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mobile App Login - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a47c2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full max-w-[430px] mx-auto flex-col bg-white dark:bg-background-dark overflow-x-hidden shadow-2xl">
+<!-- TopAppBar -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between">
+<div class="text-[#111318] dark:text-white flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined">chevron_left</span>
+</div>
+<h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Graduation Management</h2>
+</div>
+<!-- Header Image (Logo Placement) -->
+<div class="flex flex-col items-center pt-8 pb-4">
+<div class="w-48 h-20 bg-center bg-no-repeat bg-contain" data-alt="FPT Greenwich University professional logo branding" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfKWGvHSIVYG3SLEveYS1TkSohIJ3cUYwD6sNuUy3x5_37yyOijmVZLECWD2FEFsruqhdjaqpiV3toW9x_Gc4FrjyPgbEhZRVVNLzxLoTt5qX9DhK3FpZHQ8komZRJ2pIgNrI38Kh_BnbVMwcu1xdirYFnfyk6TP96kf60-6omuYC4ExwckPTUlKUh_fxfrV4UDxicCc-Ifw4rflm2p4pwwW-XlPaYhdiP4ehbujtrEF5GPS90lpu7JZA2-eXpYAIZglpD00hp-A");'>
+</div>
+</div>
+<!-- Headline & Body -->
+<div class="px-4">
+<h2 class="text-[#111318] dark:text-white tracking-light text-[28px] font-bold leading-tight text-center pb-2 pt-4">Welcome Back</h2>
+<p class="text-[#606e8a] dark:text-gray-400 text-base font-normal leading-normal pb-6 text-center">Sign in to manage your graduation status</p>
+</div>
+<!-- Login Form -->
+<div class="flex flex-col gap-1 px-4">
+<!-- Student ID Field -->
+<div class="flex flex-col w-full py-2">
+<label class="flex flex-col w-full">
+<p class="text-[#111318] dark:text-white text-sm font-medium leading-normal pb-2">Student ID / Staff Email</p>
+<input class="form-input flex w-full rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-14 placeholder:text-[#606e8a] p-[15px] text-base font-normal" placeholder="e.g. SE12345 or staff@fpt.edu.vn" type="text"/>
+</label>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col w-full py-2">
+<label class="flex flex-col w-full relative">
+<p class="text-[#111318] dark:text-white text-sm font-medium leading-normal pb-2">Password</p>
+<div class="relative">
+<input class="form-input flex w-full rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 h-14 placeholder:text-[#606e8a] p-[15px] pr-12 text-base font-normal" placeholder="Enter your password" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-[#606e8a]">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</label>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end pt-1 pb-6">
+<a class="text-primary font-medium text-sm hover:underline" href="#">Forgot Password?</a>
+</div>
+<!-- Sign In Button -->
+<button class="w-full h-14 bg-primary text-white font-semibold rounded-lg text-lg flex items-center justify-center hover:bg-opacity-90 transition-all">
+                Sign In
+            </button>
+</div>
+<!-- Divider -->
+<div class="flex items-center my-8 px-4">
+<div class="flex-grow border-t border-[#dbdfe6] dark:border-gray-700"></div>
+<span class="px-4 text-[#606e8a] text-sm">Or continue with</span>
+<div class="flex-grow border-t border-[#dbdfe6] dark:border-gray-700"></div>
+</div>
+<!-- SSO Options -->
+<div class="flex flex-col gap-3 px-4 pb-10">
+<!-- Google Login -->
+<button class="flex items-center justify-center gap-3 w-full h-14 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg text-[#111318] dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+<div class="w-5 h-5 bg-center bg-no-repeat bg-contain" data-alt="Google colorful G logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2-RLumrYpNBNUgpiwN8YWI42luQ7zNeevgxpDiV0d_UdgEpJdFnPv0UXxfhYQveQED5kg51ZNEpe047EjUNMBmEv2GJoGL1WKmo4D8GwLev5hNL7pHi8siNhiHNVyT-90OZqMz08HUav293T4qM8koUdvwnNxqqWZXOyYUvF-G9Qd6PoUdo8ejVVQMMZty_QqgJkC6VVKieRzfbOnVOu-2o1vVRhX7wqeie794Tix4Y4byA3haYcFe2TmYoq_eiJMq9g5RY4eJw");'></div>
+                Google Account
+            </button>
+<!-- FPT Account Login -->
+<button class="flex items-center justify-center gap-3 w-full h-14 border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg text-[#111318] dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+<div class="w-5 h-5 bg-center bg-no-repeat bg-contain" data-alt="FPT Corporate icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDY8sv69QnQ3BXmQxNXIJtJ8RuqMwKuQI-NvOSx0SstUCNhW3ugif860i3QvLLrirJj07UGGp9BwRMuGBzDMl-z_351V9JyNfyyJ-tpKRovIXj1eC4WPe08TPPA_ABjwmLW94XBQa2ee6qq4D1aHuZ-9v9GdwiFnWLfSMoIjZHwKMat53xmU5pO5Ep4e8w7kG6iewvMgA1Y4Q1bWfp9lpOr0PqqI4fpTa-BLTkBuRt9p9Y2iL89L8nFGmv9V-Uqihqnc-hItGNmKQ");'></div>
+                FPT Education Account
+            </button>
+</div>
+<!-- Footer Help -->
+<div class="mt-auto pb-8 text-center px-4">
+<p class="text-[#606e8a] text-xs">By signing in, you agree to our <a class="underline" href="#">Terms of Service</a> and <a class="underline" href="#">Privacy Policy</a>.</p>
+</div>
+</div>
+</body></html>

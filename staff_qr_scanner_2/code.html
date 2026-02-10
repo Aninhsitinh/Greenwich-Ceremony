@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Staff QR Scanner - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#F97316", // High contrast Orange for Dark Mode actions
+                        "navy-dark": "#0A0F1D",
+                        "navy-light": "#161D2F",
+                        "fpt-navy": "#002B5C"
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .scanner-frame {
+                position: relative;
+                width: 260px;
+                height: 260px;
+            }
+            .scanner-corner {
+                position: absolute;
+                width: 32px;
+                height: 32px;
+                border-color: #F97316;
+                border-style: solid;
+            }
+            .corner-tl { top: -2px; left: -2px; border-width: 4px 0 0 4px; border-top-left-radius: 12px; }
+            .corner-tr { top: -2px; right: -2px; border-width: 4px 4px 0 0; border-top-right-radius: 12px; }
+            .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 4px 4px; border-bottom-left-radius: 12px; }
+            .corner-br { bottom: -2px; right: -2px; border-width: 0 4px 4px 0; border-bottom-right-radius: 12px; }
+            .scan-line {
+                height: 3px;
+                background: linear-gradient(90deg, transparent, #F97316, transparent);
+                box-shadow: 0 0 20px #F97316;
+                width: 100%;
+                position: absolute;
+                top: 50%;
+                left: 0;
+            }
+            .camera-overlay {
+                background: radial-gradient(circle, transparent 150px, rgba(10, 15, 29, 0.8) 150px);
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-navy-dark font-display text-white overflow-hidden h-screen flex flex-col">
+<header class="flex items-center bg-navy-dark p-4 pt-12 pb-4 justify-between z-30">
+<div class="flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full bg-white/5">
+<span class="material-symbols-outlined text-white text-xl">arrow_back_ios_new</span>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-white text-lg font-semibold leading-tight tracking-tight">Staff QR Scanner</h2>
+<span class="text-[10px] text-orange-500 font-bold uppercase tracking-[0.2em]">Active Session</span>
+</div>
+<div class="flex size-10 items-center justify-center rounded-full bg-white/5">
+<span class="material-symbols-outlined text-white text-xl">settings</span>
+</div>
+</header>
+<main class="flex-1 relative flex flex-col items-center justify-start pt-12 overflow-hidden bg-black">
+<div class="absolute inset-0 z-0 opacity-50 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATNMwClgWtco9oVejGZfmup-76JkLmYFuQee5kYexC4x-R9l63FE3LWEydXMWN-8Z7maeQcXzJGa4z0MDGzcE_6LBhsJwB9VfxQy2vRgfNs90_HKpjFoBCwyhugZkT29pU5UIacD7NzZSBMJi_fBYLO-sC7iOphvBlaMyh_7SB68lDW8mwEbZ0UyW3uEcVrhS1sUUvKk_vtA2EGyFvQjuxUazmPNKnntfc6U9EKv8aiNUSAlVx2aSFKiHWbw8_cqxF6Zy5U2m7Vw');"></div>
+<div class="z-10 flex flex-col items-center">
+<div class="scanner-frame">
+<div class="scanner-corner corner-tl"></div>
+<div class="scanner-corner corner-tr"></div>
+<div class="scanner-corner corner-bl"></div>
+<div class="scanner-corner corner-br"></div>
+<div class="scan-line"></div>
+</div>
+<div class="mt-12 text-center px-8">
+<h3 class="text-white text-xl font-bold mb-2">Ready to Scan</h3>
+<p class="text-white/60 text-sm font-light leading-relaxed">Position the student's digital ticket QR code within the frame to verify attendance.</p>
+</div>
+</div>
+<div class="absolute inset-x-4 bottom-6 z-40">
+<div class="bg-navy-light/95 border border-white/10 rounded-2xl p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+<div class="flex items-start gap-4">
+<div class="relative">
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-xl border-2 border-orange-500/30" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUUk0v-gBeIKbyJO5Me0eyiEgIDLjF9BaDxCh7t_NYrwCZcp_tyNOUntVsYCKPLdfNsyGDBua0AOFB6ABuGtc54-9v9Lnn_bDr3k9iRGvSL4txutV6xdCHZHwRuXTJ_hd86RWxrVMkgGhsKiVAyUI9Nh7yUrP8-PUTF4eTGT8dyzrr7psidTDOCR3WoxQYUFGGzSSeQQIDal_Y9H1su1Y7-jmOTncltNC0eDMJozbeUZKbb6R5RsLGZb_5h_Bi_hfh_E7nR-qcAg");'></div>
+<div class="absolute -bottom-2 -right-2 bg-green-500 rounded-full p-1 border-2 border-navy-light">
+<span class="material-symbols-outlined text-white text-sm block">check</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-white text-lg font-bold truncate leading-tight">Nguyen Van A</h4>
+<p class="text-orange-500 text-[11px] font-bold uppercase tracking-wider mb-2">Verified Graduate</p>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-1">
+<div class="flex items-center gap-1.5 text-white/50 text-xs">
+<span class="material-symbols-outlined text-sm">badge</span>
+<span>GBS12345 • IT Department</span>
+</div>
+<div class="flex items-center gap-1.5 text-white/50 text-xs">
+<span class="material-symbols-outlined text-sm">event_seat</span>
+<span>Seat: A-12 • Main Hall</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-5 flex gap-3">
+<button class="flex-1 h-12 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">how_to_reg</span>
+                        Confirm Entry
+                    </button>
+<button class="px-5 h-12 bg-white/5 hover:bg-white/10 text-white/70 rounded-xl font-medium text-sm transition-colors">
+                        Dismiss
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-navy-dark px-8 pt-4 pb-12 z-50">
+<div class="flex items-center justify-between max-w-sm mx-auto">
+<div class="flex flex-col items-center gap-2">
+<button class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-2xl">flashlight_on</span>
+</button>
+<span class="text-[10px] text-white/40 font-bold uppercase tracking-widest">Flash</span>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-orange-500/10 rounded-full blur-xl"></div>
+<button class="relative w-20 h-20 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-[0_0_20px_rgba(249,115,22,0.4)] active:scale-90 transition-all">
+<span class="material-symbols-outlined text-4xl">qr_code_2</span>
+</button>
+</div>
+<div class="flex flex-col items-center gap-2">
+<button class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-2xl">keyboard</span>
+</button>
+<span class="text-[10px] text-white/40 font-bold uppercase tracking-widest">Manual</span>
+</div>
+</div>
+<div class="mt-6 flex justify-center">
+<div class="w-32 h-1 bg-white/10 rounded-full"></div>
+</div>
+</footer>
+
+</body></html>

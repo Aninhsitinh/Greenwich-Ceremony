@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MC Stage Dashboard - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #137fec;
+            --background-dark: #080c10;
+            --card-dark: #12181f;
+            --glow-color: rgba(19, 127, 236, 0.25);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .premium-glow {
+            box-shadow: 0 0 25px -5px var(--glow-color);
+        }
+        .student-name-text {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#080c10",
+                        "card-dark": "#12181f",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-background-dark/80 backdrop-blur-xl border-b border-white/5">
+<div class="flex items-center p-4 justify-between max-w-lg mx-auto w-full">
+<div class="flex items-center gap-2">
+<div class="bg-primary/20 p-1.5 rounded-lg">
+<span aria-hidden="true" class="material-symbols-outlined text-primary text-xl">school</span>
+</div>
+<h2 class="text-white text-lg font-extrabold tracking-tight">GREENWICH</h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20">
+<div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+<span class="text-[10px] font-bold text-green-400 uppercase tracking-[0.1em]">Live Sync</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-40">
+<div class="max-w-lg mx-auto w-full">
+<div class="px-4 pt-6 pb-4">
+<div class="bg-card-dark border border-white/5 rounded-2xl p-4 flex items-center justify-between">
+<div>
+<p class="text-white/40 text-[10px] font-bold uppercase tracking-[0.15em] mb-1">Current Session</p>
+<div class="flex items-baseline gap-2">
+<span class="text-white text-2xl font-bold">142</span>
+<span class="text-white/30 text-sm">of 500 graduates</span>
+</div>
+</div>
+<div class="h-12 w-12 rounded-full border-4 border-white/5 flex items-center justify-center relative">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle class="text-primary" cx="24" cy="24" fill="transparent" r="20" stroke="currentColor" stroke-dasharray="125.6" stroke-dashoffset="90" stroke-width="4"></circle>
+</svg>
+<span class="text-[10px] font-bold">28%</span>
+</div>
+</div>
+</div>
+<div class="px-4 py-4">
+<div class="flex items-center gap-2 mb-3 ml-1">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<h3 class="text-white/60 text-[11px] font-bold uppercase tracking-[0.25em]">Now on Stage</h3>
+</div>
+<div class="relative rounded-3xl overflow-hidden bg-card-dark border border-white/10 premium-glow">
+<div class="absolute inset-0 border-2 border-primary/40 rounded-3xl pointer-events-none"></div>
+<div class="w-full aspect-[4/5] relative">
+<div class="absolute inset-0 bg-center bg-no-repeat bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCF6ZpGx4v3EJ3I-8Ejbmaud8sWm2Ayq9SBHTM8awjWUEm2jOZp_Tho1vmW76cEY0yAZhjW93X2XJC_WTbq5of6nKK-5A_Oe58Y5y2beJzQTB7OLlxgXW41qy33YqxtP1DK04n7MekRiaS5AZ03ULFwKcLxg_OTtEfAWNL8XLWZY6CPvkKDB9OJPQMde1XnnjOlagZ_PrJrw0zMvmQNJu4KM_ITOL2WZ6erRR_aqMozJbhijR6bsYFAp6MK1QKzLiSS9mTYLZ3MLQ");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-card-dark via-card-dark/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 right-0 p-8 pt-20">
+<div class="inline-flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-md mb-4">
+<span class="material-symbols-outlined text-sm">workspace_premium</span>
+<span class="text-[10px] font-black uppercase tracking-wider">Summa Cum Laude</span>
+</div>
+<h1 class="text-white text-5xl font-black leading-tight tracking-tight mb-2 student-name-text">
+                            NGUYEN<br/>VAN A
+                        </h1>
+<div class="flex flex-col gap-1 opacity-90">
+<div class="flex items-center gap-2">
+<span class="text-primary font-bold text-lg">Bachelor of IT</span>
+</div>
+<div class="flex items-center gap-2 text-white/50 text-sm">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Can Tho Campus</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 pt-6 pb-2 flex items-center justify-between">
+<h3 class="text-white/80 text-lg font-bold">Next in Line</h3>
+<span class="bg-white/5 text-white/40 text-[10px] px-2 py-1 rounded font-bold uppercase">358 remaining</span>
+</div>
+<div class="px-4 space-y-3">
+<div class="flex items-center gap-4 bg-white/5 border border-white/5 p-4 rounded-2xl">
+<div class="relative">
+<div class="h-16 w-16 rounded-2xl bg-center bg-cover border border-white/20" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAd85iUs3QrwaEWWIugft7qZ7DHgDbnwFYQ6_UGlLC5XaxPJUTcGrhGYHyQUKjR_gT2fnxpsQ4NokT6gv-dxh5MmbRr9Iv6q_2wXe7gF7nByT590z1b3gnarkgF9I4cgF3mEnX1Nb0Wa9Xv9AT0fEv8X548fe31L1CsgMbudNM5p1HWn-DsCzc5xgfwygC1otf649p83NAbq35egDbNQOab_p4OMagc0g4TLinzYl_D7xiNK-g2EpB9Z0D5e9v8VD_PxGNwGXgtuw");'></div>
+<div class="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-black h-6 w-6 rounded-lg flex items-center justify-center border-2 border-background-dark">01</div>
+</div>
+<div class="flex-1">
+<p class="text-white text-xl font-bold leading-none mb-1">Tran Thi B</p>
+<p class="text-white/40 text-xs font-medium uppercase tracking-wider">Business Management</p>
+</div>
+<div class="bg-primary/10 px-2 py-1 rounded border border-primary/20">
+<span class="text-primary text-[10px] font-bold">PREPARING</span>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-transparent">
+<div class="relative">
+<div class="h-12 w-12 rounded-xl bg-center bg-cover grayscale opacity-60" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBuKGbSFRb-_8YRhAC6wIIRtwrkbrcH_dKN5jBsGqD2YVAbtkGt4Yu6Nw1gSEZux1XY-zDEli41ffTvNyXyp4bYJ2cJOpmZ51y8Jtum4pWtVKKx_vFh_TV53zBRK32nQQy-eV9Yieg2YHBR54n2-PMu5NoXJBS0krWUl3PzUMRxYbv3jzT-oeV-DcfgWKSMVRqkC25Grp-_qn57fg9GhO-1WhOtWZ3e8ImUzLzn-wQJYBx93M0FMCybBwuSH0fbnSEKxe1TOzH6bg");'></div>
+<div class="absolute -top-1.5 -right-1.5 bg-white/10 text-white/60 text-[10px] font-black h-5 w-5 rounded-md flex items-center justify-center">02</div>
+</div>
+<div class="flex-1">
+<p class="text-white/70 text-lg font-bold leading-none mb-1">Le Van C</p>
+<p class="text-white/30 text-xs uppercase">Graphic Design</p>
+</div>
+</div>
+<div class="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-transparent">
+<div class="relative">
+<div class="h-12 w-12 rounded-xl bg-center bg-cover grayscale opacity-60" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDOZQwXnpZ2TAoy5P2KC9V_FRZyfUFPnOgN57RZu1v_ekkZfoPR2nVa6lRO7ScaFZeVohtTESrFSGqSOZGXpCqJRNFb-MbrwYQrF5lTB9FhOyNfDHAw9OHpmHZfgxPLqlMbXm2U4kEEzyceVIZMRt_pkaekE9KYHoF3lSbPWojjecwUL3h7vqbcJiTJJZ-E5aYWdnjWL0hgV_NE1dUG52aGuNbtmu1ky94o4UwE-d-ZrX_xFkrbNfZOVOyNPn17kqh613KnOxyWNg");'></div>
+<div class="absolute -top-1.5 -right-1.5 bg-white/10 text-white/60 text-[10px] font-black h-5 w-5 rounded-md flex items-center justify-center">03</div>
+</div>
+<div class="flex-1">
+<p class="text-white/70 text-lg font-bold leading-none mb-1">Pham Minh D</p>
+<p class="text-white/30 text-xs uppercase">Finance</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 bg-background-dark/60 backdrop-blur-2xl border-t border-white/10 p-5 pb-10 z-50">
+<div class="max-w-lg mx-auto flex items-stretch gap-3 h-20">
+<button class="flex flex-col items-center justify-center rounded-2xl w-24 bg-white/5 text-white/60 active:bg-white/10 transition-colors border border-white/5">
+<span aria-hidden="true" class="material-symbols-outlined text-2xl">chevron_left</span>
+<span class="text-[9px] font-black uppercase tracking-tighter">Previous</span>
+</button>
+<button class="flex-1 flex items-center justify-between px-6 rounded-2xl bg-primary text-white font-black text-xl shadow-2xl shadow-primary/20 active:scale-[0.97] transition-all">
+<div class="flex flex-col items-start">
+<span class="text-[10px] opacity-70 uppercase tracking-[0.2em] font-bold">Trigger Announcement</span>
+<span>NEXT STUDENT</span>
+</div>
+<span aria-hidden="true" class="material-symbols-outlined text-3xl">record_voice_over</span>
+</button>
+</div>
+</footer>
+
+</body></html>

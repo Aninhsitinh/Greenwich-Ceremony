@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Staff Operation Guide - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f27f0d",
+                        "navy-fpt": "#002d56",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#121212",
+                        "surface-dark": "#1e1e1e",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen flex justify-center">
+<!-- Mobile Container (iPhone Scale) -->
+<div class="w-full max-w-[430px] min-h-screen bg-background-light dark:bg-background-dark flex flex-col relative shadow-2xl overflow-hidden border-x border-slate-200 dark:border-slate-800">
+<!-- Top Status Bar (iOS style placeholder) -->
+<div class="h-12 flex items-center justify-between px-8 w-full bg-background-light dark:bg-background-dark">
+<span class="text-sm font-semibold">9:41</span>
+<div class="flex space-x-2">
+<span class="material-icons text-sm">signal_cellular_alt</span>
+<span class="material-icons text-sm">wifi</span>
+<span class="material-icons text-sm">battery_full</span>
+</div>
+</div>
+<!-- Header -->
+<header class="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-navy-fpt rounded-lg flex items-center justify-center border border-white/10">
+<span class="text-primary font-bold text-xl italic">G</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">Operation Guide</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400">FPT Greenwich Graduation</p>
+</div>
+</div>
+<div class="bg-primary/10 text-primary px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase border border-primary/20">
+                Live Mode
+            </div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-6 pt-4 pb-32 space-y-8 overflow-y-auto">
+<!-- Intro Section -->
+<section>
+<h2 class="text-xl font-semibold mb-2">Event Day Workflow</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Follow these four critical steps to ensure a seamless graduation ceremony for students and guests.
+                </p>
+</section>
+<!-- Stepper Container -->
+<div class="relative space-y-10">
+<!-- Vertical Line -->
+<div class="absolute left-5 top-2 bottom-2 w-0.5 bg-slate-200 dark:bg-slate-800 z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 flex gap-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">1</div>
+<div class="space-y-3">
+<div>
+<h3 class="font-bold text-lg">Start QR Scanner</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Position at the main gate. Scan student e-tickets for check-in validation.</p>
+</div>
+<!-- Screenshot Card -->
+<div class="bg-navy-fpt/20 dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-32 object-cover opacity-80" data-alt="UI screenshot of a QR code scanner interface on a mobile phone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNtH5eKQzMPKakW38IfPHrOoHC1dJ0M02taDyz9bmGulOD6IlPBusFwBh2FL0cIspkWvjmNX1YNs0gRHb0d96vK4P5LcJ6lMUnbc2sVDypRJmAYUGORHz5Rt9hXmjCCjVk9Ezlq6TyTK8ZrP_rAJpkhuDkdUcvH3fuD91V1g09yqC4uUw-l9AUPu5ApyARnSKIy6ificv8RTfyAGoP0W6G5uI3g9fZW-J_O_55hNYemB1jipqCEMhLL4_ovF5drA60VrcyIA_zqA"/>
+<div class="p-3 flex items-center justify-between">
+<span class="text-[10px] font-medium uppercase tracking-widest text-primary">Scanner View</span>
+<span class="material-icons text-sm text-slate-400">open_in_new</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 flex gap-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy-fpt dark:bg-slate-800 border-2 border-primary flex items-center justify-center text-primary font-bold">2</div>
+<div class="space-y-3">
+<div>
+<h3 class="font-bold text-lg">Verify Student Identity</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Cross-reference scanned name with Physical Student ID cards for security.</p>
+</div>
+<div class="flex gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+<span class="material-icons text-primary">info</span>
+<p class="text-xs text-slate-600 dark:text-slate-300 italic">Report discrepancies immediately to the Floor Supervisor.</p>
+</div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 flex gap-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy-fpt dark:bg-slate-800 border-2 border-primary flex items-center justify-center text-primary font-bold">3</div>
+<div class="space-y-3">
+<div>
+<h3 class="font-bold text-lg">Manage Procession Queue</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Organize students by Major and Surname. Use the Live Queue monitor.</p>
+</div>
+<!-- Screenshot Card -->
+<div class="bg-navy-fpt/20 dark:bg-surface-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+<img class="w-full h-32 object-cover opacity-80" data-alt="Graphic showing a list of student names in a queue interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHusNr7duRMZXyJ8F3E-KmroQY_5eFO55BNm97cYsrKzLlsuvHA9rWeOb0QOzu8aW-YWDInXoPXhhI3MubxFn417NnvkSsuYVLnnlojOhHYMhqgSrr3qKIOhS9kb9fj89vTenAwfXHkwwWMX319h4qQPg1SOcUP-Glh_BHYHXNgGln3rWbL_vfpWX_cLlNMUBwOhuPVOm114qJ2KSH8T24klVttD5X8Mg5jhHmjNldnJsmLWjD4x2UFWCo-A69k4Ap_RUgxKqThw"/>
+<div class="p-3 flex items-center justify-between">
+<span class="text-[10px] font-medium uppercase tracking-widest text-primary">Queue Dashboard</span>
+<span class="material-icons text-sm text-slate-400">visibility</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="relative z-10 flex gap-4">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy-fpt dark:bg-slate-800 border-2 border-primary flex items-center justify-center text-primary font-bold">4</div>
+<div class="space-y-3">
+<div>
+<h3 class="font-bold text-lg">Sync with MC &amp; Tech</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Use the internal radio channel 4 to signal "Ready" before the procession starts.</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex-1 h-12 bg-surface-dark border border-slate-800 rounded-lg flex items-center px-3 gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-mono">Tech Team: Ready</span>
+</div>
+<div class="flex-1 h-12 bg-surface-dark border border-slate-800 rounded-lg flex items-center px-3 gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-mono">Stage: Ready</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Offline Notice -->
+<div class="text-center py-4">
+<p class="text-[10px] text-slate-500 uppercase tracking-widest flex items-center justify-center gap-2">
+<span class="material-icons text-xs">offline_pin</span> Guide available offline
+                </p>
+</div>
+</main>
+<!-- Floating Help Button -->
+<button class="absolute bottom-28 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 transition-transform active:scale-95 z-50">
+<span class="material-icons">support_agent</span>
+</button>
+<!-- Bottom Navigation / Action Bar -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-50">
+<button class="w-full bg-primary hover:bg-orange-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 flex items-center justify-center gap-3 transition-colors">
+<span class="material-icons">qr_code_scanner</span>
+                LAUNCH SCANNER
+            </button>
+<div class="mt-4 flex justify-between px-10">
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-icons text-xl">home</span>
+<span class="text-[10px]">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-icons text-xl">assignment</span>
+<span class="text-[10px]">Guide</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-icons text-xl">people</span>
+<span class="text-[10px]">Team</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-icons text-xl">settings</span>
+<span class="text-[10px]">Settings</span>
+</div>
+</div>
+</div>
+<!-- Safe Area Home Indicator -->
+<div class="h-1 bg-white/10 w-32 mx-auto rounded-full absolute bottom-1 left-1/2 -translate-x-1/2"></div>
+</div>
+</body></html>

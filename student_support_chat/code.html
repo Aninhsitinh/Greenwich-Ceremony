@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Support Chat - FPT Greenwich</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f27f0d",
+                        "navy-brand": "#1a237e",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#121212",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .message-shadow {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-300">
+<div class="relative flex flex-col h-screen max-w-md mx-auto overflow-hidden border-x border-slate-200 dark:border-white/5">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-white/10 px-4 py-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h2 class="text-base font-bold leading-tight tracking-tight">Greenwich Support</h2>
+<div class="size-2 bg-emerald-500 rounded-full animate-pulse"></div>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Typically replies in 5 mins</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Message Timeline -->
+<main class="flex-1 overflow-y-auto p-4 space-y-6 hide-scrollbar">
+<!-- Timestamp -->
+<div class="flex justify-center">
+<span class="px-3 py-1 rounded-full bg-slate-200/50 dark:bg-white/5 text-[10px] uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400">Today</span>
+</div>
+<!-- Support Message -->
+<div class="flex items-end gap-3 max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border-2 border-primary/20" data-alt="FPT Greenwich support staff professional avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbfbkUkSPbInesFW3COmsmIYIA-VDYfvrsgnAdWUwmBiL34O4xeCfF-WHUs-vpbZHMQ-eSQ2NNOefFTfL6jRYLMaLek37hVkjr5sgAAdCXrdeYkkJ88pLTx1c6Joi_rssW4D4Bl_Q35aNY1RrPHTVQSpNSZSQSjqQSCB6L0yq8421kWm_g0eoo3Zw1hVqFmO4-aQIIsh-Yi7PuqGB5UrMzwhyIrr6tUeSdit9p2KAAw7lvSJzOfDnhXQRE6f0wo1XZCJ2ovwgweA");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-slate-400 text-[11px] font-medium ml-1">Support Team • 09:41 AM</p>
+<div class="text-[14px] leading-relaxed rounded-2xl rounded-bl-none px-4 py-3 bg-[#1e293b] text-white message-shadow">
+                        Hello! Welcome to the FPT Greenwich Support Center. How can we help you with your graduation process today?
+                    </div>
+</div>
+</div>
+<!-- Student Message -->
+<div class="flex items-end gap-3 justify-end ml-auto max-w-[85%]">
+<div class="flex flex-col gap-1 items-end">
+<p class="text-slate-400 text-[11px] font-medium mr-1">You • 09:42 AM</p>
+<div class="text-[14px] leading-relaxed rounded-2xl rounded-br-none px-4 py-3 bg-primary text-white message-shadow">
+                        Hi! I wanted to know when the graduation schedule for the Summer 2024 batch will be officially released?
+                    </div>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border-2 border-white/20" data-alt="Student profile picture showing a smiling face" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA_AzMYJ_9iOVMWPv6xtLRG7RMj6j1ificQSHXjC5guMLf0s6enDuRRO4iOLE_UWTvWb_YpZDgVWLdS8ltnOybvM_P4HsrCVTRUNreCSWIZwsopuN6jOyPNOK0fh3t-F1vujusVDCRMDrIWKLj5yHrogLn-X17igYRz_c5cznsw8Oa7z2_chK9BCkbavYOvIdIdiKXEerkao3hrJFyaEivkri5w0yUk0OBWUMoviQNsHMJb_MwITIn4ihOB1Ew8l8b7xpj5ybzggA");'></div>
+</div>
+<!-- Support Message with Action -->
+<div class="flex items-end gap-3 max-w-[85%]">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 shrink-0 border-2 border-primary/20" data-alt="Support staff avatar icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvrxI-TeXl2t6MW4O-hx8jLWe5OCF0Mw1ZKsig91A917vrltSC7GAVzZseljJfSg4-C-X3kkDN7hhCn-JGHJK7n08ZTtESb-ANf2hLgfd7_Yd6dAFspOP7Yla8-vf0UmqurmGSVtxVN865wA8Oao7Fmhpd_5wMJHXl197ZlGMl49HXm88WID_KkszCos3B93NNAec2qz5hTApSD-RizNp9c2UW2W4cWh-epyA06Fnu_rDpcbVeLmZ7JrY3ggh0WMSh_K9pZG-u1w");'></div>
+<div class="flex flex-col gap-1 items-start">
+<p class="text-slate-400 text-[11px] font-medium ml-1">Support Team • 09:43 AM</p>
+<div class="text-[14px] leading-relaxed rounded-2xl rounded-bl-none px-4 py-3 bg-[#1e293b] text-white message-shadow">
+                        The schedule is usually published 2 weeks before the event. Currently, it's expected in late July. You can check the live tracking status below or ask about specific fee inquiries.
+                    </div>
+</div>
+</div>
+</main>
+<!-- Footer Area -->
+<footer class="bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-white/10 pb-8">
+<!-- Quick Reply Chips -->
+<div class="py-3">
+<div class="flex gap-2 overflow-x-auto px-4 hide-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-4 hover:bg-primary/10 hover:border-primary transition-all group">
+<span class="text-slate-700 dark:text-white text-[13px] font-medium group-hover:text-primary">Graduation Schedule</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-4 hover:bg-primary/10 hover:border-primary transition-all group">
+<span class="text-slate-700 dark:text-white text-[13px] font-medium group-hover:text-primary">Fee Inquiry</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-4 hover:bg-primary/10 hover:border-primary transition-all group">
+<span class="text-slate-700 dark:text-white text-[13px] font-medium group-hover:text-primary">Library Access</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 px-4 hover:bg-primary/10 hover:border-primary transition-all group">
+<span class="text-slate-700 dark:text-white text-[13px] font-medium group-hover:text-primary">Transcript Help</span>
+</button>
+</div>
+</div>
+<!-- Input Bar -->
+<div class="px-4 flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:bg-primary/20 hover:text-primary transition-all shrink-0">
+<span class="material-symbols-outlined">add</span>
+</button>
+<div class="flex-1 relative flex items-center">
+<input class="w-full bg-slate-100 dark:bg-white/5 border-none rounded-full py-3 px-5 text-[14px] text-slate-800 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 transition-all" placeholder="Type your message..." type="text"/>
+<button class="absolute right-3 flex items-center justify-center size-8 rounded-full bg-primary text-white hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-slate-300 hover:bg-primary/20 hover:text-primary transition-all shrink-0">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</div>
+</footer>
+<!-- iPhone Indicator Bar -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-300 dark:bg-white/20 rounded-full"></div>
+</div>
+</body></html>

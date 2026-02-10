@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Staff Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0a47c2",
+                        "accent": "#f97316",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "card-dark": "#1e2433"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center p-4 justify-between max-w-lg mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary cursor-pointer">arrow_back_ios</span>
+<h1 class="text-lg font-bold leading-tight tracking-tight">Staff Management</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-accent ring-2 ring-white dark:ring-background-dark"></span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-lg mx-auto pb-24">
+<!-- Stats Dashboard -->
+<div class="flex gap-4 p-4">
+<div class="flex-1 flex flex-col gap-1 rounded-xl p-5 bg-primary text-white shadow-lg">
+<p class="text-white/80 text-xs font-medium uppercase tracking-wider">Total Staff</p>
+<div class="flex items-end justify-between">
+<p class="text-3xl font-bold leading-none">58</p>
+<span class="material-symbols-outlined opacity-50">groups</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-1 rounded-xl p-5 bg-card-dark text-white border border-slate-700">
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Active Now</p>
+<div class="flex items-end justify-between">
+<p class="text-3xl font-bold leading-none text-accent">42</p>
+<span class="material-symbols-outlined text-accent">person_check</span>
+</div>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-2">
+<label class="relative flex items-center h-12 w-full">
+<span class="material-symbols-outlined absolute left-4 text-slate-400">search</span>
+<input class="w-full h-full pl-12 pr-4 rounded-xl border-none bg-white dark:bg-card-dark text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary shadow-sm" placeholder="Search staff name or role..."/>
+</label>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-3 px-4 py-3 overflow-x-auto whitespace-nowrap scroll-smooth">
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-primary px-5 text-white text-sm font-semibold">
+                All Roles
+            </div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-card-dark px-5 text-slate-600 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-700">
+                Check-in
+            </div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-card-dark px-5 text-slate-600 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-700">
+                MC
+            </div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-card-dark px-5 text-slate-600 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-700">
+                Technical
+            </div>
+<div class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-card-dark px-5 text-slate-600 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-700">
+                Security
+            </div>
+</div>
+<!-- Section Header -->
+<div class="flex items-center justify-between px-4 pt-4 pb-2">
+<h3 class="text-slate-900 dark:text-white text-base font-bold">Staff List</h3>
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Showing 58 members</span>
+</div>
+<!-- Staff List Items -->
+<div class="flex flex-col gap-3 px-4">
+<!-- Staff Card 1 -->
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img alt="Staff Profile" class="h-10 w-10 rounded-full object-cover" data-alt="Profile photo of male staff member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtAAfvG0zULWzRE1rQWc3aYp5sIwoJVqCgTxRuVnyJsjRPxvLbk7cMZ412QjwFyta-zI3Nt154OEPGtWUEKxrK6ij9QGMemHVbi8co4LaPaosFQG3W0ly9ykyKfTd_A9gX3DvpFfHtP9pxAjM6XjrRH2anGjGWKD1Q06pKBkncZvreu3CAhiFddeQUHvhnex6El4vYu_8HVueEadpylB_y7Lirz1Mqk6zFnNxsyDaioU7gWuO0ks85IW0iKrRm2OiTqqDX_BFhXA"/>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Alex Nguyen</p>
+<p class="text-[11px] font-medium text-slate-500 uppercase tracking-tight">Technical Lead</p>
+</div>
+</div>
+<div class="flex items-center">
+<!-- Active Toggle -->
+<div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary cursor-pointer">
+<span class="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition"></span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+<span class="text-xs text-slate-600 dark:text-slate-400">Main Stage Area</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 2 -->
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800 opacity-80">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img alt="Staff Profile" class="h-10 w-10 rounded-full object-cover grayscale" data-alt="Profile photo of female staff member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkBRmLaUUZp5J96XX2hoHuu4xW4cez8HinBV94jsfHJ9kNfSSdk76ehSlKclDziiAOUePFiLMGaVHqLz_V0arfJ8nQOcQQL9zBKD2pmwH5rTt4woiPgJl0goWoAh3jibTjIrQ_i7szzSAldvIDY0x7LHxK8CR1F74X33Ky6A0ylT0KNRE9wTyIaMqcjgWwIC6HsGgh3WRYvvBG0_LgxO359EIflx2rVfquH9QT_nZ889pNr-CQIvoz8mlDpUb-NiEE9Wc8x8glZA"/>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Sophia Tran</p>
+<p class="text-[11px] font-medium text-slate-500 uppercase tracking-tight">Check-in Staff</p>
+</div>
+</div>
+<div class="flex items-center">
+<!-- Inactive Toggle -->
+<div class="relative inline-flex h-6 w-11 items-center rounded-full bg-slate-300 dark:bg-slate-700 cursor-pointer">
+<span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition"></span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+<span class="text-xs text-slate-600 dark:text-slate-400">Reception A</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 3 -->
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm">ML</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Minh Le</p>
+<p class="text-[11px] font-medium text-accent uppercase tracking-tight">Master of Ceremony</p>
+</div>
+</div>
+<div class="flex items-center">
+<div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary cursor-pointer">
+<span class="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition"></span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+<span class="text-xs text-slate-600 dark:text-slate-400">Graduation Hall</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 4 -->
+<div class="flex flex-col bg-white dark:bg-card-dark rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img alt="Staff Profile" class="h-10 w-10 rounded-full object-cover" data-alt="Profile photo of male staff member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjINxkaRMoxtDsnYaW7voTc_5D434RfdTTMH9NSlwAnfmASTSlTc3dsPY-mABFCy1e8qRZKcSdH_LNnuipebtvVaciD52rD61iNhQUKfdYLMZKCujehmry0xoQvMr7Ia8UKAAsnOxx1uYZqcfhOCiLpyhFZdWZucZs4eCe0RtncvQDDgIwMEXvxJJnAGYOhKF0v0nPW25zSrq_MTWnFmONoWyDwwYgAAzj_5HqIH9sSEXu03MqQaDx_OUSgv9EJdwSx0ATgbao7Q"/>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">David Miller</p>
+<p class="text-[11px] font-medium text-slate-500 uppercase tracking-tight">Security</p>
+</div>
+</div>
+<div class="flex items-center">
+<div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary cursor-pointer">
+<span class="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition"></span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-1 pt-3 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-slate-400">location_on</span>
+<span class="text-xs text-slate-600 dark:text-slate-400">East Entrance</span>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+<button class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<div class="fixed bottom-24 right-6">
+<button class="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-2xl active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<!-- Bottom Navigation (iOS Style) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-card-dark border-t border-slate-200 dark:border-slate-800 pb-8 pt-3 px-6 z-50">
+<div class="max-w-lg mx-auto flex justify-between items-center">
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">badge</span>
+<span class="text-[10px] font-bold">Staff</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">map</span>
+<span class="text-[10px] font-medium">Areas</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</div>
+</div>
+</nav>
+</body></html>
