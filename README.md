@@ -1,125 +1,161 @@
-# 🎓 Stitch Ceremony Registration System
+# 🎓 FPT Greenwich Ceremony Registration System (Stitch)
 
-> **A premium, full-stack graduation ceremony management system** built for FPT Greenwich University. 🚀
+> **"A Premium Graduation Experience, Orchestrated in Real-Time."**
 
-[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-316192?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![Vue 3](https://img.shields.io/badge/Frontend-Vue%203-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
-[![Express](https://img.shields.io/badge/Backend-Express.js-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![Socket.io](https://img.shields.io/badge/Realtime-Socket.io-010101?logo=socketdotio&logoColor=white)](https://socket.io/)
+Stitch là một giải pháp quản lý lễ tốt nghiệp toàn diện (SaaS-ready), được thiết kế để nâng tầm trải nghiệm của sinh viên và tối ưu hóa quy trình tổ chức của nhà trường. Hệ thống kết hợp sức mạnh của **Vue 3**, **NodeJS**, **PostgreSQL** và **Socket.io** để tạo ra một hệ sinh thái đồng bộ từ lúc đăng ký đến khi cầm bằng trên sân khấu.
 
 ---
 
-## 🌟 Overview
-
-Stitch là một hệ thống quản lý lễ tốt nghiệp hiện đại, tự động hóa toàn bộ quy trình từ đăng ký, chọn trang phục, đặt chỗ cho phụ huynh đến việc check-in và gọi tên sinh viên trên sân khấu trong thời gian thực.
-
-## 👥 Portals & Features
-
-### 🎓 Student Portal
-- **Smart Registration** - Xác nhận tham gia lễ tốt nghiệp và chọn size áo cử nhân.
-- **E-Ticket & QR Styling** - Tạo vé điện tử với mã QR có thể tùy chỉnh màu sắc, hình dạng và logo.
-- **Interactive Seat Booking** - Đặt tối đa 3 ghế cho khách mời với bản đồ chỗ ngồi trực quan.
-- **Support Chat** - Chat trực tiếp với nhân viên hỗ trợ thông qua Socket.io.
-- **Journey Tracking** - Thanh trạng thái theo dõi lộ trình 5 bước tốt nghiệp.
-- **Payments** - Quản lý và xem lịch sử thanh toán các gói dịch vụ.
-
-### 🏢 Staff Portal
-- **High-speed QR Scanner** - Quét mã QR check-in sinh viên và khách mời ngay tại cổng.
-- **Real-time Student List** - Quản lý danh sách sinh viên, trạng thái nhận áo và check-in.
-- **Support Chat Archive** - Trả lời thắc mắc của sinh viên trong thời gian thực.
-- **Seat Management** - Điều phối chỗ ngồi và xử lý các tình huống phát sinh.
-
-### 🎤 MC Console
-- **Live Ceremony Feed** - Theo dõi danh sách sinh viên đã check-in và sẵn sàng lên sân khấu.
-- **Procession Control** - Điều khiển luồng gọi tên sinh viên lên bục nhận bằng.
-- **Real-time Synchronization** - Đồng bộ dữ liệu tức thì giữa Staff (quét QR) và MC.
-
-### 🖥️ Admin Portal
-- **Full System Configuration** - Cài đặt ngày lễ, địa điểm, thời hạn đăng ký.
-- **User & Role Management** - Quản lý tài khoản Student, Staff, MC.
-- **Broadcast Notifications** - Gửi thông báo đẩy đến toàn bộ người dùng.
+## 📑 Mục lục
+- [🌟 Điểm nổi bật](#-điểm-nổi-bật)
+- [🧩 Các Module Chức năng](#-các-module-chức-năng)
+- [🏗️ Kiến trúc Hệ thống](#️-kiến-trúc-hệ-thống)
+- [🛠️ Công nghệ Sử dụng](#️-công-nghệ-sử-dụng)
+- [🚀 Hướng dẫn Cài đặt](#-hướng-dẫn-cài-đặt)
+- [📱 Giao diện & Trải nghiệm](#-giao-diện--trải-nghiệm)
+- [🔐 Bảo mật & Hiệu năng](#-bảo-mật--hiệu-năng)
+- [🤝 Đóng góp](#-đóng-góp)
 
 ---
 
-## 🛠️ Tech Stack
+## 🌟 Điểm nổi bật
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | Vue 3 (Composition API), Pinia, Vite, Tailwind CSS |
-| **Backend** | Node.js, Express.js |
-| **Database** | **PostgreSQL** with **Prisma ORM** |
-| **Real-time** | **Socket.io** (Chat, Live Sync) |
-| **i18n** | **vue-i18n** (Full support for English & Vietnamese) |
-| **Security** | JWT, bcrypt, Helmet, Express Rate Limit |
+*   **Real-time Synchronization**: Đồng bộ tức thì giữa cổng quét QR của Staff và màn hình điều khiển của MC.
+*   **Dynamic i18n**: Hỗ trợ đa ngôn ngữ (Anh/Việt) hoàn chỉnh với khả năng chuyển đổi không cần load lại trang.
+*   **Customizable E-Ticket**: Hệ thống sinh vé QR động cho phép tùy chỉnh màu sắc, logo và kiểu dáng.
+*   **Responsive Excellence**: Thiết kế di động linh hoạt (PWA-ready), lấy trải nghiệm trên iPhone 14 Pro Max làm chuẩn.
+*   **Smart Automation**: Tự động hóa quy trình đặt chỗ, thuê áo và thanh toán.
 
 ---
 
-## 🚀 Installation & Setup
+## 🧩 Các Module Chức năng
 
-### 1. Prerequisites
-- Node.js (v18+)
-- PostgreSQL (Running locally or via Docker)
-- mkcert (For local HTTPS development)
+### 🎓 1. Student Portal (Hành trình sinh viên)
+Hệ thống dẫn dắt sinh viên qua 5 bước quan trọng:
+1.  **Attendance Registration**: Xác nhận tham gia và cung cấp thông tin cần thiết.
+2.  **E-Ticket Design**: Tự tay cá nhân hóa vé tốt nghiệp của mình.
+3.  **Guest Seat Booking**: Đặt chỗ ngồi cho người thân (với phân loại ghế VIP/Thường).
+4.  **Gown Collection**: Đặt lịch nhận/trả áo cử nhân chuyên nghiệp.
+5.  **Payment Integration**: Thanh toán và theo dõi hóa đơn trực tuyến.
+*   *Tính năng thêm:* Chat hỗ trợ trực tiếp với Staff, nhận thông báo đẩy (Internal Notifications).
 
-### 2. Clone & Install
+### 🏢 2. Staff Portal (Điều hành & Hỗ trợ)
+*   **Vận hành Ngày lễ:** Công cụ quét mã QR tốc độ cao, xác thực vé và đăng ký check-in thực tế.
+*   **Quản lý Áo:** Theo dõi trạng thái đặt cọc, lấy áo và trả áo.
+*   **Support Desk:** Hệ thống Chat tập trung quản lý tất cả các yêu cầu từ sinh viên.
+*   **Datalist:** Danh sách sinh viên thời gian thực với bộ lọc đa năng.
+
+### 🎤 3. MC Console (Điều phối Sân khấu)
+*   **Live Attendance Feed:** Theo dõi danh sách sinh viên đã qua cửa check-in.
+*   **Ceremony Control:** Điều phối luồng sinh viên lên sân khấu, đánh dấu trạng thái "đang trên bục" hoặc "đã nhận bằng".
+*   **Broadcast:** Gửi thông báo khẩn cấp đến toàn bộ hệ thống.
+
+### 🍱 4. Admin Portal (Quản trị Hệ thống)
+*   **Global Settings:** Cấu hình thời gian, địa điểm, hạn chót và dung lượng hội trường.
+*   **Account Management:** Quản lý hàng ngàn tài khoản sinh viên và phân quyền Staff/MC.
+*   **Dashboard & Analytics:** Thống kê trực quan về tỷ lệ tham gia và tình trạng tài chính.
+
+---
+
+## 🏗️ Kiến trúc Hệ thống
+
+```mermaid
+graph TD
+    User((User Roles)) -->|Vue 3| Frontend[Frontend - Vite/Tailwind]
+    Frontend -->|HTTPS/WS| API[API Gateway - Node Express]
+    API -->|JWT/Guard| Controllers[Logic Controllers]
+    Controllers -->|Prisma| DB[(PostgreSQL Database)]
+    API -->|Socket.io| Realtime[Realtime Events - MC/Staff/Chat]
+```
+
+---
+
+## 🛠️ Công nghệ Sử dụng
+
+### **Frontend**
+- **Framework:** Vue 3 (Composition API)
+- **State:** Pinia (Store management)
+- **Style:** Tailwind CSS (Modern Utility-first)
+- **Icons:** Google Material Symbols
+- **Tools:** Vite, Vue-Router, Socket.io-client, QR-Code-Styling
+
+### **Backend**
+- **Runtime:** Node.js v18+
+- **Framework:** Express.js
+- **ORM:** Prisma (Modern PostgreSQL interface)
+- **Real-time:** Socket.io
+- **Auth:** JWT (JSON Web Tokens) & Bcrypt
+- **Security:** Helmet, CORS, Express-Rate-Limit
+- **Storage:** Cloudinary Integration (Photos/Avatars)
+
+---
+
+## 🚀 Hướng dẫn Cài đặt
+
+### **1. Clone dự án**
 ```bash
 git clone https://github.com/Aninhsitinh/Greenwich-Ceremony.git
-cd stitch_ceremony_registration
-
-# Install dependencies for both
-cd backend && npm install
-cd ../frontend && npm install
 ```
 
-### 3. Database Setup (Prisma)
-Configure your `.env` in the `backend` folder:
-```bash
-DATABASE_URL="postgresql://user:password@localhost:5432/stitch_ceremony?schema=public"
+### **2. Cấu hình Backend**
+Vào thư mục `backend`, tạo file `.env`:
+```env
+PORT=5000
+DATABASE_URL="postgresql://user:password@localhost:5432/stitch_ceremony"
+JWT_SECRET="your_secret_key"
+FRONTEND_URL="http://localhost:5173"
+CLOUDINARY_CLOUD_NAME="..."
+CLOUDINARY_API_KEY="..."
+CLOUDINARY_API_SECRET="..."
 ```
-Then run:
+Cài đặt & Chạy:
 ```bash
+npm install
 npx prisma db push
 npx prisma generate
 npm run seed
-```
-
-### 4. Running the Project
-**Backend:**
-```bash
-cd backend
 npm run dev
 ```
 
-**Frontend:**
+### **3. Cấu hình Frontend**
+Vào thư mục `frontend`, tạo file `.env`:
+```env
+VITE_API_URL="http://localhost:5000/api"
+VITE_SOCKET_URL="http://localhost:5000"
+```
+Cài đặt & Chạy:
 ```bash
-cd frontend
+npm install
 npm run dev
 ```
 
 ---
 
-## 🎨 UI/UX Features
-- **Premium Design**: Glassmorphism, smooth animations, và typography hiện đại.
-- **Multi-language**: Chuyển đổi linh hoạt giữa Tiếng Anh và Tiếng Việt.
-- **Responsive Layout**: Tối ưu hóa hoàn hảo cho Mobile (iPhone 14 Pro Max chuẩn) và Desktop.
-- **PWA Ready**: Có thể cài đặt như một ứng dụng trên điện thoại.
-
-## 📂 Project Structure
-```
-├── backend/
-│   ├── prisma/             # Database schema
-│   ├── src/
-│   │   ├── controllers/    # Business logic
-│   │   ├── routes/         # API endpoints
-│   │   └── socket/         # Real-time event handlers
-├── frontend/
-│   ├── src/
-│   │   ├── views/          # Portal pages (Student, Staff, MC, Admin)
-│   │   ├── components/     # UI design system
-│   │   └── i18n/           # Translation files
-```
+## 📱 Giao diện & Trải nghiệm
+- **Glassmorphism:** Sử dụng hiệu ứng kính mờ cho các card và sidebar, tạo cảm giác cao cấp.
+- **Dynamic Themes:** Hỗ trợ Dark Mode hoàn chỉnh, bảo vệ mắt người dùng.
+- **Micro-animations:** Các hiệu ứng chuyển cảnh mượt mà từ `transition-group` của Vue.
+- **PWA Ready:** Tích hợp manifest để cài đặt làm ứng dụng gốc trên màn hình chính.
 
 ---
 
-Made with ❤️ for **FPT Greenwich Graduation 2026**
+## 🔐 Bảo mật & Hiệu năng
+*   **Security First:** Toàn bộ Header được bảo vệ bởi Helmet, Rate limit tránh tấn công Brute-force.
+*   **Database optimization:** PostgreSQL với các Index được cấu hình sẵn trong Prisma schema giúp truy vấn cực nhanh ngay cả với hàng vạn record.
+*   **Offline Support:** Sử dụng LocalStorage để cache trạng thái auth và các thiết lập ưu tiên.
+
+---
+
+## 🤵 Tác giả
+**Phan Công Duy Khương**
+- 🎓 *Greenwich University Vietnam*
+- 📧 Email: duykhuongpc@gmail.com
+- 🎨 Design & Full-stack Architecture
+
+---
+
+## 📝 License
+Dự án được phân phối dưới giấy phép **MIT**. 
+
+---
+*Made with ❤️ for FPT Greenwich Graduation Ceremony 2026*
