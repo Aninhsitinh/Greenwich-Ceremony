@@ -19,7 +19,7 @@ Content-Type: application/json
   "fullName": "Test Student",
   "phone": "0901234599",
   "major": "Computer Science",
-  "classOf": 2024
+  "classOf": 2026
 }
 ```
 
@@ -59,7 +59,7 @@ Authorization: Bearer <student_token>
 Content-Type: application/json
 
 {
-  "ceremonyDate": "2024-06-20",
+  "ceremonyDate": "2026-06-20",
   "gownSize": "M",
   "specialRequirements": "Wheelchair accessible"
 }
@@ -157,7 +157,7 @@ Authorization: Bearer <staff_token>
 Content-Type: application/json
 
 {
-  "ticketNumber": "GRAD-2024-1234567890-123"
+  "ticketNumber": "GRAD-2026-1234567890-123"
 }
 ```
 
@@ -337,8 +337,9 @@ socket.on('new_message', (data) => {
 
 ## Quick Start Testing
 
-1. Start MongoDB
-2. Start backend: `npm run dev`
-3. Seed database: `npm run seed`
-4. Use default accounts from seed.js
-5. Test with Thunder Client, Postman, or cURL
+1. Make sure **PostgreSQL** is running and `DATABASE_URL` is set in `.env`
+2. Push schema: `npx prisma db push`
+3. Start backend: `npm run dev`
+4. Seed database: `npm run seed`
+5. Use default accounts from seed.js
+6. Test with Thunder Client, Postman, or cURL

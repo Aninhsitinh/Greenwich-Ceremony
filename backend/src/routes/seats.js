@@ -6,6 +6,7 @@ import {
     getMyBookings,
     cancelBooking,
     getAllBookings,
+    adminUpdateSeat,
 } from '../controllers/seatController.js';
 import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/roleCheck.js';
@@ -24,6 +25,7 @@ router.get('/', protect, getAvailableSeats);
 router.post('/book', protect, authorize('student'), bookSeatValidation, validate, bookSeat);
 router.get('/my-bookings', protect, getMyBookings);
 router.delete('/:id', protect, cancelBooking);
-router.get('/all', protect, authorize('admin', 'staff'), getAllBookings);
+router.get('/all', protect, authorize('admin', 'staff', 'mc'), getAllBookings);
+router.patch('/:id/admin-update', protect, authorize('admin', 'staff', 'mc'), adminUpdateSeat);
 
 export default router;

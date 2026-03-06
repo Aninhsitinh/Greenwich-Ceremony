@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Announcements"
+    :page-title="$t('admin.announcements')"
   >
     <div class="w-full max-w-4xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -187,17 +187,17 @@ const announcements = ref([
     message: 'Please remember to collect your graduation gown between May 20-June 10. Bring your student ID and ticket confirmation.',
     priority: 'high',
     audience: 'students',
-    date: '2024-05-15',
+    date: '2026-05-15',
     views: 1234,
     reached: 980
   },
   {
     id: 2,
     title: 'Ceremony Rehearsal Schedule',
-    message: 'Mandatory rehearsal for all graduating students will be held on June 14, 2024 at 2:00 PM in the Main Hall.',
+    message: 'Mandatory rehearsal for all graduating students will be held on June 14, 2026 at 2:00 PM in the Main Hall.',
     priority: 'urgent',
     audience: 'students',
-    date: '2024-05-10',
+    date: '2026-05-10',
     views: 2145,
     reached: 1890
   },
@@ -207,7 +207,7 @@ const announcements = ref([
     message: 'Free parking will be available for all ceremony attendees. Please arrive early to secure a parking spot.',
     priority: 'medium',
     audience: 'all',
-    date: '2024-05-05',
+    date: '2026-05-05',
     views: 856,
     reached: 650
   }

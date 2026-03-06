@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import socketService from '@/services/socketService';
 import api from '@/services/api';
+import { useToast } from 'vue-toastification';
 
 export const useNotificationStore = defineStore('notification', () => {
     const notifications = ref([]);
@@ -67,13 +68,9 @@ export const useNotificationStore = defineStore('notification', () => {
 
     // Show toast notification
     const showToast = (notification) => {
-        // This will be handled by a Toast component
-        if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(notification.title, {
-                body: notification.message,
-                icon: '/logo.png',
-                badge: '/logo.png'
-            });
+        const toast = useToast();
+        if (toast) {
+            toast.info(notification.title || 'New Notification');
         }
     };
 

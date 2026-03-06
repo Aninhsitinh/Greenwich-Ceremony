@@ -157,4 +157,4 @@ authStore.logout();
 
 ## License
 
-© 2024 FPT Greenwich. All rights reserved.
+© 2026 FPT Greenwich. All rights reserved.

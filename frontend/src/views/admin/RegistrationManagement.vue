@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Registration Management"
+    :page-title="$t('admin.registration_management')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -233,7 +233,7 @@ const rejectedCount = computed(() => registrations.value.filter(r => r.status ==
 
 const formatDate = (date) => {
   if (!date) return 'N/A';
-  return new Date(date).toLocaleDateString('en-US', {
+  return new Date(date).toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

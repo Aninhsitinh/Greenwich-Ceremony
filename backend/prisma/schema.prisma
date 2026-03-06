@@ -1,0 +1,405 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String            @id @default(uuid())
+  studentId           String?           @unique
+  email               String            @unique
+  password            String
+  fullName            String
+  role                Role              @default(student)
+  profilePhoto        String?
+  phone               String?
+  major               String?
+  classOf             Int               @default(2026)
+  status              UserStatus        @default(active)
+  jobTitle            String            @default("Mentor")
+  
+  // Journey Status embedded values from Mongoose
+  journeyRegistrationCompleted Boolean @default(false)
+  journeyTicketGenerated       Boolean @default(false)
+  journeySeatsBooked           Boolean @default(false)
+  journeyGownCollected         Boolean @default(false)
+  journeyPaymentCompleted      Boolean @default(false)
+  journeyCurrentStep           Int     @default(1)
+
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  // Relationships
+  announcements       Announcement[]
+  sentMessages        ChatMessage[]     @relation("SentMessages")
+  receivedMessages    ChatMessage[]     @relation("ReceivedMessages")
+  gownCollections     GownCollection[]
+  notifications       Notification[]
+  payments            Payment[]
+  photoGalleries      PhotoGallery[]
+  posts               Post[]
+  processionQueues    ProcessionQueue[]
+  registrations       Registration[]
+  seatBookings        SeatBooking[]
+  tickets             Ticket[]
+  checkedInTickets    Ticket[]          @relation("TicketScannedBy")
+  checkedInRegs       Registration[]    @relation("RegCheckedInBy")
+}
+
+model Announcement {
+  id             String               @id @default(uuid())
+  title          String
+  content        String
+  category       AnnouncementCategory @default(general)
+  coverImage     String?
+  publishedById  String
+  publishedBy    User                 @relation(fields: [publishedById], references: [id])
+  targetAudience TargetAudience[]
+  isPublished    Boolean              @default(false)
+  publishDate    DateTime             @default(now())
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([isPublished, publishDate(sort: Desc)])
+  @@index([category])
+}
+
+model ChatMessage {
+  id           String    @id @default(uuid())
+  senderId     String
+  sender       User      @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId   String?
+  receiver     User?     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  senderRole   Role
+  message      String
+  attachments  String[]
+  isRead       Boolean   @default(false)
+  roomId       String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([roomId, createdAt(sort: Desc)])
+  @@index([senderId, receiverId])
+}
+
+model GownCollection {
+  id                 String               @id @default(uuid())
+  userId             String
+  user               User                 @relation(fields: [userId], references: [id])
+  registrationId     String
+  registration       Registration         @relation(fields: [registrationId], references: [id])
+  size               GownSize
+  collectionDate     DateTime?
+  scheduledDate      DateTime
+  returnDate         DateTime?
+  status             GownCollectionStatus @default(pending)
+  depositPaid        Boolean              @default(false)
+  depositAmount      Int                  @default(500000)
+  notes              String?
+  collectionLocation String               @default("Main Office - Building A, Room 101")
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledDate])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      NotificationType @default(info)
+  
+  // Polymorphic-like relations are simpler in relational DBs by making ids nullable
+  relatedId String?
+  onModel   NotificationModel? 
+
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([userId, isRead])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Payment {
+  id            String             @id @default(uuid())
+  userId        String
+  user          User               @relation(fields: [userId], references: [id])
+  amount        Int
+  paymentType   PaymentType
+  paymentMethod PaymentMethod
+  status        PaymentStatus      @default(pending)
+  transactionId String?
+  receiptUrl    String?
+  items         Json               // JSON object for payment items
+  notes         String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([transactionId])
+}
+
+model PhotoGallery {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  imageUrl     String
+  uploadedById String
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  tags         String[]
+  ceremonyDate DateTime
+  likes        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([ceremonyDate(sort: Desc)])
+  @@index([tags])
+}
+
+model Post {
+  id         String   @id @default(uuid())
+  title      String
+  summary    String
+  content    String
+  coverImage String   @default("default-post.jpg")
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ProcessionQueue {
+  id            String                @id @default(uuid())
+  userId        String
+  user          User                  @relation(fields: [userId], references: [id])
+  queueNumber   Int
+  major         String
+  status        ProcessionQueueStatus @default(waiting)
+  callTime      DateTime?
+  completedTime DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([queueNumber])
+  @@index([status])
+  @@index([major])
+}
+
+model Registration {
+  id                  String             @id @default(uuid())
+  userId              String
+  user                User               @relation(fields: [userId], references: [id])
+  ceremonyDate        DateTime
+  gownSize            GownSize?
+  gownCollected       Boolean            @default(false)
+  gownCollectionTime  DateTime?
+  attendanceConfirmed Boolean            @default(false)
+  checkedInById       String?
+  checkedInBy         User?              @relation("RegCheckedInBy", fields: [checkedInById], references: [id])
+  checkedInAt         DateTime?
+  registrationStatus  RegistrationStatus @default(pending)
+  specialRequirements String?
+  specialNeeds        String?
+  guestCount          Int                @default(0)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  gownCollections     GownCollection[]
+
+  @@index([userId])
+  @@index([registrationStatus])
+}
+
+model SeatBooking {
+  id             String            @id @default(uuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id])
+  seatNumber     String
+  seatType       TicketType
+  guestName      String?
+  guestRelation  GuestRelation?
+  guestPhone     String?
+  status         SeatBookingStatus @default(booked)
+  bookingDate    DateTime          @default(now())
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([userId])
+  @@index([seatNumber])
+  @@index([status])
+  @@unique([seatNumber, status]) // Partial indexes aren't natively supported in standard Prisma config without custom raw SQL, but standard unique is okay for now.
+}
+
+model SystemSettings {
+  id                     String   @id @default(uuid())
+  ceremonyDate           DateTime
+  registrationDeadline   DateTime
+  maxGuestPerStudent     Int      @default(2)
+  gownCollectionStartDate DateTime
+  gownCollectionEndDate  DateTime
+  venueCapacity          Int      @default(500)
+  isRegistrationOpen     Boolean  @default(true)
+  ceremonyLocation       String   @default("FPT Greenwich University")
+  ceremonyMapLink        String   @default("")
+  rehearsalDate          DateTime?
+  rehearsalLocation      String   @default("Hall")
+  rehearsalMapLink       String   @default("")
+  gownCollectionLocation String   @default("20 Cộng Hòa , phường Bảy Hiền , Thành Phố Hồ Chí Minh")
+  gownCollectionMapLink  String   @default("")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model Ticket {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  ticketType   TicketType
+  qrCode       String
+  ticketNumber String     @unique
+  isScanned    Boolean    @default(false)
+  scannedAt    DateTime?
+  scannedById  String?
+  scannedBy    User?      @relation("TicketScannedBy", fields: [scannedById], references: [id])
+  seatNumber   String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([isScanned])
+}
+
+
+// ENUMS Mapping from Mongoose
+
+enum Role {
+  student
+  staff
+  admin
+  mc
+}
+
+enum UserStatus {
+  active
+  inactive
+  suspended
+}
+
+enum AnnouncementCategory {
+  urgent
+  updates
+  general
+}
+
+enum TargetAudience {
+  student
+  staff
+  admin
+  mc
+  all
+}
+
+enum GownSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
+}
+
+enum GownCollectionStatus {
+  pending
+  scheduled
+  collected
+  returned
+}
+
+enum NotificationType {
+  info
+  urgent
+  warning
+  success
+  system
+  registrationUpdate
+  ticketScan
+  gownStatus
+}
+
+enum NotificationModel {
+  Registration
+  Ticket
+  GownCollection
+  User
+}
+
+enum PaymentType {
+  gown_rental
+  photo_package
+  additional_guest
+  graduation_package
+  other
+}
+
+enum PaymentMethod {
+  bank_transfer
+  cash
+  online
+  qr
+  card
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+enum ProcessionQueueStatus {
+  waiting
+  ready
+  on_stage
+  completed
+}
+
+enum RegistrationStatus {
+  pending
+  confirmed
+  cancelled
+}
+
+enum TicketType {
+  student
+  guest
+}
+
+enum GuestRelation {
+  parent
+  sibling
+  friend
+  other
+}
+
+enum SeatBookingStatus {
+  booked
+  confirmed
+  cancelled
+}

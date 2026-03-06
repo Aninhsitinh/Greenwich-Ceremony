@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Seat Management"
+    :page-title="$t('admin.seat_management')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -216,7 +216,7 @@ const recentAssignments = ref([
     guestName: 'Mrs. Jane Doe',
     studentName: 'John Doe',
     studentId: 'GCS220001',
-    assignedAt: '2024-06-10 10:30'
+    assignedAt: '2026-06-10 10:30'
   },
   {
     id: 2,
@@ -224,7 +224,7 @@ const recentAssignments = ref([
     guestName: 'Mr. Robert Smith',
     studentName: 'Jane Smith',
     studentId: 'GCS220002',
-    assignedAt: '2024-06-10 11:15'
+    assignedAt: '2026-06-10 11:15'
   }
 ]);
 

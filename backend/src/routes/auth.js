@@ -8,6 +8,7 @@ import {
     forgotPassword,
     verifyOTP,
     resetPassword,
+    changePassword,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
@@ -47,6 +48,7 @@ router.post('/register', registerValidation, validate, register);
 router.post('/login', loginValidation, validate, login);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);
+router.put('/change-password', protect, changePassword);
 router.post('/forgot-password', forgotPasswordValidation, validate, forgotPassword);
 router.post('/verify-otp', verifyOTPValidation, validate, verifyOTP);
 router.post('/reset-password', resetPasswordValidation, validate, resetPassword);

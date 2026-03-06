@@ -94,9 +94,12 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useNotificationStore } from '@/stores/notification';
 import { timeAgo } from '@/utils/helpers';
 import Loading from './Loading.vue';
+
+const router = useRouter();
 
 const notificationStore = useNotificationStore();
 const showDropdown = ref(false);
@@ -116,8 +119,22 @@ const handleNotificationClick = (notification) => {
   if (!notification.read) {
     notificationStore.markAsRead(notification._id);
   }
-  // Navigate based on notification type
-  // TODO: Implement navigation logic
+  
+  showDropdown.value = false;
+
+  // Navigate based on title or type
+  const title = notification.title?.toLowerCase() || '';
+  if (title.includes('gowns') || title.includes('gown')) {
+    router.push('/student/gown-collection');
+  } else if (title.includes('seat')) {
+    router.push('/student/seat-booking');
+  } else if (title.includes('ticket') || title.includes('check-in')) {
+    router.push('/student/ticket');
+  } else if (title.includes('registration')) {
+      router.push('/student');
+  } else if (title.includes('status')) {
+      router.push('/student');
+  }
 };
 
 const handleMarkAllAsRead = () => {
@@ -126,8 +143,7 @@ const handleMarkAllAsRead = () => {
 
 const viewAll = () => {
   showDropdown.value = false;
-  // Navigate to notifications page
-  // TODO: Implement navigation
+  // Fallback to close dropdown
 };
 
 const getIcon = (type) => {

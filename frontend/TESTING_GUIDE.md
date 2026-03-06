@@ -35,7 +35,7 @@
    - Email: `test@greenwich.edu.vn`
    - Phone: `0901234567`
    - Major: Select from dropdown
-   - Class of: `2024`
+   - Class of: `2026`
    - Password: `test123`
    - Confirm Password: `test123`
 3. Click "Create Account"
@@ -73,7 +73,7 @@
 
 **Expected Features**:
 - [ ] Profile header with student name
-- [ ] Class of 2024 badge
+- [ ] Class of 2026 badge
 - [ ] Countdown timer (updates every second)
 - [ ] 4 Quick action buttons:
   - Register
@@ -135,7 +135,7 @@
 
 **Expected**:
 - [ ] QR code displays (base64 image)
-- [ ] Ticket number shown (GRAD-2024-xxx)
+- [ ] Ticket number shown (GRAD-2026-xxx)
 - [ ] Student name and ID
 - [ ] Seat number (if assigned)
 - [ ] Scan status (VALID/SCANNED)

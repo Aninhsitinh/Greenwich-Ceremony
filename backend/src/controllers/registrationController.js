@@ -1,5 +1,4 @@
-import Registration from '../models/Registration.js';
-import SystemSettings from '../models/SystemSettings.js';
+import prisma from '../prisma.js';
 import { formatResponse } from '../utils/helpers.js';
 
 // @desc    Create ceremony registration
@@ -7,10 +6,10 @@ import { formatResponse } from '../utils/helpers.js';
 // @access  Private (Student)
 export const createRegistration = async (req, res, next) => {
     try {
-        const { ceremonyDate, gownSize, specialRequirements } = req.body;
+        const { ceremonyDate, gownSize, specialRequirements, dietaryRequirements, specialNeeds, guestCount } = req.body;
 
         // Check if registration is open
-        const settings = await SystemSettings.findOne();
+        const settings = await prisma.systemSettings.findFirst();
         if (settings && !settings.isRegistrationOpen) {
             return res.status(400).json(
                 formatResponse(false, 'Registration is currently closed')
@@ -18,9 +17,11 @@ export const createRegistration = async (req, res, next) => {
         }
 
         // Check if user already registered
-        const existingRegistration = await Registration.findOne({
-            userId: req.user._id,
-            registrationStatus: { $ne: 'cancelled' }
+        const existingRegistration = await prisma.registration.findFirst({
+            where: {
+                userId: req.user.id,
+                registrationStatus: { not: 'cancelled' }
+            }
         });
 
         if (existingRegistration) {
@@ -30,19 +31,29 @@ export const createRegistration = async (req, res, next) => {
         }
 
         // Create registration
-        const registration = await Registration.create({
-            userId: req.user._id,
-            ceremonyDate,
-            gownSize,
-            specialRequirements,
-            registrationStatus: 'confirmed',  // Auto-confirm for students
-            attendanceConfirmed: true,
+        const registration = await prisma.registration.create({
+            data: {
+                userId: req.user.id,
+                ceremonyDate: ceremonyDate ? new Date(ceremonyDate) : new Date(),
+                gownSize,
+                specialRequirements,
+                dietaryRequirements,
+                specialNeeds,
+                guestCount,
+                registrationStatus: 'confirmed',  // Auto-confirm for students
+                attendanceConfirmed: true,
+            },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
         });
 
-        await registration.populate('userId', 'fullName email studentId');
+        const mappedRegistration = { ...registration, student: registration.user, _id: registration.id, status: registration.registrationStatus };
 
         res.status(201).json(
-            formatResponse(true, 'Registration created successfully', { registration })
+            formatResponse(true, 'Registration created successfully', { registration: mappedRegistration })
         );
     } catch (error) {
         next(error);
@@ -54,17 +65,25 @@ export const createRegistration = async (req, res, next) => {
 // @access  Private
 export const getMyRegistration = async (req, res, next) => {
     try {
-        const registration = await Registration.findOne({ userId: req.user._id })
-            .populate('userId', 'fullName email studentId profilePhoto');
+        const registration = await prisma.registration.findFirst({
+            where: { userId: req.user.id },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true, profilePhoto: true }
+                }
+            }
+        });
 
         if (!registration) {
-            return res.status(404).json(
-                formatResponse(false, 'No registration found')
+            return res.status(200).json(
+                formatResponse(true, 'No registration found', { registration: null })
             );
         }
 
+        const mappedRegistration = { ...registration, student: registration.user, _id: registration.id, status: registration.registrationStatus };
+
         res.status(200).json(
-            formatResponse(true, 'Registration retrieved successfully', { registration })
+            formatResponse(true, 'Registration retrieved successfully', { registration: mappedRegistration })
         );
     } catch (error) {
         next(error);
@@ -77,9 +96,11 @@ export const getMyRegistration = async (req, res, next) => {
 export const updateRegistration = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { gownSize, specialRequirements } = req.body;
+        const { gownSize, specialRequirements, specialNeeds, guestCount } = req.body;
 
-        let registration = await Registration.findById(id);
+        let registration = await prisma.registration.findUnique({
+            where: { id }
+        });
 
         if (!registration) {
             return res.status(404).json(
@@ -88,22 +109,37 @@ export const updateRegistration = async (req, res, next) => {
         }
 
         // Check ownership (students can only update their own)
-        if (req.user.role === 'student' && registration.userId.toString() !== req.user._id.toString()) {
+        if (req.user.role === 'student' && registration.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to update this registration')
             );
         }
 
-        registration.gownSize = gownSize || registration.gownSize;
-        registration.specialRequirements = specialRequirements || registration.specialRequirements;
+        const updatedData = {};
+        if (gownSize) updatedData.gownSize = gownSize;
+        if (specialRequirements) updatedData.specialRequirements = specialRequirements;
+        if (specialNeeds !== undefined) updatedData.specialNeeds = specialNeeds;
+        if (guestCount !== undefined) updatedData.guestCount = guestCount;
 
-        await registration.save();
-        await registration.populate('userId', 'fullName email studentId');
+        registration = await prisma.registration.update({
+            where: { id },
+            data: updatedData,
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
+        });
+
+        const mappedRegistration = { ...registration, student: registration.user, _id: registration.id, status: registration.registrationStatus };
 
         res.status(200).json(
-            formatResponse(true, 'Registration updated successfully', { registration })
+            formatResponse(true, 'Registration updated successfully', { registration: mappedRegistration })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Registration not found'));
+        }
         next(error);
     }
 };
@@ -115,7 +151,9 @@ export const cancelRegistration = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const registration = await Registration.findById(id);
+        const registration = await prisma.registration.findUnique({
+            where: { id }
+        });
 
         if (!registration) {
             return res.status(404).json(
@@ -124,19 +162,24 @@ export const cancelRegistration = async (req, res, next) => {
         }
 
         // Check ownership
-        if (req.user.role === 'student' && registration.userId.toString() !== req.user._id.toString()) {
+        if (req.user.role === 'student' && registration.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to cancel this registration')
             );
         }
 
-        registration.registrationStatus = 'cancelled';
-        await registration.save();
+        await prisma.registration.update({
+            where: { id },
+            data: { registrationStatus: 'cancelled' }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Registration cancelled successfully')
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Registration not found'));
+        }
         next(error);
     }
 };
@@ -147,29 +190,123 @@ export const cancelRegistration = async (req, res, next) => {
 export const getAllRegistrations = async (req, res, next) => {
     try {
         const { status, page = 1, limit = 20 } = req.query;
+        const parsedLimit = parseInt(limit);
+        const parsedPage = parseInt(page);
 
-        const query = {};
+        const where = {};
         if (status) {
-            query.registrationStatus = status;
+            where.registrationStatus = status;
         }
 
-        const registrations = await Registration.find(query)
-            .populate('userId', 'fullName email studentId major classOf')
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .sort({ createdAt: -1 });
+        const registrations = await prisma.registration.findMany({
+            where,
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true, major: true, classOf: true }
+                }
+            },
+            take: parsedLimit,
+            skip: (parsedPage - 1) * parsedLimit,
+            orderBy: { createdAt: 'desc' }
+        });
 
-        const count = await Registration.countDocuments(query);
+        const count = await prisma.registration.count({ where });
+
+        const mappedRegistrations = registrations.map(r => ({
+            ...r,
+            student: r.user,
+            _id: r.id,
+            status: r.registrationStatus
+        }));
 
         res.status(200).json(
             formatResponse(true, 'Registrations retrieved successfully', {
-                registrations,
-                totalPages: Math.ceil(count / limit),
-                currentPage: page,
+                registrations: mappedRegistrations,
+                totalPages: Math.ceil(count / parsedLimit),
+                currentPage: parsedPage,
                 total: count,
             })
         );
     } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Toggle registration status
+// @route   PATCH /api/registrations/:id/status
+// @access  Private (Admin, Staff)
+export const toggleRegistrationStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!['pending', 'confirmed'].includes(status)) {
+            return res.status(400).json(
+                formatResponse(false, 'Invalid status value. Must be pending or confirmed.')
+            );
+        }
+
+        const registration = await prisma.registration.findUnique({
+            where: { id }
+        });
+
+        if (!registration) {
+            return res.status(404).json(
+                formatResponse(false, 'Registration not found')
+            );
+        }
+
+        const updatedData = {
+            registrationStatus: status,
+            attendanceConfirmed: status === 'confirmed'
+        };
+
+        if (status === 'confirmed') {
+            updatedData.checkedInById = req.user.id;
+            updatedData.checkedInAt = new Date();
+        } else {
+            updatedData.checkedInById = null;
+            updatedData.checkedInAt = null;
+        }
+
+        const updatedRegistration = await prisma.registration.update({
+            where: { id },
+            data: updatedData,
+            include: {
+                user: {
+                    select: { id: true, fullName: true, email: true, studentId: true }
+                }
+            }
+        });
+
+        // Create a notification for the student
+        const notificationMessage = status === 'confirmed'
+            ? 'Your registration has been confirmed and checked-in by staff.'
+            : 'Your registration status has been reverted to pending.';
+
+        const notification = await prisma.notification.create({
+            data: {
+                userId: updatedRegistration.user.id,
+                title: 'Registration Status Updated',
+                message: notificationMessage,
+                type: 'registrationUpdate',
+                relatedId: updatedRegistration.id,
+            }
+        });
+
+        // Emit socket event if io is available
+        const io = req.app.get('io');
+        if (io) {
+            io.to(updatedRegistration.user.id.toString()).emit('new_notification', notification);
+        }
+
+        res.status(200).json(
+            formatResponse(true, `Registration status updated to ${status}`, { registration: updatedRegistration })
+        );
+    } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Registration not found'));
+        }
         next(error);
     }
 };
@@ -181,7 +318,9 @@ export const confirmRegistration = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const registration = await Registration.findById(id);
+        const registration = await prisma.registration.findUnique({
+            where: { id }
+        });
 
         if (!registration) {
             return res.status(404).json(
@@ -189,16 +328,26 @@ export const confirmRegistration = async (req, res, next) => {
             );
         }
 
-        registration.registrationStatus = 'confirmed';
-        registration.attendanceConfirmed = true;
-        await registration.save();
-
-        await registration.populate('userId', 'fullName email studentId');
+        const updatedRegistration = await prisma.registration.update({
+            where: { id },
+            data: {
+                registrationStatus: 'confirmed',
+                attendanceConfirmed: true
+            },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Registration confirmed successfully', { registration })
+            formatResponse(true, 'Registration confirmed successfully', { registration: updatedRegistration })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Registration not found'));
+        }
         next(error);
     }
 };
@@ -210,7 +359,9 @@ export const markGownCollected = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const registration = await Registration.findById(id);
+        const registration = await prisma.registration.findUnique({
+            where: { id }
+        });
 
         if (!registration) {
             return res.status(404).json(
@@ -218,14 +369,21 @@ export const markGownCollected = async (req, res, next) => {
             );
         }
 
-        registration.gownCollected = true;
-        registration.gownCollectionTime = new Date();
-        await registration.save();
+        const updatedRegistration = await prisma.registration.update({
+            where: { id },
+            data: {
+                gownCollected: true,
+                gownCollectionTime: new Date()
+            }
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Gown collection recorded successfully', { registration })
+            formatResponse(true, 'Gown collection recorded successfully', { registration: updatedRegistration })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Registration not found'));
+        }
         next(error);
     }
 };

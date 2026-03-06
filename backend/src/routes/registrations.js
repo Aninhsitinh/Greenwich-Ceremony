@@ -7,6 +7,7 @@ import {
     cancelRegistration,
     getAllRegistrations,
     confirmRegistration,
+    toggleRegistrationStatus,
     markGownCollected,
 } from '../controllers/registrationController.js';
 import { protect } from '../middleware/auth.js';
@@ -18,7 +19,7 @@ const router = express.Router();
 // Validation rules
 const createRegistrationValidation = [
     body('ceremonyDate').isISO8601().withMessage('Please provide a valid ceremony date'),
-    body('gownSize').isIn(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']).withMessage('Invalid gown size'),
+    body('gownSize').optional().isIn(['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']).withMessage('Invalid gown size'),
 ];
 
 // Routes
@@ -27,6 +28,7 @@ router.get('/me', protect, getMyRegistration);
 router.get('/', protect, authorize('admin', 'staff'), getAllRegistrations);
 router.put('/:id', protect, updateRegistration);
 router.delete('/:id', protect, cancelRegistration);
+router.patch('/:id/status', protect, authorize('admin', 'staff'), toggleRegistrationStatus);
 router.put('/:id/confirm', protect, authorize('admin'), confirmRegistration);
 router.put('/:id/gown-collected', protect, authorize('staff', 'admin'), markGownCollected);
 

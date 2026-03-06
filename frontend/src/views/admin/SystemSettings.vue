@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="System Settings"
+    :page-title="$t('admin.settings')"
   >
     <div class="w-full max-w-6xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -326,13 +326,13 @@ const settings = ref({
   systemName: 'FPT Greenwich Graduation Ceremony',
   adminEmail: 'admin@fpt.edu.vn',
   systemDescription: 'Official graduation ceremony registration and management system',
-  ceremonyDate: '2024-06-15',
+  ceremonyDate: '2026-06-15',
   ceremonyTime: '14:00',
   ceremonyLocation: 'FPT University Main Hall',
-  registrationDeadline: '2024-05-31',
+  registrationDeadline: '2026-05-31',
   maxGuests: 3,
-  gownCollectionStart: '2024-05-20',
-  gownCollectionEnd: '2024-06-10',
+  gownCollectionStart: '2026-05-20',
+  gownCollectionEnd: '2026-06-10',
   gownCollectionLocation: 'Main Campus Hall',
   gownSizes: ['S', 'M', 'L', 'XL'],
   emailNotifications: true,

@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Ticket Management"
+    :page-title="$t('admin.ticket_management')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -231,12 +231,12 @@ const fetchTickets = async () => {
     tickets.value = [
       {
         _id: '1',
-        ticketNumber: 'TKT-2024-001',
+        ticketNumber: 'TKT-2026-001',
         student: {
           fullName: 'John Doe',
           studentId: 'GCS220001'
         },
-        qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=TKT-2024-001',
+        qrCode: 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=TKT-2026-001',
         seatNumber: 'A-15',
         isValid: true,
         isVerified: false

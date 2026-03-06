@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import prisma from '../prisma.js';
 
 /**
  * Update user's journey status
@@ -7,39 +7,49 @@ import User from '../models/User.js';
  * @returns {Promise<User>} Updated user
  */
 export const updateJourneyStatus = async (userId, updates) => {
-    const user = await User.findById(userId);
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    });
 
     if (!user) {
         throw new Error('User not found');
     }
 
-    // Update journey status fields
+    const data = {};
+    let currentStep = user.journeyCurrentStep;
+
     if (updates.registrationCompleted !== undefined) {
-        user.journeyStatus.registrationCompleted = updates.registrationCompleted;
-        if (updates.registrationCompleted) user.journeyStatus.currentStep = Math.max(user.journeyStatus.currentStep, 2);
+        data.journeyRegistrationCompleted = updates.registrationCompleted;
+        if (updates.registrationCompleted) currentStep = Math.max(currentStep, 2);
     }
 
     if (updates.ticketGenerated !== undefined) {
-        user.journeyStatus.ticketGenerated = updates.ticketGenerated;
-        if (updates.ticketGenerated) user.journeyStatus.currentStep = Math.max(user.journeyStatus.currentStep, 3);
+        data.journeyTicketGenerated = updates.ticketGenerated;
+        if (updates.ticketGenerated) currentStep = Math.max(currentStep, 3);
     }
 
     if (updates.seatsBooked !== undefined) {
-        user.journeyStatus.seatsBooked = updates.seatsBooked;
-        if (updates.seatsBooked) user.journeyStatus.currentStep = Math.max(user.journeyStatus.currentStep, 4);
+        data.journeySeatsBooked = updates.seatsBooked;
+        if (updates.seatsBooked) currentStep = Math.max(currentStep, 4);
     }
 
     if (updates.gownCollected !== undefined) {
-        user.journeyStatus.gownCollected = updates.gownCollected;
-        if (updates.gownCollected) user.journeyStatus.currentStep = Math.max(user.journeyStatus.currentStep, 5);
+        data.journeyGownCollected = updates.gownCollected;
+        if (updates.gownCollected) currentStep = Math.max(currentStep, 5);
     }
 
     if (updates.paymentCompleted !== undefined) {
-        user.journeyStatus.paymentCompleted = updates.paymentCompleted;
+        data.journeyPaymentCompleted = updates.paymentCompleted;
     }
 
-    await user.save();
-    return user;
+    data.journeyCurrentStep = currentStep;
+
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data
+    });
+
+    return updatedUser;
 };
 
 /**
@@ -49,19 +59,19 @@ export const updateJourneyStatus = async (userId, updates) => {
  * @returns {Boolean}
  */
 export const canProceedToStep = (user, requiredStep) => {
-    if (!user || !user.journeyStatus) return false;
+    if (!user) return false;
 
     switch (requiredStep) {
         case 1: // Registration - always allowed
             return true;
         case 2: // Ticket - requires registration
-            return user.journeyStatus.registrationCompleted;
+            return user.journeyRegistrationCompleted;
         case 3: // Seats - requires ticket
-            return user.journeyStatus.ticketGenerated;
+            return user.journeyTicketGenerated;
         case 4: // Gown - requires seats
-            return user.journeyStatus.seatsBooked;
+            return user.journeySeatsBooked;
         case 5: // Payment - requires gown
-            return user.journeyStatus.gownCollected;
+            return user.journeyGownCollected;
         default:
             return false;
     }

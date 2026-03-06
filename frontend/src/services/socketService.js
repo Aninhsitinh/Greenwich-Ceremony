@@ -6,13 +6,16 @@ class SocketService {
         this.connected = false;
     }
 
-    connect(token) {
+    connect(token, userId) {
         if (this.socket && this.connected) {
             console.log('Socket already connected');
             return this.socket;
         }
 
-        const url = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+        let url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+        if (import.meta.env.DEV && url.includes('localhost')) {
+            url = url.replace('localhost', window.location.hostname);
+        }
 
         this.socket = io(url, {
             auth: {
@@ -27,6 +30,9 @@ class SocketService {
         this.socket.on('connect', () => {
             console.log('Socket connected:', this.socket.id);
             this.connected = true;
+            if (userId) {
+                this.socket.emit('join', userId);
+            }
         });
 
         this.socket.on('disconnect', () => {
@@ -143,6 +149,17 @@ class SocketService {
 
     isConnected() {
         return this.connected && this.socket?.connected;
+    }
+
+    checkOnlineStatus(userIds, callback) {
+        if (this.socket && this.connected) {
+            this.socket.emit('check:online_status', userIds, callback);
+        } else {
+            // If not connected, assume everyone is offline
+            const offlineMap = {};
+            userIds.forEach(id => { offlineMap[id] = false; });
+            callback(offlineMap);
+        }
     }
 }
 

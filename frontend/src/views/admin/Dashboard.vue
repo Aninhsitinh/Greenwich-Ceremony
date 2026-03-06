@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Admin Dashboard"
+    :page-title="$t('admin.dashboard')"
     :show-notifications="true"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">

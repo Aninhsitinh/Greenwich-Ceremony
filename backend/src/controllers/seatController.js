@@ -1,5 +1,4 @@
-import SeatBooking from '../models/SeatBooking.js';
-import SystemSettings from '../models/SystemSettings.js';
+import prisma from '../prisma.js';
 import { formatResponse } from '../utils/helpers.js';
 import { updateJourneyStatus } from '../utils/journeyHelpers.js';
 
@@ -9,10 +8,13 @@ import { updateJourneyStatus } from '../utils/journeyHelpers.js';
 export const getAvailableSeats = async (req, res, next) => {
     try {
         // Get all booked seats
-        const bookedSeats = await SeatBooking.find({ status: { $ne: 'cancelled' } }).select('seatNumber seatType');
+        const bookedSeats = await prisma.seatBooking.findMany({
+            where: { status: { not: 'cancelled' } },
+            select: { seatNumber: true, seatType: true }
+        });
 
         // Get venue capacity
-        const settings = await SystemSettings.findOne();
+        const settings = await prisma.systemSettings.findFirst();
         const capacity = settings ? settings.venueCapacity : 500;
 
         res.status(200).json(
@@ -35,9 +37,11 @@ export const bookSeat = async (req, res, next) => {
         const { seatNumber, seatType, guestName, guestRelation, guestPhone } = req.body;
 
         // Check if seat is already booked
-        const existingBooking = await SeatBooking.findOne({
-            seatNumber,
-            status: { $ne: 'cancelled' },
+        const existingBooking = await prisma.seatBooking.findFirst({
+            where: {
+                seatNumber,
+                status: { not: 'cancelled' },
+            }
         });
 
         if (existingBooking) {
@@ -48,36 +52,52 @@ export const bookSeat = async (req, res, next) => {
 
         // Check guest limit
         if (seatType === 'guest') {
-            const settings = await SystemSettings.findOne();
-            const maxGuests = settings ? settings.maxGuestPerStudent : 2;
+            const registration = await prisma.registration.findFirst({
+                where: { userId: req.user.id }
+            });
 
-            const userGuestBookings = await SeatBooking.countDocuments({
-                userId: req.user._id,
-                seatType: 'guest',
-                status: { $ne: 'cancelled' },
+            if (!registration) {
+                return res.status(400).json(
+                    formatResponse(false, 'Please complete your registration first')
+                );
+            }
+
+            const maxGuests = registration.guestCount;
+
+            const userGuestBookings = await prisma.seatBooking.count({
+                where: {
+                    userId: req.user.id,
+                    seatType: 'guest',
+                    status: { not: 'cancelled' },
+                }
             });
 
             if (userGuestBookings >= maxGuests) {
                 return res.status(400).json(
-                    formatResponse(false, `You can only book up to ${maxGuests} guest seats`)
+                    formatResponse(false, `You can only book up to ${maxGuests} guest seats based on your registration`)
                 );
             }
         }
 
         // Create booking
-        const booking = await SeatBooking.create({
-            userId: req.user._id,
-            seatNumber,
-            seatType,
-            guestName,
-            guestRelation,
-            guestPhone,
+        const booking = await prisma.seatBooking.create({
+            data: {
+                userId: req.user.id,
+                seatNumber,
+                seatType,
+                guestName,
+                guestRelation,
+                guestPhone,
+            },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
         });
 
-        await booking.populate('userId', 'fullName email studentId');
-
         // Update user journey status (mark as seats booked)
-        await updateJourneyStatus(req.user._id, { seatsBooked: true });
+        await updateJourneyStatus(req.user.id, { seatsBooked: true });
 
         res.status(201).json(
             formatResponse(true, 'Seat booked successfully', { booking })
@@ -92,10 +112,17 @@ export const bookSeat = async (req, res, next) => {
 // @access  Private
 export const getMyBookings = async (req, res, next) => {
     try {
-        const bookings = await SeatBooking.find({
-            userId: req.user._id,
-            status: { $ne: 'cancelled' },
-        }).populate('userId', 'fullName email studentId');
+        const bookings = await prisma.seatBooking.findMany({
+            where: {
+                userId: req.user.id,
+                status: { not: 'cancelled' },
+            },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Bookings retrieved successfully', { bookings })
@@ -112,7 +139,9 @@ export const cancelBooking = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const booking = await SeatBooking.findById(id);
+        const booking = await prisma.seatBooking.findUnique({
+            where: { id }
+        });
 
         if (!booking) {
             return res.status(404).json(
@@ -121,19 +150,24 @@ export const cancelBooking = async (req, res, next) => {
         }
 
         // Check ownership
-        if (req.user.role === 'student' && booking.userId.toString() !== req.user._id.toString()) {
+        if (req.user.role === 'student' && booking.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to cancel this booking')
             );
         }
 
-        booking.status = 'cancelled';
-        await booking.save();
+        await prisma.seatBooking.update({
+            where: { id },
+            data: { status: 'cancelled' }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Booking cancelled successfully')
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Booking not found'));
+        }
         next(error);
     }
 };
@@ -144,30 +178,93 @@ export const cancelBooking = async (req, res, next) => {
 export const getAllBookings = async (req, res, next) => {
     try {
         const { status, seatType, page = 1, limit = 20 } = req.query;
+        const parsedLimit = parseInt(limit);
+        const parsedPage = parseInt(page);
 
-        const query = {};
+        const where = {};
         if (status) {
-            query.status = status;
+            where.status = status;
         }
         if (seatType) {
-            query.seatType = seatType;
+            where.seatType = seatType;
         }
 
-        const bookings = await SeatBooking.find(query)
-            .populate('userId', 'fullName email studentId')
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .sort({ createdAt: -1 });
+        const bookings = await prisma.seatBooking.findMany({
+            where,
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            },
+            take: parsedLimit,
+            skip: (parsedPage - 1) * parsedLimit,
+            orderBy: { createdAt: 'desc' }
+        });
 
-        const count = await SeatBooking.countDocuments(query);
+        const count = await prisma.seatBooking.count({ where });
 
         res.status(200).json(
             formatResponse(true, 'Bookings retrieved successfully', {
                 bookings,
-                totalPages: Math.ceil(count / limit),
-                currentPage: page,
+                totalPages: Math.ceil(count / parsedLimit),
+                currentPage: parsedPage,
                 total: count,
             })
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Update a booking's seat number (Staff/Admin)
+// @route   PATCH /api/seats/:id/admin-update
+// @access  Private (Admin, Staff, MC)
+export const adminUpdateSeat = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { newSeatNumber } = req.body;
+
+        if (!newSeatNumber) {
+            return res.status(400).json(formatResponse(false, 'newSeatNumber is required'));
+        }
+
+        const booking = await prisma.seatBooking.findUnique({
+            where: { id }
+        });
+
+        if (!booking) {
+            return res.status(404).json(formatResponse(false, 'Booking not found'));
+        }
+
+        // Check if the new seat is already taken by someone else (optional: you may allow overlaps for event day shuffling, but best to warn or prevent)
+        const existingBooking = await prisma.seatBooking.findFirst({
+            where: {
+                seatNumber: newSeatNumber,
+                status: { not: 'cancelled' },
+                id: { not: id } // Exclude the current booking
+            }
+        });
+
+        if (existingBooking) {
+            return res.status(400).json(formatResponse(false, `Seat ${newSeatNumber} is already booked by another attendee`));
+        }
+
+        const updatedBooking = await prisma.seatBooking.update({
+            where: { id },
+            data: { seatNumber: newSeatNumber },
+            include: { user: { select: { fullName: true } } }
+        });
+
+        // Optional: Broadcast changes to sockets if you want live seat updates everywhere
+        const io = req.app.get('io');
+        if (io) {
+            io.to('ceremony').emit('ceremony:queue_updated', {
+                message: `Seat updated for ${updatedBooking.user.fullName}`
+            });
+        }
+
+        res.status(200).json(
+            formatResponse(true, 'Seat updated successfully', { booking: updatedBooking })
         );
     } catch (error) {
         next(error);

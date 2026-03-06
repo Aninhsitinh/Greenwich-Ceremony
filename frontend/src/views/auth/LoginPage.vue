@@ -1,104 +1,99 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style="background: linear-gradient(135deg, #003B5C 0%, #00A3E0 50%, #003B5C 100%);">
-    <!-- Animated Background -->
-    <div class="absolute inset-0 opacity-20">
-      <div class="absolute w-96 h-96 rounded-full blur-3xl" style="top: 10%; left: 10%; background: #FFB81C; animation: floatAnimation 8s ease-in-out infinite;"></div>
-      <div class="absolute w-96 h-96 rounded-full blur-3xl" style="bottom: 10%; right: 10%; background: #00A3E0; animation: floatAnimation 8s ease-in-out infinite; animation-delay: -4s;"></div>
-    </div>
-
-    <div class="w-full max-w-md relative z-10">
-      <!-- Logo Header -->
-      <div class="text-center mb-8 animate-fade-in">
-        <div class="inline-flex items-center justify-center w-32 h-32 bg-white rounded-3xl shadow-2xl mb-6 p-3">
+  <div class="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 p-4">
+    <div class="w-full max-w-md">
+      <!-- Logo & Title -->
+      <div class="text-center mb-8">
+        <router-link to="/" class="inline-flex items-center gap-3 mb-6">
           <img 
-            src="@/assets/images/inprep-partner-logos-06-300x200.png" 
+            src="@/assets/images/university-of-greenwich.jpg" 
             alt="University of Greenwich" 
-            class="w-full h-full object-contain"
+            class="h-12 w-auto object-contain"
           />
-        </div>
-        <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Montserrat', sans-serif;">Welcome Back</h1>
-        <p class="text-blue-100 text-lg">Graduation Ceremony Portal 2024</p>
+          <div class="text-left">
+            <div class="text-base font-semibold text-gray-900 dark:text-white">University of Greenwich</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">Graduation Portal 2026</div>
+          </div>
+        </router-link>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('auth.welcome_back') }}</h1>
+        <p class="text-gray-600 dark:text-gray-400">{{ $t('auth.sign_in') }}</p>
       </div>
 
       <!-- Login Card -->
-      <div class="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-xl" style="background: rgba(255, 255, 255, 0.95);">
+      <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8">
         <!-- Error Message -->
-        <div v-if="error" class="mb-6 p-4 rounded-xl flex items-center gap-3" style="background: #fee2e2; border: 1px solid #fecaca;">
-          <span class="material-symbols-outlined" style="color: #dc2626;">error</span>
-          <p class="text-sm" style="color: #991b1b;">{{ error }}</p>
-        </div>
+        <Alert v-if="error" variant="error" class="mb-6">
+          {{ error }}
+        </Alert>
 
         <!-- Role Selector -->
         <div class="mb-6">
-          <label class="block text-sm font-semibold mb-3" style="color: #374151;">Login As</label>
-          <div class="grid grid-cols-2 gap-3">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{{ $t('auth.login') }}</label>
+          <div class="grid grid-cols-3 gap-2">
             <button
               type="button"
               @click="selectedRole = 'student'"
-              class="h-14 flex items-center justify-center gap-2 rounded-xl font-semibold transition-all border-2"
-              :style="selectedRole === 'student' 
-                ? 'background: #00A3E0; color: white; border-color: #00A3E0; box-shadow: 0 4px 12px rgba(0, 163, 224, 0.3);' 
-                : 'background: #f3f4f6; color: #374151; border-color: #e5e7eb;'"
+              class="h-12 flex items-center justify-center gap-2 rounded-lg font-medium transition-all border text-sm"
+              :class="selectedRole === 'student'
+                ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900 dark:border-white'
+                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'"
             >
-              <span class="material-symbols-outlined">person</span>
+              <span class="material-symbols-outlined text-xl">person</span>
               Student
             </button>
             <button
               type="button"
               @click="selectedRole = 'staff'"
-              class="h-14 flex items-center justify-center gap-2 rounded-xl font-semibold transition-all border-2"
-              :style="selectedRole === 'staff' 
-                ? 'background: #003B5C; color: white; border-color: #003B5C; box-shadow: 0 4px 12px rgba(0, 59, 92, 0.3);' 
-                : 'background: #f3f4f6; color: #374151; border-color: #e5e7eb;'"
+              class="h-12 flex items-center justify-center gap-2 rounded-lg font-medium transition-all border text-sm"
+              :class="selectedRole === 'staff'
+                ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900 dark:border-white'
+                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'"
             >
-              <span class="material-symbols-outlined">badge</span>
+              <span class="material-symbols-outlined text-xl">badge</span>
               Staff
+            </button>
+            <button
+              type="button"
+              @click="selectedRole = 'mc'"
+              class="h-12 flex items-center justify-center gap-2 rounded-lg font-medium transition-all border text-sm"
+              :class="selectedRole === 'mc'
+                ? 'bg-purple-700 text-white border-purple-600'
+                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600'"
+            >
+              <span class="material-symbols-outlined text-xl">mic</span>
+              MC
             </button>
           </div>
         </div>
 
         <!-- Login Form -->
-        <form @submit.prevent="handleLogin" class="space-y-6">
+        <form @submit.prevent="handleLogin" class="space-y-4">
           <!-- Email -->
           <div>
-            <label class="block text-sm font-semibold mb-2" style="color: #374151;">Email Address</label>
-            <div class="relative">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xl" style="color: #9ca3af;">mail</span>
-              <input
-                v-model="form.email"
-                type="email"
-                required
-                :placeholder="selectedRole === 'student' ? 'student@greenwich.edu' : 'staff@greenwich.edu'"
-                class="w-full h-14 pl-14 pr-4 rounded-xl border-2 transition-all focus:outline-none"
-                style="background: #f9fafb; border-color: #e5e7eb; color: #111827;"
-                @focus="emailFocused = true"
-                @blur="emailFocused = false"
-                :style="emailFocused ? 'border-color: #00A3E0; box-shadow: 0 0 0 4px rgba(0, 163, 224, 0.1);' : ''"
-              />
-            </div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('auth.email') }}</label>
+            <input
+              v-model="form.email"
+              type="email"
+              required
+              :placeholder="selectedRole === 'student' ? 'student@greenwich.edu' : 'staff@greenwich.edu'"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:border-transparent transition-all"
+            />
           </div>
 
           <!-- Password -->
           <div>
-            <label class="block text-sm font-semibold mb-2" style="color: #374151;">Password</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ $t('auth.password') }}</label>
             <div class="relative">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-xl" style="color: #9ca3af;">lock</span>
               <input
                 v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
                 required
                 placeholder="Enter your password"
-                class="w-full h-14 pl-14 pr-14 rounded-xl border-2 transition-all focus:outline-none"
-                style="background: #f9fafb; border-color: #e5e7eb; color: #111827;"
-                @focus="passwordFocused = true"
-                @blur="passwordFocused = false"
-                :style="passwordFocused ? 'border-color: #00A3E0; box-shadow: 0 0 0 4px rgba(0, 163, 224, 0.1);' : ''"
+                class="w-full px-4 py-2 pr-12 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:border-transparent transition-all"
               />
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style="color: #9ca3af;"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <span class="material-symbols-outlined text-xl">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
               </button>
@@ -111,17 +106,15 @@
               <input
                 v-model="form.rememberMe"
                 type="checkbox"
-                class="w-4 h-4 rounded"
-                style="accent-color: #00A3E0;"
+                class="w-4 h-4 border-gray-300 rounded text-gray-900 focus:ring-gray-900 dark:focus:ring-white"
               />
-              <span class="text-sm" style="color: #6b7280;">Remember me</span>
+              <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('common.save') !== 'Save' ? $t('common.save') : 'Remember me' }}</span>
             </label>
             <router-link
               to="/forgot-password"
-              class="text-sm font-semibold transition-colors"
-              style="color: #00A3E0;"
+              class="text-sm font-medium text-gray-900 dark:text-white hover:underline transition-colors"
             >
-              Forgot password?
+              {{ $t('auth.forgot_password') }}
             </router-link>
           </div>
 
@@ -129,37 +122,32 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full h-14 font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-            :style="getButtonStyle"
-            @mouseover="buttonHovered = true"
-            @mouseleave="buttonHovered = false"
+            class="w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            <div v-if="loading" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <Loading v-if="loading" class="w-5 h-5" />
             <template v-else>
-              <span class="material-symbols-outlined">login</span>
-              Sign In as {{ selectedRole === 'student' ? 'Student' : 'Staff' }}
+              <span>{{ $t('auth.sign_in') }}</span>
             </template>
           </button>
         </form>
 
         <!-- Sign Up Link -->
-        <p v-if="selectedRole === 'student'" class="mt-6 text-center text-sm" style="color: #6b7280;">
+        <p v-if="selectedRole === 'student'" class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
           Don't have an account?
           <router-link
             to="/register"
-            class="font-bold transition-colors ml-1"
-            style="color: #00A3E0;"
+            class="font-medium text-gray-900 dark:text-white hover:underline transition-colors"
           >
-            Sign up now
+            {{ $t('auth.sign_up') }}
           </router-link>
         </p>
 
         <!-- Staff Note -->
-        <div v-if="selectedRole === 'staff'" class="mt-6 p-4 rounded-xl" style="background: rgba(0, 59, 92, 0.05); border: 1px solid rgba(0, 59, 92, 0.1);">
+        <div v-if="selectedRole === 'staff'" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg">
           <div class="flex items-start gap-3">
-            <span class="material-symbols-outlined" style="color: #003B5C;">info</span>
-            <div class="text-xs" style="color: #4b5563;">
-              <p class="font-semibold mb-1" style="color: #003B5C;">Staff Access</p>
+            <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">info</span>
+            <div class="text-xs text-gray-600 dark:text-gray-300">
+              <p class="font-semibold mb-1 text-gray-900 dark:text-white">Staff Access</p>
               <p>Use your university staff credentials. Contact IT for assistance.</p>
             </div>
           </div>
@@ -167,17 +155,19 @@
       </div>
 
       <!-- Footer -->
-      <p class="mt-8 text-center text-sm text-white opacity-80">
-        © 2024 University of Greenwich. All rights reserved.
+      <p class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        © 2026 University of Greenwich. All rights reserved.
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import Alert from '@/components/Alert.vue';
+import Loading from '@/components/Loading.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -192,21 +182,6 @@ const form = ref({
 const showPassword = ref(false);
 const loading = ref(false);
 const error = ref('');
-const emailFocused = ref(false);
-const passwordFocused = ref(false);
-const buttonHovered = ref(false);
-
-const getButtonStyle = computed(() => {
-  let baseStyle = selectedRole.value === 'student'
-    ? 'background: linear-gradient(135deg, #00A3E0 0%, #0891b2 100%); color: white; box-shadow: 0 4px 14px rgba(0, 163, 224, 0.4);'
-    : 'background: linear-gradient(135deg, #003B5C 0%, #00A3E0 100%); color: white; box-shadow: 0 4px 14px rgba(0, 59, 92, 0.4);';
-  
-  if (buttonHovered.value && !loading.value) {
-    baseStyle += ' transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 163, 224, 0.5);';
-  }
-  
-  return baseStyle;
-});
 
 const handleLogin = async () => {
   error.value = '';
@@ -227,22 +202,29 @@ const handleLogin = async () => {
       loading.value = false;
       return;
     }
-    
-    if (selectedRole.value === 'student' && (role === 'staff' || role === 'admin')) {
-      error.value = 'This is a staff account. Please select "Staff".';
+
+    if (selectedRole.value === 'student' && (role === 'staff' || role === 'admin' || role === 'mc')) {
+      error.value = 'This is a staff/MC account. Please select the correct role.';
+      await authStore.logout();
+      loading.value = false;
+      return;
+    }
+
+    if (selectedRole.value === 'mc' && role !== 'mc') {
+      error.value = 'This account does not have MC access.';
       await authStore.logout();
       loading.value = false;
       return;
     }
     
     // Redirect
-    if (role === 'admin') {
-      router.push('/admin');
-    } else if (role === 'staff') {
-      router.push('/staff');
-    } else {
-      router.push('/student');
-    }
+    const redirectMap = {
+      admin: '/admin',
+      staff: '/staff',
+      mc: '/mc/dashboard',
+      student: '/student',
+    };
+    router.push(redirectMap[role] || '/student');
   } catch (err) {
     console.error('Login error:', err);
     error.value = err.response?.data?.message || 'Invalid email or password. Please try again.';
@@ -251,27 +233,3 @@ const handleLogin = async () => {
   }
 };
 </script>
-
-<style scoped>
-@keyframes floatAnimation {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes spinAnimation {
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spinAnimation 0.8s linear infinite;
-}
-</style>

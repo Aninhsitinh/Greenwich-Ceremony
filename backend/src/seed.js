@@ -1,109 +1,125 @@
 import dotenv from 'dotenv';
-import connectDB from './config/database.js';
-import User from './models/User.js';
-import SystemSettings from './models/SystemSettings.js';
+import prisma from './prisma.js';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
 const seedDatabase = async () => {
     try {
-        await connectDB();
-
         console.log('🌱 Seeding database...\n');
 
         // Clear existing data
-        await User.deleteMany();
-        await SystemSettings.deleteMany();
+        await prisma.user.deleteMany();
+        await prisma.systemSettings.deleteMany();
 
         console.log('✅ Cleared existing data\n');
 
+        // Note: Password hashing is usually done in a pre-save hook in Mongoose. 
+        // In Prisma, we either hash it before inserting or handle it in the service layer.
+        // For seeds, let's hash passwords manually here.
+        const salt = await bcrypt.genSalt(10);
+        const adminHashed = await bcrypt.hash('admin123', salt);
+        const staffHashed = await bcrypt.hash('staff123', salt);
+        const mcHashed = await bcrypt.hash('mc123', salt);
+        const studentHashed = await bcrypt.hash('student123', salt);
+
         // Create admin user
-        const admin = await User.create({
-            studentId: 'ADMIN001',
-            email: 'admin@greenwich.edu.vn',
-            password: 'admin123',
-            fullName: 'System Administrator',
-            role: 'admin',
-            phone: '0901234567',
-            major: 'Computer Science',
-            classOf: 2024,
+        const admin = await prisma.user.create({
+            data: {
+                studentId: 'ADMIN001',
+                email: 'admin@greenwich.edu.vn',
+                password: adminHashed,
+                fullName: 'System Administrator',
+                role: 'admin',
+                phone: '0901234567',
+                major: 'Computer Science',
+                classOf: 2026,
+            }
         });
 
         console.log('✅ Created admin user:', admin.email);
 
         // Create staff user
-        const staff = await User.create({
-            studentId: 'STAFF001',
-            email: 'staff@greenwich.edu.vn',
-            password: 'staff123',
-            fullName: 'Staff Member',
-            role: 'staff',
-            phone: '0901234568',
-            major: 'Administration',
-            classOf: 2024,
+        const staff = await prisma.user.create({
+            data: {
+                studentId: 'STAFF001',
+                email: 'staff@greenwich.edu.vn',
+                password: staffHashed,
+                fullName: 'Staff Member',
+                role: 'staff',
+                phone: '0901234568',
+                major: 'Administration',
+                classOf: 2026,
+            }
         });
 
         console.log('✅ Created staff user:', staff.email);
 
         // Create MC user
-        const mc = await User.create({
-            studentId: 'MC001',
-            email: 'mc@greenwich.edu.vn',
-            password: 'mc123',
-            fullName: 'Master of Ceremony',
-            role: 'mc',
-            phone: '0901234569',
-            major: 'Event Management',
-            classOf: 2024,
+        const mc = await prisma.user.create({
+            data: {
+                studentId: 'MC001',
+                email: 'mc@greenwich.edu.vn',
+                password: mcHashed,
+                fullName: 'Master of Ceremony',
+                role: 'mc',
+                phone: '0901234569',
+                major: 'Event Management',
+                classOf: 2026,
+            }
         });
 
         console.log('✅ Created MC user:', mc.email);
 
         // Create sample students
-        const students = await User.create([
-            {
-                studentId: 'GCS220001',
-                email: 'student1@greenwich.edu.vn',
-                password: 'student123',
-                fullName: 'Nguyễn Văn A',
-                role: 'student',
-                phone: '0901234570',
-                major: 'Computer Science',
-                classOf: 2024,
-            },
-            {
-                studentId: 'GCS220002',
-                email: 'student2@greenwich.edu.vn',
-                password: 'student123',
-                fullName: 'Trần Thị B',
-                role: 'student',
-                phone: '0901234571',
-                major: 'Business Administration',
-                classOf: 2024,
-            },
-            {
-                studentId: 'GCS220003',
-                email: 'student3@greenwich.edu.vn',
-                password: 'student123',
-                fullName: 'Lê Văn C',
-                role: 'student',
-                phone: '0901234572',
-                major: 'Information Technology',
-                classOf: 2024,
-            },
-        ]);
+        const students = await prisma.user.createMany({
+            data: [
+                {
+                    studentId: 'GCS220001',
+                    email: 'student1@greenwich.edu.vn',
+                    password: studentHashed,
+                    fullName: 'Nguyễn Văn A',
+                    role: 'student',
+                    phone: '0901234570',
+                    major: 'Computer Science',
+                    classOf: 2026,
+                },
+                {
+                    studentId: 'GCS220002',
+                    email: 'student2@greenwich.edu.vn',
+                    password: studentHashed,
+                    fullName: 'Trần Thị B',
+                    role: 'student',
+                    phone: '0901234571',
+                    major: 'Business Administration',
+                    classOf: 2026,
+                },
+                {
+                    studentId: 'GCS220003',
+                    email: 'student3@greenwich.edu.vn',
+                    password: studentHashed,
+                    fullName: 'Lê Văn C',
+                    role: 'student',
+                    phone: '0901234572',
+                    major: 'Information Technology',
+                    classOf: 2026,
+                },
+            ]
+        });
 
-        console.log(`✅ Created ${students.length} student users\n`);
+        console.log(`✅ Created ${students.count} student users\n`);
 
         // Create system settings
-        const settings = await SystemSettings.create({
-            ceremonyDate: new Date('2024-06-20'),
-            registrationDeadline: new Date('2024-06-15'),
-            maxGuestPerStudent: 2,
-            gownCollectionStartDate: new Date('2024-06-10'),
-            gownCollectionEndDate: new Date('2024-06-19'),
-            venueCapacity: 500,
-            isRegistrationOpen: true,
+        const settings = await prisma.systemSettings.create({
+            data: {
+                ceremonyDate: new Date('2026-06-20'),
+                registrationDeadline: new Date('2026-06-15'),
+                maxGuestPerStudent: 2,
+                gownCollectionStartDate: new Date('2026-06-10'),
+                gownCollectionEndDate: new Date('2026-06-19'),
+                venueCapacity: 500,
+                isRegistrationOpen: true,
+            }
         });
 
         console.log('✅ Created system settings\n');

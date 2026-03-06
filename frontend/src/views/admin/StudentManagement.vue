@@ -2,7 +2,7 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Student Management"
+    :page-title="$t('admin.student_management')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">
       <!-- Header -->
@@ -296,7 +296,7 @@ const fetchStudents = async () => {
         email: 'john.doe@student.fpt.edu.vn',
         phone: '+84 123 456 789',
         major: 'Computer Science',
-        classOf: '2024',
+        classOf: '2026',
         isActive: true,
         hasRegistered: true
       },
@@ -307,7 +307,7 @@ const fetchStudents = async () => {
         email: 'jane.smith@student.fpt.edu.vn',
         phone: '+84 987 654 321',
         major: 'Information Technology',
-        classOf: '2024',
+        classOf: '2026',
         isActive: true,
         hasRegistered: true
       }

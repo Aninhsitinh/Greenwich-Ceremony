@@ -1,5 +1,4 @@
-import GownCollection from '../models/GownCollection.js';
-import User from '../models/User.js';
+import prisma from '../prisma.js';
 import { formatResponse } from '../utils/helpers.js';
 
 // @desc    Request gown collection
@@ -10,17 +9,19 @@ export const requestGownCollection = async (req, res, next) => {
         const { size, scheduledDate, notes } = req.body;
 
         // Check if user has completed seat booking
-        const user = await User.findById(req.user._id);
-        if (!user.journeyStatus.seatsBooked) {
+        const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+        if (!user.journeySeatsBooked) {
             return res.status(403).json(
                 formatResponse(false, 'Please complete seat booking before requesting gown collection')
             );
         }
 
         // Check if already has a gown request
-        const existingRequest = await GownCollection.findOne({
-            userId: req.user._id,
-            status: { $in: ['pending', 'scheduled', 'collected'] }
+        const existingRequest = await prisma.gownCollection.findFirst({
+            where: {
+                userId: req.user.id,
+                status: { in: ['pending', 'scheduled', 'collected'] }
+            }
         });
 
         if (existingRequest) {
@@ -29,20 +30,34 @@ export const requestGownCollection = async (req, res, next) => {
             );
         }
 
+        const registration = await prisma.registration.findFirst({ where: { userId: req.user.id } });
+
+        if (!registration) {
+            return res.status(400).json(
+                formatResponse(false, 'Please complete registration before requesting a gown')
+            );
+        }
+
         // Create gown collection request
-        const gownCollection = await GownCollection.create({
-            userId: req.user._id,
-            registrationId: req.user.registrationId, // Assuming this exists
-            size,
-            scheduledDate,
-            status: 'scheduled',
-            notes,
+        const gownCollection = await prisma.gownCollection.create({
+            data: {
+                userId: req.user.id,
+                registrationId: registration.id,
+                size,
+                scheduledDate: scheduledDate ? new Date(scheduledDate) : new Date(),
+                status: 'scheduled',
+                notes,
+            }
         });
 
         // Update user journey status
-        user.journeyStatus.gownCollected = false; // Will be true when actually collected
-        user.journeyStatus.currentStep = 4;
-        await user.save();
+        await prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+                journeyGownCollected: false,
+                journeyCurrentStep: 4
+            }
+        });
 
         res.status(201).json(
             formatResponse(true, 'Gown collection request created successfully', { gownCollection })
@@ -57,8 +72,10 @@ export const requestGownCollection = async (req, res, next) => {
 // @access  Private (Student)
 export const getMyGownRequest = async (req, res, next) => {
     try {
-        const gownCollection = await GownCollection.findOne({ userId: req.user._id })
-            .sort({ createdAt: -1 });
+        const gownCollection = await prisma.gownCollection.findFirst({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Gown collection request retrieved successfully', { gownCollection })
@@ -73,7 +90,9 @@ export const getMyGownRequest = async (req, res, next) => {
 // @access  Private (Staff, Admin)
 export const markAsCollected = async (req, res, next) => {
     try {
-        const gownCollection = await GownCollection.findById(req.params.id);
+        const gownCollection = await prisma.gownCollection.findUnique({
+            where: { id: req.params.id }
+        });
 
         if (!gownCollection) {
             return res.status(404).json(
@@ -81,19 +100,27 @@ export const markAsCollected = async (req, res, next) => {
             );
         }
 
-        gownCollection.status = 'collected';
-        gownCollection.collectionDate = new Date();
-        await gownCollection.save();
+        const updatedGownCollection = await prisma.gownCollection.update({
+            where: { id: gownCollection.id },
+            data: {
+                status: 'collected',
+                collectionDate: new Date()
+            }
+        });
 
         // Update user journey status
-        const user = await User.findById(gownCollection.userId);
-        user.journeyStatus.gownCollected = true;
-        await user.save();
+        await prisma.user.update({
+            where: { id: gownCollection.userId },
+            data: { journeyGownCollected: true }
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Gown marked as collected successfully', { gownCollection })
+            formatResponse(true, 'Gown marked as collected successfully', { gownCollection: updatedGownCollection })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Gown collection request not found'));
+        }
         next(error);
     }
 };
@@ -103,7 +130,9 @@ export const markAsCollected = async (req, res, next) => {
 // @access  Private (Staff, Admin)
 export const markAsReturned = async (req, res, next) => {
     try {
-        const gownCollection = await GownCollection.findById(req.params.id);
+        const gownCollection = await prisma.gownCollection.findUnique({
+            where: { id: req.params.id }
+        });
 
         if (!gownCollection) {
             return res.status(404).json(
@@ -111,14 +140,21 @@ export const markAsReturned = async (req, res, next) => {
             );
         }
 
-        gownCollection.status = 'returned';
-        gownCollection.returnDate = new Date();
-        await gownCollection.save();
+        const updatedGownCollection = await prisma.gownCollection.update({
+            where: { id: gownCollection.id },
+            data: {
+                status: 'returned',
+                returnDate: new Date()
+            }
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Gown marked as returned successfully', { gownCollection })
+            formatResponse(true, 'Gown marked as returned successfully', { gownCollection: updatedGownCollection })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Gown collection request not found'));
+        }
         next(error);
     }
 };
@@ -130,21 +166,27 @@ export const getAllGownRequests = async (req, res, next) => {
     try {
         const { status, page = 1, limit = 20 } = req.query;
 
-        const query = {};
-        if (status) query.status = status;
+        const where = {};
+        if (status) where.status = status;
 
-        const gownRequests = await GownCollection.find(query)
-            .populate('userId', 'fullName email studentId')
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .sort({ scheduledDate: 1 });
+        const gownRequests = await prisma.gownCollection.findMany({
+            where,
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            },
+            take: parseInt(limit),
+            skip: (parseInt(page) - 1) * parseInt(limit),
+            orderBy: { scheduledDate: 'asc' }
+        });
 
-        const count = await GownCollection.countDocuments(query);
+        const count = await prisma.gownCollection.count({ where });
 
         res.status(200).json(
             formatResponse(true, 'Gown collection requests retrieved successfully', {
                 gownRequests,
-                totalPages: Math.ceil(count / limit),
+                totalPages: Math.ceil(count / parseInt(limit)),
                 currentPage: parseInt(page),
                 total: count,
             })
@@ -161,7 +203,9 @@ export const updateGownRequest = async (req, res, next) => {
     try {
         const { size, scheduledDate, notes } = req.body;
 
-        const gownCollection = await GownCollection.findById(req.params.id);
+        const gownCollection = await prisma.gownCollection.findUnique({
+            where: { id: req.params.id }
+        });
 
         if (!gownCollection) {
             return res.status(404).json(
@@ -170,7 +214,7 @@ export const updateGownRequest = async (req, res, next) => {
         }
 
         // Check ownership
-        if (gownCollection.userId.toString() !== req.user._id.toString()) {
+        if (gownCollection.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to update this request')
             );
@@ -183,16 +227,23 @@ export const updateGownRequest = async (req, res, next) => {
             );
         }
 
-        if (size) gownCollection.size = size;
-        if (scheduledDate) gownCollection.scheduledDate = scheduledDate;
-        if (notes !== undefined) gownCollection.notes = notes;
+        const updatedData = {};
+        if (size) updatedData.size = size;
+        if (scheduledDate) updatedData.scheduledDate = new Date(scheduledDate);
+        if (notes !== undefined) updatedData.notes = notes;
 
-        await gownCollection.save();
+        const updatedGownCollection = await prisma.gownCollection.update({
+            where: { id: gownCollection.id },
+            data: updatedData
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Gown collection request updated successfully', { gownCollection })
+            formatResponse(true, 'Gown collection request updated successfully', { gownCollection: updatedGownCollection })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Gown collection request not found'));
+        }
         next(error);
     }
 };

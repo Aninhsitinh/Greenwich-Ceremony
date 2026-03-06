@@ -1,395 +1,368 @@
+
 <template>
-  <div class="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
-    <!-- Premium Header -->
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800">
-      <div class="flex items-center justify-between p-4 max-w-7xl mx-auto">
+  <div class="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+      <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-3">
-          <!-- Greenwich Logo -->
-          <div class="flex items-center gap-2">
-            <img 
-              src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-              alt="Greenwich Vietnam" 
-              class="w-12 h-12 object-contain bg-white rounded-xl p-1"
-            />
-            <div>
-              <h2 class="text-gray-900 dark:text-white text-lg font-bold">Greenwich Vietnam</h2>
-              <p class="text-xs text-gray-500 dark:text-gray-400">Graduation Portal 2024</p>
-            </div>
+          <img 
+            src="@/assets/images/university-of-greenwich.jpg" 
+            alt="Greenwich Vietnam" 
+            class="w-10 h-10 object-contain"
+          />
+          <div>
+            <h1 class="text-gray-900 dark:text-white text-base font-bold tracking-tight">Greenwich Vietnam</h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Graduation Ceremony 2026</p>
           </div>
         </div>
-        <div class="flex items-center gap-3">
-          <button @click="toggleDark" class="w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-colors">
-            <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">{{ darkMode ? 'light_mode' : 'dark_mode' }}</span>
-          </button>
-          <router-link to="/login" class="px-6 py-2 text-primary font-semibold hover:bg-primary/5 rounded-lg transition-colors">
-            Sign In
+        
+        <div class="flex items-center gap-6">
+          <nav class="hidden md:flex gap-6 text-sm font-medium">
+            <router-link to="/about" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">{{ $t('nav.about', 'About') }}</router-link>
+            <router-link to="/programs" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Programs</router-link>
+            <router-link to="/contact" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</router-link>
+          </nav>
+          <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
+          <router-link 
+            to="/login" 
+            class="text-sm font-semibold text-gray-900 dark:text-white hover:opacity-80 transition-opacity"
+          >
+            {{ $t('nav.login', 'Sign In') }}
           </router-link>
-          <router-link to="/register" class="px-6 py-2 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all">
-            Register
+          <router-link 
+            to="/register" 
+            class="text-sm font-semibold bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-full hover:opacity-90 transition-opacity"
+          >
+            <!-- {{ $t('nav.register') }} -->
+            {{ $t('nav.register', 'Register') }}
           </router-link>
+          <LanguageSwitcher />
         </div>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col">
+    <main class="flex-1">
       <!-- Hero Section -->
-      <section class="relative min-h-[90vh] flex items-center overflow-hidden">
-        <!-- Background -->
-        <div class="absolute inset-0">
-          <div 
-            class="absolute inset-0 bg-cover bg-center"
-            :style="`background-image: url('${heroImages[currentImageIndex]}')`"
-          ></div>
-          <div class="absolute inset-0 bg-gradient-to-br from-primary/90 via-blue-600/80 to-purple-700/90"></div>
-        </div>
-        
-        <!-- Floating decorations -->
-        <div class="absolute inset-0 overflow-hidden">
-          <div class="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float"></div>
-          <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style="animation-delay: -2s"></div>
-        </div>
-        
-        <div class="relative z-10 max-w-7xl mx-auto px-4 py-20">
-          <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <!-- Left Content -->
-            <div class="text-center lg:text-left">
-              <!-- Badge -->
-              <div class="inline-block mb-8">
-                <span class="bg-white/20 backdrop-blur-sm text-white text-sm font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-white/30">
-                  🎓 Class of 2024 Graduation
-                </span>
-              </div>
-
-              <!-- Hero Title -->
-              <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6">
-                Your Journey
-                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300">
-                  Culminates Here
-                </span>
-              </h1>
-
-              <!-- Subtitle -->
-              <p class="text-xl md:text-2xl text-blue-100 mb-10 max-w-xl">
-                Register for your graduation ceremony, book seats for family, and receive your digital ticket.
-              </p>
-
-              <!-- CTA Buttons -->
-              <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button 
-                  @click="goToRegister" 
-                  class="group px-8 py-4 bg-white text-primary font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-2"
-                >
-                  Get Started
-                  <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                </button>
-                <button 
-                  @click="goToLogin" 
-                  class="px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold text-lg rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-2"
-                >
-                  <span class="material-symbols-outlined">login</span>
-                  Student Login
-                </button>
-              </div>
-
-              <!-- Quick Stats -->
-              <div class="mt-12 flex flex-wrap justify-center lg:justify-start gap-8">
-                <div class="text-center">
-                  <p class="text-4xl font-black text-white">1,500+</p>
-                  <p class="text-blue-200 text-sm">Graduates</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-4xl font-black text-white">98%</p>
-                  <p class="text-blue-200 text-sm">Employment</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-4xl font-black text-white">100%</p>
-                  <p class="text-blue-200 text-sm">Digital</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Content - Feature Cards (Desktop only) -->
-            <div class="relative hidden lg:block">
-              <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-4 border border-white/20 shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600" 
-                  alt="Graduation Ceremony"
-                  class="w-full h-80 object-cover rounded-2xl"
-                />
-                <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-4 shadow-xl">
-                  <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <span class="material-symbols-outlined text-green-600 text-2xl">verified</span>
-                    </div>
-                    <div>
-                      <p class="font-bold text-gray-900">UK-Accredited</p>
-                      <p class="text-sm text-gray-500">International Degrees</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <section class="relative pt-20 pb-32 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="z-10">
+            <span class="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-wider text-blue-600 uppercase bg-blue-50 dark:bg-blue-900/30 rounded-full">
+              Class of 2026
+            </span>
+            <h2 class="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white tracking-tight mb-6 leading-tight">
+              Celebrate Your <br/>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Journey</span>
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed">
+              Join us in honoring your hard work and achievements. A new chapter begins here at the Greenwich Vietnam Graduation Ceremony.
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <router-link 
+                to="/register" 
+                class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-full hover:opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                Register Now
+              </router-link>
+              <router-link 
+                to="/programs" 
+                class="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+              >
+                View Programs
+              </router-link>
             </div>
           </div>
-        </div>
-
-        <!-- Scroll indicator -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <span class="material-symbols-outlined text-4xl text-white/50">expand_more</span>
-        </div>
-      </section>
-
-      <!-- Partner Universities with SVG Logos -->
-      <section class="py-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4">
-          <p class="text-center text-gray-500 dark:text-gray-400 text-sm uppercase tracking-widest mb-8">In Partnership With</p>
-          <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            <!-- FPT Education -->
-            <div class="flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:shadow-lg transition-all">
-              <img 
-                src="@/assets/images/FPT_Education_logo.svg.png" 
-                alt="FPT Education" 
-                class="h-12 object-contain"
-              />
-            </div>
-            
-            <!-- University of Greenwich -->
-            <div class="flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:shadow-lg transition-all">
-              <img 
-                src="@/assets/images/2022-Greenwich-Eng.webp" 
-                alt="University of Greenwich" 
-                class="h-12 object-contain"
-              />
-            </div>
-            
-            <!-- Greenwich Vietnam -->
-            <div class="flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-2xl hover:shadow-lg transition-all">
-              <img 
-                src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-                alt="Greenwich Vietnam" 
-                class="h-12 object-contain"
-              />
-            </div>
+          <div class="relative z-0">
+             <!-- Circular Blob Background -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full blur-3xl opacity-70"></div>
+            <img 
+              src="@/assets/images/Picture8.png" 
+              alt="Graduation Moment" 
+              class="relative rounded-2xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-700 w-full object-cover aspect-[4/3]"
+            />
           </div>
         </div>
       </section>
 
-      <!-- Key Features -->
-      <section class="py-24 bg-gray-50 dark:bg-gray-800">
-        <div class="max-w-7xl mx-auto px-4">
+      <!-- About School Section -->
+      <section class="py-24 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+             <div class="grid grid-cols-2 gap-4">
+               <img src="@/assets/images/Picture3.png" class="rounded-2xl shadow-lg w-full h-64 object-cover transform translate-y-8" alt="Campus Life" />
+               <img src="@/assets/images/Picture8.png" class="rounded-2xl shadow-lg w-full h-64 object-cover" alt="Student Activities" />
+             </div>
+             <div>
+               <h3 class="text-sm font-bold tracking-widest text-gray-500 uppercase mb-3">About Us</h3>
+               <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Greenwich Vietnam</h2>
+               <div class="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                 <p>
+                   Formed through a strategic alliance between the University of Greenwich (UK) and FPT University, Greenwich Vietnam has established itself as a premier destination for international education since 2009.
+                 </p>
+                 <p>
+                   We provide a global learning environment where students access the same rigorous curriculum as their peers in the United Kingdom. Our commitment to excellence empowers graduates to thrive in a competitive global landscape.
+                 </p>
+               </div>
+               
+               <div class="mt-8 grid grid-cols-2 gap-6">
+                 <div>
+                   <span class="block text-3xl font-bold text-gray-900 dark:text-white">15+</span>
+                   <span class="text-sm text-gray-500">Years of Excellence</span>
+                 </div>
+                 <div>
+                   <span class="block text-3xl font-bold text-gray-900 dark:text-white">20k+</span>
+                   <span class="text-sm text-gray-500">Alumni Network</span>
+                 </div>
+               </div>
+             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activities & News Section -->
+      <section class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
           <div class="text-center mb-16">
-            <span class="inline-block px-4 py-2 bg-primary/10 text-primary font-bold text-sm uppercase tracking-wider rounded-full mb-4">Features</span>
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">Everything You Need</h2>
-            <p class="text-xl text-gray-600 dark:text-gray-400">For a seamless graduation experience</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Latest Activities</h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Stay updated with the latest events, student stories, and academic highlights from our vibrant community.
+            </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div 
-              v-for="feature in features" 
-              :key="feature.title"
-              class="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-sm hover:shadow-2xl hover:scale-105 transition-all group border border-gray-100 dark:border-gray-700"
-            >
-              <div :class="['w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform', feature.bgColor]">
-                <span class="material-symbols-outlined text-3xl text-white">{{ feature.icon }}</span>
-              </div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{{ feature.title }}</h3>
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{{ feature.description }}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- How It Works -->
-      <section class="py-24 bg-white dark:bg-gray-900">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="text-center mb-16">
-            <span class="inline-block px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold text-sm uppercase tracking-wider rounded-full mb-4">Process</span>
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">How it Works</h2>
-            <p class="text-xl text-gray-600 dark:text-gray-400">Simple steps to your graduation day</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div 
-              v-for="(step, index) in steps" 
-              :key="index"
-              class="relative bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 text-center hover:shadow-xl transition-all"
-            >
-              <div :class="[
-                'w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4',
-                index === steps.length - 1 ? 'bg-gradient-to-br from-orange-500 to-red-500' : 'bg-gradient-to-br from-primary to-purple-600'
-              ]">
-                {{ index + 1 }}
-              </div>
-              <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ step.title }}</h4>
-              <p class="text-gray-600 dark:text-gray-400 text-sm">{{ step.description }}</p>
-              
-              <!-- Arrow -->
-              <div v-if="index < steps.length - 1" class="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2">
-                <span class="material-symbols-outlined text-gray-300 dark:text-gray-600">arrow_forward</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Final CTA -->
-      <section class="py-24 bg-gradient-to-br from-primary via-blue-600 to-purple-700 text-white">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-          <div class="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl mb-8">
-            <span class="material-symbols-outlined text-5xl text-white">celebration</span>
-          </div>
-          <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Graduate?</h2>
-          <p class="text-xl text-blue-100 mb-10">Start your graduation journey today</p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <!-- Carousel Container -->
+          <div class="relative group">
+            <!-- Left Button -->
             <button 
-              @click="goToRegister" 
-              class="px-10 py-4 bg-white text-primary text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
+                @click="scrollLeft"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:flex"
             >
-              Start Registration
+                <span class="material-symbols-outlined">chevron_left</span>
             </button>
-            <button 
-              @click="goToLogin" 
-              class="px-10 py-4 border-2 border-white/40 text-white text-lg font-bold rounded-2xl hover:bg-white/10 transition-all"
-            >
-              Already Registered?
-            </button>
-          </div>
-        </div>
-      </section>
 
-      <!-- Footer -->
-      <footer class="bg-gray-900 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4">
-          <div class="grid md:grid-cols-4 gap-12 mb-12">
-            <!-- Brand -->
-            <div class="md:col-span-2">
-              <div class="flex items-center gap-4 mb-6">
-                <img 
-                  src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-                  alt="Greenwich Vietnam" 
-                  class="w-16 h-16 object-contain bg-white rounded-xl p-2"
-                />
-                <div>
-                  <p class="text-2xl font-bold">Greenwich Vietnam</p>
-                  <p class="text-gray-400">Part of FPT Education</p>
+            <!-- Right Button -->
+            <button 
+                @click="scrollRight"
+                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700 hidden md:flex"
+            >
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+
+            <!-- Scroll Area -->
+            <div 
+                ref="carouselRef"
+                class="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-8 px-2"
+            >
+                <div v-if="loading" class="flex justify-center w-full">
+                    <div class="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
                 </div>
-              </div>
-              <p class="text-gray-400 max-w-md">
-                Empowering the next generation of global professionals through UK-accredited education.
-              </p>
-            </div>
+
+                <template v-else-if="posts.length > 0">
+                    <router-link 
+                    v-for="post in posts" 
+                    :key="post.id"
+                    :to="`/posts/${post.id}`"
+                    class="min-w-[300px] md:min-w-[400px] snap-center group/card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full"
+                    >
+                    <div class="h-60 overflow-hidden relative">
+                        <img 
+                        :src="post.coverImage || '@/assets/images/Picture4-1.png'" 
+                        :alt="post.title"
+                        class="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-500"
+                        @error="$event.target.src = 'https://via.placeholder.com/400x300?text=News'"
+                        />
+                        <div class="absolute inset-0 bg-black/20 group-hover/card:bg-black/10 transition-colors"></div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">News</span>
+                        <span class="text-xs text-gray-500">{{ formatDate(post.createdAt) }}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover/card:text-blue-600 transition-colors">
+                        {{ post.title }}
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4 flex-1">
+                        {{ post.summary }}
+                        </p>
+                        <!-- Read More Link -->
+                        <div class="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2 group-hover/card:gap-3 transition-all mt-auto">
+                        Read More <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </div>
+                    </div>
+                    </router-link>
+                </template>
             
-            <!-- Links -->
-            <div>
-              <h4 class="font-bold mb-4">Quick Links</h4>
-              <ul class="space-y-2 text-gray-400">
-                <li><a href="#" class="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Programs</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-              </ul>
+                <!-- Fallback if no posts -->
+                <template v-else>
+                    <!-- Static Placeholder 1 -->
+                    <article class="min-w-[300px] md:min-w-[400px] snap-center group/card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="@/assets/images/Picture4-1.png" alt="Featured Event" class="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-purple-600 bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded-full">Highlight</span>
+                        <span class="text-xs text-gray-500">Oct 15, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        Student Excellence Awards 2026
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
+                        Celebrating the outstanding academic and extracurricular achievements of our graduating class. A night to remember for all attendees.
+                        </p>
+                    </div>
+                    </article>
+                    
+                    <!-- Static Placeholder 2 -->
+                    <article class="min-w-[300px] md:min-w-[400px] snap-center group/card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="@/assets/images/Picture1.png" alt="Campus Tour" class="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-green-600 bg-green-50 dark:bg-green-900/30 px-3 py-1 rounded-full">Experience</span>
+                        <span class="text-xs text-gray-500">Sep 20, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        International Cultural Exchange
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
+                        Students from across the globe gathered at our campus for a vibrant display of culture, food, and music, fostering global citizenship.
+                        </p>
+                    </div>
+                    </article>
+
+                    <!-- Static Placeholder 3 -->
+                    <article class="min-w-[300px] md:min-w-[400px] snap-center group/card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700">
+                    <div class="h-60 overflow-hidden relative">
+                        <img src="@/assets/images/Picture2.png" alt="Workshop" class="w-full h-full object-cover transform group-hover/card:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-3 py-1 rounded-full">Workshop</span>
+                        <span class="text-xs text-gray-500">Aug 05, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        Career Readiness Workshop
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
+                        Industry experts shared insights on resume building and interview skills to prepare our seniors for the professional world.
+                        </p>
+                    </div>
+                    </article>
+                </template>
             </div>
-            
-            <!-- Contact -->
-            <div>
-              <h4 class="font-bold mb-4">Contact</h4>
-              <ul class="space-y-2 text-gray-400">
-                <li class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-sm">mail</span>
-                  graduation@greenwich.edu.vn
-                </li>
-                <li class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-sm">phone</span>
-                  (028) 7300 6789
-                </li>
-              </ul>
-            </div>
-          </div>
-          
-          <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-            © 2024 FPT Greenwich Vietnam. All rights reserved.
           </div>
         </div>
-      </footer>
+      </section>
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-12">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+           <div>
+             <h4 class="font-bold text-gray-900 dark:text-white mb-4">Greenwich Vietnam</h4>
+             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+               20 Cộng Hòa, Phường Bảy Hiền, Thành Phố Hồ Chí Minh
+             </p>
+             <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm h-48">
+                <iframe 
+                  src="https://maps.google.com/maps?q=%C4%90%E1%BA%A1i%20H%E1%BB%8Dc%20Greenwich%20Vi%E1%BB%87t%20Nam%2020%20Cong%20Hoa&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                  width="100%" 
+                  height="100%" 
+                  style="border:0;" 
+                  allowfullscreen="" 
+                  loading="lazy" 
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+             </div>
+           </div>
+           <div>
+             <h4 class="font-bold text-gray-900 dark:text-white mb-4">Quick Links</h4>
+             <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+               <li><router-link to="/about" class="hover:text-blue-600">About Us</router-link></li>
+               <li><router-link to="/programs" class="hover:text-blue-600">Programs</router-link></li>
+               <li><router-link to="/contact" class="hover:text-blue-600">Contact</router-link></li>
+             </ul>
+           </div>
+           <div>
+             <h4 class="font-bold text-gray-900 dark:text-white mb-4">Support</h4>
+             <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+               <li><router-link to="/faq" class="hover:text-blue-600">FAQ</router-link></li>
+               <li><router-link to="/privacy" class="hover:text-blue-600">Privacy Policy</router-link></li>
+               <li><router-link to="/terms" class="hover:text-blue-600">Terms of Service</router-link></li>
+             </ul>
+           </div>
+           <div>
+             <h4 class="font-bold text-gray-900 dark:text-white mb-4">Follow Us</h4>
+             <div class="flex gap-4">
+               <a href="https://www.facebook.com/GreenwichVietnam/" target="_blank" rel="noopener noreferrer" class="block transition-transform transform hover:scale-110">
+                 <img src="@/assets/images/facebook.png" alt="Facebook" class="w-8 h-8 object-contain" />
+               </a>
+               <a href="https://www.youtube.com/%C4%91%E1%BA%A1ih%E1%BB%8Dcgreenwichvi%E1%BB%87tnam" target="_blank" rel="noopener noreferrer" class="block transition-transform transform hover:scale-110">
+                 <img src="@/assets/images/youtube.png" alt="Youtube" class="w-8 h-8 object-contain" />
+               </a>
+               <a href="https://www.tiktok.com/@greenwichvietnam" target="_blank" rel="noopener noreferrer" class="block transition-transform transform hover:scale-110">
+                 <img src="@/assets/images/tik-tok.png" alt="Tiktok" class="w-8 h-8 object-contain" />
+               </a>
+               <a href="https://www.instagram.com/universityofgreenwichvn/" target="_blank" rel="noopener noreferrer" class="block transition-transform transform hover:scale-110">
+                 <img src="@/assets/images/instagram.png" alt="Instagram" class="w-8 h-8 object-contain" />
+               </a>
+             </div>
+           </div>
+        </div>
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-8 text-center">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            © 2026 FPT Greenwich Vietnam. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import api from '@/services/api';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
-const router = useRouter();
-const darkMode = ref(false);
-const currentImageIndex = ref(0);
+const carouselRef = ref(null);
+const posts = ref([]);
+const loading = ref(false);
 
-const heroImages = [
-  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200',
-  'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200',
-  'https://images.unsplash.com/photo-1627556704290-2b1f5853ff78?w=1200'
-];
+const scrollLeft = () => {
+    if (carouselRef.value) {
+        carouselRef.value.scrollBy({ left: -420, behavior: 'smooth' });
+    }
+};
 
-const features = [
-  {
-    icon: 'how_to_reg',
-    title: 'Online Registration',
-    description: 'Confirm your attendance, select gown size, and provide details in just a few clicks.',
-    bgColor: 'bg-gradient-to-br from-blue-500 to-blue-700'
-  },
-  {
-    icon: 'event_seat',
-    title: 'Seat Booking',
-    description: 'Reserve preferred seating for your family and loved ones from an interactive floor plan.',
-    bgColor: 'bg-gradient-to-br from-purple-500 to-purple-700'
-  },
-  {
-    icon: 'qr_code_2',
-    title: 'Digital Check-in',
-    description: 'Fast-track entry on the big day with your digital QR pass and gown collection voucher.',
-    bgColor: 'bg-gradient-to-br from-green-500 to-green-700'
+const scrollRight = () => {
+    if (carouselRef.value) {
+        carouselRef.value.scrollBy({ left: 420, behavior: 'smooth' });
+    }
+};
+
+const formatDate = (dateString) => {
+    // Return formatted date or relative time
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+const fetchPosts = async () => {
+  try {
+    loading.value = true;
+    const response = await api.get('/posts');
+    if (response.data.success) {
+      // Get all posts or at least 6 for carousel effect
+      posts.value = response.data.data.posts;
+    }
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+  } finally {
+    loading.value = false;
   }
-];
-
-const steps = [
-  { title: 'Register', description: 'Confirm eligibility' },
-  { title: 'Book Seats', description: 'Choose your spot' },
-  { title: 'Get Ticket', description: 'Receive QR pass' },
-  { title: 'Graduate!', description: 'Walk the stage' }
-];
-
-let imageInterval;
+};
 
 onMounted(() => {
-  imageInterval = setInterval(() => {
-    currentImageIndex.value = (currentImageIndex.value + 1) % heroImages.length;
-  }, 5000);
+  fetchPosts();
 });
-
-onUnmounted(() => {
-  if (imageInterval) clearInterval(imageInterval);
-});
-
-const toggleDark = () => {
-  darkMode.value = !darkMode.value;
-  document.documentElement.classList.toggle('dark');
-};
-
-const goToLogin = () => {
-  router.push('/login');
-};
-
-const goToRegister = () => {
-  router.push('/register');
-};
 </script>
-
-<style scoped>
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-}
-
-.animate-float {
-  animation: float 8s ease-in-out infinite;
-}
-</style>

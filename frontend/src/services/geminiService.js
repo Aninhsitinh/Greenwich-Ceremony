@@ -35,8 +35,8 @@ class GeminiService {
             this.systemPrompt = `You are a helpful AI assistant for the FPT Greenwich Graduation Ceremony.
 
 Context:
-- Event: Graduation Ceremony 2024
-- Date: June 15, 2024
+- Event: Graduation Ceremony 2026
+- Date: June 15, 2026
 - Location: Main Hall
 - Max Guests: 3 per student
 - Gown Collection: May 20 - June 10
@@ -135,7 +135,7 @@ Answer efficiently and politely. Use emojis.`;
         if (q.includes('ticket') || q.includes('vé') || q.includes('qr'))
             return "🎫 Your ticket is in the 'My Ticket' section. Save the QR code for entry!";
         if (q.includes('locat') || q.includes('where') || q.includes('đâu'))
-            return "📍 The ceremony is at the Main Hall on June 15, 2024.";
+            return "📍 The ceremony is at the Main Hall on June 15, 2026.";
         if (q.includes('time') || q.includes('when') || q.includes('giờ'))
             return "⏰ Ceremony starts at 2:00 PM. Please arrive by 1:00 PM.";
         if (q.includes('gown') || q.includes('áo'))

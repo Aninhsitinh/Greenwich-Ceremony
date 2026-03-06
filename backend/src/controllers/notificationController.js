@@ -1,4 +1,4 @@
-import Notification from '../models/Notification.js';
+import prisma from '../prisma.js';
 import { formatResponse } from '../utils/helpers.js';
 
 // @desc    Get my notifications
@@ -7,20 +7,29 @@ import { formatResponse } from '../utils/helpers.js';
 export const getMyNotifications = async (req, res, next) => {
     try {
         const { page = 1, limit = 20 } = req.query;
+        const parsedLimit = parseInt(limit);
+        const parsedPage = parseInt(page);
 
-        const notifications = await Notification.find({ userId: req.user._id })
-            .sort({ createdAt: -1 })
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+        const notifications = await prisma.notification.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' },
+            take: parsedLimit,
+            skip: (parsedPage - 1) * parsedLimit
+        });
 
-        const count = await Notification.countDocuments({ userId: req.user._id });
-        const unreadCount = await Notification.countDocuments({ userId: req.user._id, isRead: false });
+        const count = await prisma.notification.count({
+            where: { userId: req.user.id }
+        });
+
+        const unreadCount = await prisma.notification.count({
+            where: { userId: req.user.id, isRead: false }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Notifications retrieved successfully', {
                 notifications,
-                totalPages: Math.ceil(count / limit),
-                currentPage: page,
+                totalPages: Math.ceil(count / parsedLimit),
+                currentPage: parsedPage,
                 total: count,
                 unreadCount,
             })
@@ -37,7 +46,9 @@ export const markAsRead = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const notification = await Notification.findOne({ _id: id, userId: req.user._id });
+        const notification = await prisma.notification.findFirst({
+            where: { id, userId: req.user.id }
+        });
 
         if (!notification) {
             return res.status(404).json(
@@ -45,11 +56,13 @@ export const markAsRead = async (req, res, next) => {
             );
         }
 
-        notification.isRead = true;
-        await notification.save();
+        const updatedNotification = await prisma.notification.update({
+            where: { id: notification.id },
+            data: { isRead: true }
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Notification marked as read', { notification })
+            formatResponse(true, 'Notification marked as read', { notification: updatedNotification })
         );
     } catch (error) {
         next(error);
@@ -61,10 +74,10 @@ export const markAsRead = async (req, res, next) => {
 // @access  Private
 export const markAllAsRead = async (req, res, next) => {
     try {
-        await Notification.updateMany(
-            { userId: req.user._id, isRead: false },
-            { isRead: true }
-        );
+        await prisma.notification.updateMany({
+            where: { userId: req.user.id, isRead: false },
+            data: { isRead: true }
+        });
 
         res.status(200).json(
             formatResponse(true, 'All notifications marked as read')
@@ -81,13 +94,20 @@ export const deleteNotification = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const notification = await Notification.findOneAndDelete({ _id: id, userId: req.user._id });
+        // Verify ownership
+        const notification = await prisma.notification.findFirst({
+            where: { id, userId: req.user.id }
+        });
 
         if (!notification) {
             return res.status(404).json(
                 formatResponse(false, 'Notification not found')
             );
         }
+
+        await prisma.notification.delete({
+            where: { id: notification.id }
+        });
 
         res.status(200).json(
             formatResponse(true, 'Notification deleted successfully')
@@ -105,33 +125,36 @@ export const broadcastNotification = async (req, res, next) => {
         const { title, message, type, targetRole } = req.body;
 
         // Get users to notify
-        let query = { status: 'active' };
+        const where = { status: 'active' };
         if (targetRole && targetRole !== 'all') {
-            query.role = targetRole;
+            where.role = targetRole;
         }
 
-        const User = (await import('../models/User.js')).default;
-        const users = await User.find(query);
+        const users = await prisma.user.findMany({ where });
 
         // Create notifications for all users
         const notifications = users.map(user => ({
-            userId: user._id,
+            userId: user.id,
             title,
             message,
             type: type || 'info',
         }));
 
-        await Notification.insertMany(notifications);
+        await prisma.notification.createMany({
+            data: notifications
+        });
 
         // Emit Socket.io event
         const io = req.app.get('io');
-        users.forEach(user => {
-            io.to(user._id.toString()).emit('new_notification', {
-                title,
-                message,
-                type,
+        if (io) {
+            users.forEach(user => {
+                io.to(user.id.toString()).emit('new_notification', {
+                    title,
+                    message,
+                    type,
+                });
             });
-        });
+        }
 
         res.status(200).json(
             formatResponse(true, `Notification sent to ${users.length} users`)

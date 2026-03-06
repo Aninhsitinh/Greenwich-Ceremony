@@ -2,252 +2,218 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Dashboard"
+    :page-title="$t('student.dashboard')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <!-- Modern Hero Section -->
-      <div class="relative overflow-hidden rounded-3xl" style="background: linear-gradient(135deg, #003B5C 0%, #00A3E0 50%, #003B5C 100%); min-height: 320px;">
-        <!-- Subtle Pattern Overlay -->
-        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-        
-        <!-- Content -->
-        <div class="relative z-10 p-8 lg:p-10">
-          <div class="flex items-start justify-between flex-wrap gap-6">
-            <div class="flex-1">
-              <!-- Logo & Status Badge -->
-              <div class="flex items-center gap-4 mb-5">
-                <div class="w-16 h-16 bg-white rounded-2xl p-2 shadow-xl">
-                  <img 
-                    src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-                    alt="Greenwich" 
-                    class="w-full h-full object-contain"
-                  />
-                </div>
-                <div class="h-10 w-px bg-white/20"></div>
-                <div class="px-4 py-2 rounded-full flex items-center gap-2" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);">
-                  <span class="w-2 h-2 rounded-full" style="background: #00A651; box-shadow: 0 0 8px #00A651; animation: pulse 2s infinite;"></span>
-                  <span class="text-xs font-semibold text-white uppercase tracking-wide">Active Registration</span>
-                </div>
+      <!-- Minimalist Hero Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
+        <div class="flex items-start justify-between flex-wrap gap-6">
+          <div class="flex-1">
+            <!-- Logo & Status Badge -->
+            <div class="flex items-center gap-4 mb-5">
+              <div class="w-16 h-16 p-2">
+                <img 
+                  src="@/assets/images/university-of-greenwich.jpg" 
+                  alt="Greenwich" 
+                  class="w-full h-full object-contain"
+                />
               </div>
-              
-              <!-- Welcome Message -->
-              <h1 class="text-3xl lg:text-4xl font-bold text-white mb-3" style="font-family: 'Montserrat', sans-serif; line-height: 1.2;">
-                Welcome, {{ user?.fullName || 'Student' }}! 🎓
-              </h1>
-              <p class="text-blue-100 text-lg mb-6">Graduation Ceremony 2024 • Your Journey Awaits</p>
-              
-              <!-- Elegant Progress Bar -->
-              <div class="max-w-md">
-                <div class="flex justify-between items-center mb-3">
-                  <span class="text-sm font-semibold text-white">Journey Progress</span>
-                  <span class="text-sm font-bold text-white">{{ completedTasks }}/{{ checklist.length }} Completed</span>
-                </div>
-                <div class="h-2.5 rounded-full overflow-hidden" style="background: rgba(255, 255, 255, 0.2);">
-                  <div 
-                    class="h-full rounded-full transition-all duration-700 ease-out"
-                    style="background: linear-gradient(90deg, #FFB81C 0%, #00A651 100%); box-shadow: 0 0 10px rgba(255, 184, 28, 0.5);"
-                    :style="{ width: progressPercentage + '%' }"
-                  ></div>
-                </div>
-                <p class="text-xs text-blue-200 mt-2">{{ progressPercentage }}% Complete</p>
+              <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
+              <div class="px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-600 animate-pulse"></span>
+                <span class="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide">{{ $t('student.active_registration') }}</span>
               </div>
             </div>
             
-            <!-- Countdown Card - Refined -->
-            <div class="rounded-2xl p-6 min-w-[220px]" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);">
-              <p class="text-xs uppercase tracking-wider mb-3 font-semibold" style="color: #FFB81C;">Ceremony In</p>
-              <div class="grid grid-cols-3 gap-3 mb-4">
-                <div class="text-center">
-                  <div class="text-4xl font-black text-white mb-1">{{ countdown.days }}</div>
-                  <p class="text-[10px] uppercase tracking-wider text-blue-200">Days</p>
-                </div>
-                <div class="text-center">
-                  <div class="text-4xl font-black text-white mb-1">{{ countdown.hours }}</div>
-                  <p class="text-[10px] uppercase tracking-wider text-blue-200">Hrs</p>
-                </div>
-                <div class="text-center">
-                  <div class="text-4xl font-black text-white mb-1 animate-pulse">{{ countdown.mins }}</div>
-                  <p class="text-[10px] uppercase tracking-wider text-blue-200">Min</p>
-                </div>
+            <!-- Welcome Message -->
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              {{ $t('student.welcome') }}, {{ user?.fullName || 'Student' }}!
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 text-lg mb-6">{{ $t('student.graduation_ceremony') }}</p>
+            
+            <!-- Progress Bar -->
+            <div class="max-w-md">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('student.journey_progress') }}</span>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ completedTasks }}/{{ checklist.length }} {{ $t('student.steps') }}</span>
               </div>
-              <div class="pt-3 border-t" style="border-color: rgba(255, 255, 255, 0.2);">
-                <p class="text-sm font-semibold text-white flex items-center justify-center gap-2">
-                  <span class="material-symbols-outlined text-lg" style="color: #FFB81C;">event</span>
-                  June 15, 2024
-                </p>
+              <div class="h-2 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                <div 
+                  class="h-full bg-gray-900 dark:bg-white transition-all duration-500 ease-out"
+                  :style="{ width: progressPercentage + '%' }"
+                ></div>
               </div>
+              <p class="text-xs text-gray-500 mt-2">{{ progressPercentage }}% {{ $t('student.complete') }}</p>
+            </div>
+          </div>
+          
+          <!-- Countdown Card -->
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 min-w-[220px] border border-gray-200 dark:border-gray-600">
+            <p class="text-xs uppercase tracking-wider mb-3 font-semibold text-gray-500 dark:text-gray-400">{{ $t('student.ceremony_in') }}</p>
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div class="text-center">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.days }}</div>
+                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.days') }}</p>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.hours }}</div>
+                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.hours') }}</p>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.mins }}</div>
+                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.mins') }}</p>
+              </div>
+            </div>
+            <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
+              <p class="text-sm font-medium text-gray-900 dark:text-white flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-gray-900 dark:text-white text-lg">event</span>
+                {{ ceremonyDate ? new Date(ceremonyDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Loading...' }}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Stats Cards - Modern Grid -->
+      <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div
-          v-for="(stat, index) in stats"
+          v-for="stat in stats"
           :key="stat.label"
-          class="stat-card group cursor-pointer"
-          :style="{ animationDelay: index * 100 + 'ms' }"
+          class="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
         >
-          <div class="flex items-start justify-between mb-4">
-            <div class="stat-icon" :style="{ background: stat.bgGradient }">
-              <span class="material-symbols-outlined text-2xl text-white">{{ stat.icon }}</span>
+          <div class="flex items-start justify-between mb-3">
+            <div 
+              class="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+              :class="stat.iconBgClass"
+            >
+              <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
             </div>
-            <span v-if="stat.badge" class="stat-badge" :style="stat.badgeStyle">{{ stat.badge }}</span>
+            <span v-if="stat.badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase" :class="stat.badgeClass">{{ stat.badge }}</span>
           </div>
-          <p class="text-4xl font-black mb-1" style="color: #111827; font-family: 'Montserrat', sans-serif;">{{ stat.value }}</p>
-          <p class="text-sm font-medium" style="color: #6b7280;">{{ stat.label }}</p>
-          <div class="stat-shine"></div>
+          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ stat.value }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">{{ stat.label }}</p>
         </div>
       </div>
 
-      <!-- Journey & Actions Grid -->
-      <div class="grid lg:grid-cols-3 gap-6">
-        <!-- Journey Checklist - 2/3 width -->
-        <div class="lg:col-span-2 modern-card">
+      <!-- Journey Checklist -->
+      <div class="flex flex-col gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold flex items-center gap-3" style="color: #111827; font-family: 'Montserrat', sans-serif;">
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #003B5C, #00A3E0);">
-                <span class="material-symbols-outlined text-white">checklist</span>
-              </div>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+              <span class="material-symbols-outlined text-gray-900 dark:text-white">checklist</span>
               Your Journey
             </h2>
-            <div class="px-4 py-2 rounded-full" style="background: rgba(0, 59, 92, 0.08);">
-              <span class="text-sm font-bold" style="color: #003B5C;">{{ completedTasks }}/{{ checklist.length }}</span>
+            <div class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700">
+              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ completedTasks }}/{{ checklist.length }}</span>
             </div>
           </div>
 
           <div class="space-y-3">
             <div
-              v-for="(item, index) in checklist"
+              v-for="item in checklist"
               :key="item.label"
               @click="!item.locked && $router.push(item.path)"
-              class="journey-item group"
-              :class="{
-                'journey-locked': item.locked,
-                'journey-completed': item.completed,
-                'journey-active': !item.locked && !item.completed
-              }"
-              :style="{ animationDelay: index * 50 + 'ms' }"
+              class="group p-4 rounded-lg border transition-all"
+              :class="[
+                item.locked 
+                  ? 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 opacity-60 cursor-not-allowed' 
+                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer'
+              ]"
             >
-              <!-- Step Number & Icon -->
               <div class="flex items-center gap-4">
-                <div class="step-number">{{ index + 1 }}</div>
-                <div class="step-icon" :class="{
-                  'step-icon-locked': item.locked,
-                  'step-icon-completed': item.completed,
-                  'step-icon-active': !item.locked && !item.completed
+                <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" 
+                  :class="item.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'">
+                  {{ checklist.indexOf(item) + 1 }}
+                </div>
+                
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="{
+                  'bg-gray-900 text-white dark:bg-white dark:text-gray-900': !item.locked && !item.completed,
+                  'bg-green-600 text-white': item.completed,
+                  'bg-gray-200 text-gray-400 dark:bg-gray-700': item.locked
                 }">
-                  <span v-if="item.locked" class="material-symbols-outlined text-gray-400">lock</span>
-                  <span v-else-if="item.completed" class="material-symbols-outlined text-white">check_circle</span>
-                  <span v-else class="material-symbols-outlined text-white">{{ item.icon }}</span>
+                  <span v-if="item.locked" class="material-symbols-outlined text-xl">lock</span>
+                  <span v-else-if="item.completed" class="material-symbols-outlined text-xl">check</span>
+                  <span v-else class="material-symbols-outlined text-xl">{{ item.icon }}</span>
                 </div>
 
-                <!-- Content -->
                 <div class="flex-1 min-w-0">
-                  <p class="font-bold text-base" :class="{
-                    'text-gray-400': item.locked,
-                    'text-green-600': item.completed,
-                    'text-gray-900': !item.locked && !item.completed
+                  <p class="font-semibold text-base" :class="{
+                    'text-gray-900 dark:text-white': !item.locked,
+                    'text-gray-500 dark:text-gray-500': item.locked,
+                    'text-green-600 dark:text-green-400': item.completed
                   }">
                     {{ item.label }}
                   </p>
-                  <p class="text-sm text-gray-500 truncate mt-0.5">{{ item.description }}</p>
+                  <p class="text-sm text-gray-500 truncate">{{ item.description }}</p>
                 </div>
 
-                <!-- Action/Badge -->
                 <button
                   v-if="!item.completed && !item.locked"
-                  class="action-button"
+                  class="px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold transition-colors"
                   @click.stop="$router.push(item.path)"
                 >
                   {{ item.action }}
                 </button>
-                <span v-else-if="item.completed" class="status-badge status-completed">Completed</span>
-                <span v-else-if="item.locked" class="status-badge status-locked">Locked</span>
+                <div v-else-if="item.completed" class="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-semibold">
+                  <span>Completed</span>
+                  <span class="material-symbols-outlined text-sm">check_circle</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Quick Actions - 1/3 width -->
-        <div class="modern-card">
-          <h2 class="text-xl font-bold mb-6 flex items-center gap-3" style="color: #111827; font-family: 'Montserrat', sans-serif;">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #FFB81C, #f59e0b);">
-              <span class="material-symbols-outlined text-white text-xl">bolt</span>
-            </div>
-            Quick Actions
-          </h2>
 
-          <div class="space-y-3">
-            <router-link
-              v-for="(action, index) in quickActions"
-              :key="action.label"
-              :to="action.path"
-              class="quick-action-item group"
-              :style="{ animationDelay: index * 50 + 'ms' }"
-            >
-              <div class="action-icon" :style="{ background: action.bgGradient }">
-                <span class="material-symbols-outlined text-white text-xl">{{ action.icon }}</span>
-              </div>
-              <span class="font-semibold text-gray-900 group-hover:text-blue-600">{{ action.label }}</span>
-              <span class="material-symbols-outlined text-gray-400 group-hover:text-blue-600 ml-auto">arrow_forward</span>
-            </router-link>
-          </div>
-        </div>
       </div>
 
       <!-- Timeline -->
-      <div class="modern-card">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3" style="color: #111827; font-family: 'Montserrat', sans-serif;">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">
-            <span class="material-symbols-outlined text-white">timeline</span>
-          </div>
+      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-xl font-bold mb-6 flex items-center gap-3 text-gray-900 dark:text-white">
+          <span class="material-symbols-outlined text-gray-900 dark:text-white">calendar_month</span>
           Important Dates
         </h2>
 
-        <div class="relative">
-          <!-- Timeline Line -->
-          <div class="absolute left-6 top-0 bottom-0 w-0.5" style="background: linear-gradient(to bottom, #003B5C, #00A3E0, #FFB81C);"></div>
-          
-          <div class="space-y-6">
-            <div
-              v-for="(event, index) in timeline"
-              :key="event.title"
-              class="relative pl-16 timeline-item"
-              :style="{ animationDelay: index * 100 + 'ms' }"
-            >
-              <!-- Dot -->
-              <div class="timeline-dot" :class="{
-                'timeline-completed': event.status === 'completed',
-                'timeline-active': event.status === 'active',
-                'timeline-upcoming': event.status === 'upcoming'
-              }">
-                <span class="material-symbols-outlined text-white text-xl">{{ event.icon }}</span>
+        <div class="grid md:grid-cols-4 gap-6">
+          <div
+            v-for="(event, index) in timeline"
+            :key="event.title"
+            class="relative p-4 rounded-lg border transition-all"
+            :class="[
+              event.status === 'completed' ? 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800' : 
+              event.status === 'active' ? 'bg-white dark:bg-gray-800 border-gray-900 dark:border-white ring-1 ring-gray-900 dark:ring-white' :
+              'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+            ]"
+          >
+            <!-- Badge -->
+            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-3" :class="event.badgeClass">
+              {{ event.badge }}
+            </span>
+            
+            <h3 class="font-bold text-gray-900 dark:text-white mb-1">{{ event.title }}</h3>
+            <p class="text-xs text-gray-500 mb-3">{{ event.description }}</p>
+            
+            <div class="flex flex-col gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">calendar_today</span>
+                <span>{{ event.date }}</span>
               </div>
-
-              <!-- Content -->
-              <div class="timeline-content">
-                <div class="flex items-start justify-between mb-2">
-                  <h3 class="font-bold text-gray-900">{{ event.title }}</h3>
-                  <span class="timeline-badge" :style="event.badgeStyle">{{ event.badge }}</span>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">{{ event.description }}</p>
-                <div class="flex items-center gap-4 text-xs text-gray-500">
-                  <div class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">calendar_month</span>
-                    <span>{{ event.date }}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                    <span>{{ event.time }}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm">location_on</span>
-                    <span>{{ event.location }}</span>
-                  </div>
-                </div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">schedule</span>
+                <span>{{ event.time }}</span>
               </div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">location_on</span>
+                <span>{{ event.location }}</span>
+              </div>
+              <a 
+                v-if="event.mapLink" 
+                :href="event.mapLink" 
+                target="_blank" 
+                class="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline mt-1"
+              >
+                <span class="material-symbols-outlined text-sm">map</span>
+                View Map
+              </a>
             </div>
           </div>
         </div>
@@ -258,6 +224,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onActivated } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
@@ -265,21 +232,35 @@ import api from '@/services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 const user = computed(() => authStore.user);
 
 // Journey tracking data
 const registrationData = ref(null);
 const ticketData = ref(null);
 const seatData = ref(null);
+const gownCollectionData = ref(null); // Track gown collection request
+const paymentData = ref(null);
 const loading = ref(true);
 
 // Countdown
 const countdown = ref({ days: 0, hours: 0, mins: 0 });
+const ceremonyDate = ref(null);
+const ceremonyLocation = ref(null);
+const ceremonyMapLink = ref(null);
+const registrationDeadline = ref(null);
+const gownCollectionStartDate = ref(null);
+const gownCollectionEndDate = ref(null);
+const gownCollectionLocation = ref(null);
+const gownCollectionMapLink = ref(null);
+const rehearsalDate = ref(null);
+const rehearsalLocation = ref(null);
+const rehearsalMapLink = ref(null);
 
 const updateCountdown = () => {
-  const ceremony = new Date('2024-06-15T09:00:00');
+  const targetDate = ceremonyDate.value ? new Date(ceremonyDate.value) : new Date('2026-03-13T09:00:00');
   const now = new Date();
-  const diff = ceremony - now;
+  const diff = targetDate - now;
 
   if (diff > 0) {
     countdown.value = {
@@ -294,6 +275,26 @@ const updateCountdown = () => {
 const loadJourneyProgress = async () => {
   loading.value = true;
   try {
+    // Load system settings first
+    try {
+      const settingsRes = await api.get('/settings');
+      if (settingsRes.data.success) {
+        ceremonyDate.value = settingsRes.data.data.ceremonyDate;
+        ceremonyLocation.value = settingsRes.data.data.ceremonyLocation;
+        ceremonyMapLink.value = settingsRes.data.data.ceremonyMapLink;
+        registrationDeadline.value = settingsRes.data.data.registrationDeadline;
+        gownCollectionStartDate.value = settingsRes.data.data.gownCollectionStartDate;
+        gownCollectionEndDate.value = settingsRes.data.data.gownCollectionEndDate;
+        gownCollectionLocation.value = settingsRes.data.data.gownCollectionLocation;
+        gownCollectionMapLink.value = settingsRes.data.data.gownCollectionMapLink;
+        rehearsalDate.value = settingsRes.data.data.rehearsalDate;
+        rehearsalLocation.value = settingsRes.data.data.rehearsalLocation;
+        rehearsalMapLink.value = settingsRes.data.data.rehearsalMapLink;
+        updateCountdown();
+      }
+    } catch (err) {
+      console.error('Error loading settings:', err);
+    }
     // Load registration
     try {
       const regRes = await api.get('/registrations/me');
@@ -322,12 +323,34 @@ const loadJourneyProgress = async () => {
     try {
       const seatsRes = await api.get('/seats/my-bookings');
       if (seatsRes.data.success) {
-        seatData.value = seatsRes.data.data;
+        seatData.value = seatsRes.data.data.bookings || [];
       }
     } catch (err) {
       if (err.response?.status !== 404) {
         console.error('Error loading seats:', err);
       }
+    }
+
+    // Load gown collection request
+    try {
+      const gownRes = await api.get('/gown-collection/my-collection');
+      if (gownRes.data.success && gownRes.data.data.gownCollection) {
+        gownCollectionData.value = gownRes.data.data.gownCollection;
+      }
+    } catch (err) {
+      if (err.response?.status !== 404) {
+        console.error('Error loading gown collection:', err);
+      }
+    }
+
+    // Load payments
+    try {
+      const paymentRes = await api.get('/payments/my-payments');
+      if (paymentRes.data.success) {
+        paymentData.value = paymentRes.data.data.payments;
+      }
+    } catch (err) {
+       console.error('Error loading payments:', err);
     }
   } finally {
     loading.value = false;
@@ -346,21 +369,22 @@ onActivated(() => {
 });
 
 // Navigation - Simplified and organized by flow
-const navigation = [
-  { path: '/student/dashboard', icon: 'dashboard', label: 'Dashboard' },
-  { path: '/student/profile', icon: 'person', label: 'My Profile' },
-  { path: '/student/ticket', icon: 'qr_code_2', label: 'My Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Guest Seats' },
-  { path: '/student/gown-collection', icon: 'checkroom', label: 'Gown Collection' },
-  { path: '/student/booking-confirmation', icon: 'payments', label: 'Payments' }
-];
+const navigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_dashboard') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats') },
+  { path: '/student/gown-collection', icon: 'checkroom', label: t('student.nav_gown') },
+  { path: '/student/booking-confirmation', icon: 'payments', label: t('student.nav_payments') },
+  { path: '/student/chat', icon: 'support_agent', label: t('student.nav_chat') }
+]);
 
-const bottomNavigation = [
-  { path: '/student/dashboard', icon: 'dashboard', label: 'Home' },
-  { path: '/student/ticket', icon: 'qr_code_2', label: 'Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Seats' },
-  { path: '/student/profile', icon: 'person', label: 'Profile' }
-];
+const bottomNavigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_home') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket_short') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats_short') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') }
+]);
 
 // Journey
 const checklist = computed(() => {
@@ -395,7 +419,7 @@ const checklist = computed(() => {
     {
       label: 'Collect Graduation Gown',
       description: 'Request and schedule gown collection',
-      completed: registrationData.value?.gownCollected || false,
+      completed: !!gownCollectionData.value,
       path: '/student/gown-collection',
       action: 'Request',
       icon: 'checkroom',
@@ -404,11 +428,11 @@ const checklist = computed(() => {
     {
       label: 'Complete Payment',
       description: 'Pay for packages and services',
-      completed: false, // Will be updated when payment module is ready
+      completed: !!paymentData.value && paymentData.value.some(p => p.status === 'completed'), // Update logic
       path: '/student/booking-confirmation',
       action: 'Pay Now',
       icon: 'payments',
-      locked: !registrationData.value?.gownCollected
+      locked: !gownCollectionData.value
     }
   ];
 });
@@ -417,402 +441,106 @@ const completedTasks = computed(() => checklist.value.filter(item => item.comple
 const progressPercentage = computed(() => Math.round((completedTasks.value / checklist.value.length) * 100));
 
 // Stats
-const stats = [
+const stats = computed(() => {
+  const isRegistered = registrationData.value && registrationData.value.registrationStatus !== 'cancelled';
+  const gownStatus = gownCollectionData.value?.status ? 
+    gownCollectionData.value.status.charAt(0).toUpperCase() + gownCollectionData.value.status.slice(1) : 
+    'Pending';
+
+  return [
   {
     icon: 'how_to_reg',
-    value: 'Done',
+    value: isRegistered ? 'Done' : 'Pending',
     label: 'Registration',
-    badge: '✓',
-    badgeStyle: 'background: #00A651; color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;',
-    bgGradient: 'linear-gradient(135deg, #00A651 0%, #16a34a 100%)'
+    badge: isRegistered ? '✓' : '',
+    badgeClass: isRegistered 
+      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+      : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    iconBgClass: isRegistered ? 'bg-green-600' : 'bg-amber-500'
   },
   {
     icon: 'confirmation_number',
-    value: '1',
+    value: ticketData.value ? '1' : '0',
     label: 'Tickets',
-    bgGradient: 'linear-gradient(135deg, #00A3E0 0%, #0891b2 100%)'
+    iconBgClass: ticketData.value ? 'bg-blue-600' : 'bg-gray-400'
   },
   {
     icon: 'event_seat',
-    value: '3',
+    value: seatData.value ? seatData.value.length.toString() : '0',
     label: 'Seats Booked',
-    bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)'
+    iconBgClass: seatData.value && seatData.value.length > 0 ? 'bg-purple-600' : 'bg-gray-400'
   },
   {
     icon: 'checkroom',
-    value: 'Pending',
+    value: gownStatus,
     label: 'Gown Status',
-    bgGradient: 'linear-gradient(135deg, #FFB81C 0%, #f59e0b 100%)'
+    iconBgClass: gownCollectionData.value ? 'bg-indigo-600' : 'bg-amber-500'
   },
   {
     icon: 'schedule',
-    value: countdown.days,
+    value: countdown.value?.days || 0,
     label: 'Days Left',
     badge: 'SOON',
-    badgeStyle: 'background: #f97316; color: white; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;',
-    bgGradient: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'
+    badgeClass: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+    iconBgClass: 'bg-orange-600'
   }
-];
+]});
 
-// Quick Actions
-const quickActions = [
-  {
-    icon: 'qr_code_2',
-    label: 'View QR Code',
-    path: '/student/ticket',
-    bgGradient: 'linear-gradient(135deg, #00A3E0, #0891b2)'
-  },
-  {
-    icon: 'shopping_bag',
-    label: 'Book Packages',
-    path: '/student/booking-confirmation',
-    bgGradient: 'linear-gradient(135deg, #003B5C, #00A3E0)'
-  },
-  {
-    icon: 'payments',
-    label: 'My Payments',
-    path: '/student/payment',
-    bgGradient: 'linear-gradient(135deg, #00A651, #16a34a)'
-  },
-  {
-    icon: 'person',
-    label: 'Edit Profile',
-    path: '/student/profile',
-    bgGradient: 'linear-gradient(135deg, #FFB81C, #f59e0b)'
-  }
-];
+
 
 // Timeline
-const timeline = [
+const timeline = computed(() => [
   {
-    title: 'Registration Opens',
-    description: 'Online registration portal available',
-    date: 'May 1, 2024',
-    time: '9:00 AM',
+    title: 'Registration Deadline',
+    description: 'Online registration portal closes',
+    date: registrationDeadline.value ? new Date(registrationDeadline.value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '01/05/2026',
+    time: registrationDeadline.value ? new Date(registrationDeadline.value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '5:00 PM',
     location: 'Online',
     icon: 'app_registration',
     status: 'completed',
-    badge: 'COMPLETED',
-    badgeStyle: 'background: #00A651; color: white; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;'
+    badge: 'IMPORTANT',
+    badgeClass: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
   },
   {
     title: 'Gown Collection Period',
-    description: 'Collect your graduation gown from main office',
-    date: 'May 20 - Jun 10',
-    time: '9 AM - 5 PM',
-    location: 'Building A, Room 101',
+    description: 'Collect your graduation gown',
+    date: gownCollectionStartDate.value ? 
+      `${new Date(gownCollectionStartDate.value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} - ${new Date(gownCollectionEndDate.value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}` : 
+      '20/05/2026 - 10/06/2026',
+    time: gownCollectionStartDate.value ? 
+      `${new Date(gownCollectionStartDate.value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${new Date(gownCollectionEndDate.value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}` :
+      '9 AM - 5 PM',
+    location: gownCollectionLocation.value || 'Building A, Room 101',
+    mapLink: gownCollectionMapLink.value,
     icon: 'checkroom',
     status: 'active',
     badge: 'ACTIVE',
-    badgeStyle: 'background: #FFB81C; color: white; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;'
+    badgeClass: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
   },
   {
     title: 'Rehearsal Day',
     description: 'Mandatory rehearsal for all graduates',
-    date: 'June 14, 2024',
-    time: '2:00 PM',
-    location: 'Main Hall',
+    date: rehearsalDate.value ? new Date(rehearsalDate.value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 
+          (ceremonyDate.value ? new Date(new Date(ceremonyDate.value).getTime() - 86400000).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'TBA'),
+    time: rehearsalDate.value ? new Date(rehearsalDate.value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '2:00 PM',
+    location: rehearsalLocation.value || 'Main Hall',
+    mapLink: rehearsalMapLink.value,
     icon: 'groups',
     status: 'upcoming',
     badge: 'UPCOMING',
-    badgeStyle: 'background: #00A3E0; color: white; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;'
+    badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
   },
   {
     title: 'Graduation Ceremony',
     description: 'The big day! Arrive 30 minutes early',
-    date: 'June 15, 2024',
-    time: '9:00 AM',
-    location: 'University Arena',
+    date: ceremonyDate.value ? new Date(ceremonyDate.value).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '13/03/2026',
+    time: ceremonyDate.value ? new Date(ceremonyDate.value).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '9:00 AM',
+    location: ceremonyLocation.value || 'University Arena',
+    mapLink: ceremonyMapLink.value,
     icon: 'school',
     status: 'upcoming',
     badge: 'UPCOMING',
-    badgeStyle: 'background: #003B5C; color: white; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700;'
+    badgeClass: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
   }
-];
+]);
 </script>
-
-<style scoped>
-/* Modern Card */
-.modern-card {
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f3f4f6;
-  transition: all 0.3s ease;
-}
-
-.modern-card:hover {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-}
-
-/* Stat Cards */
-.stat-card {
-  background: white;
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px solid #f3f4f6;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.stat-card:hover .stat-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.stat-badge {
-  display: inline-block;
-  animation: badge-pulse 2s ease-in-out infinite;
-}
-
-.stat-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.5s;
-}
-
-.stat-card:hover .stat-shine {
-  left: 100%;
-}
-
-/* Journey Items */
-.journey-item {
-  padding: 20px;
-  border-radius: 16px;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.journey-active {
-  background: white;
-  border-color: #e5e7eb;
-}
-
-.journey-active:hover {
-  border-color: #00A3E0;
-  box-shadow: 0 4px 12px rgba(0, 163, 224, 0.1);
-  transform: translateX(4px);
-}
-
-.journey-completed {
-  background: linear-gradient(135deg, rgba(0, 166, 81, 0.05), rgba(22, 163, 74, 0.05));
-  border-color: #00A651;
-}
-
-.journey-locked {
-  background: #f9fafb;
-  border-color: #e5e7eb;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.step-number {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.step-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.step-icon-completed {
-  background: linear-gradient(135deg, #00A651, #16a34a);
-  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.3);
-}
-
-.step-icon-active {
-  background: linear-gradient(135deg, #00A3E0, #0891b2);
-  box-shadow: 0 4px 12px rgba(0, 163, 224, 0.3);
-}
-
-.step-icon-locked {
-  background: #e5e7eb;
-}
-
-.action-button {
-  padding: 8px 20px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #003B5C, #00A3E0);
-  color: white;
-  font-size: 13px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.action-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 59, 92, 0.4);
-}
-
-.status-badge {
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.status-completed {
-  background: rgba(0, 166, 81, 0.15);
-  color: #00A651;
-}
-
-.status-locked {
-  background: #f3f4f6;
-  color: #9ca3af;
-}
-
-/* Quick Actions */
-.quick-action-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 16px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.quick-action-item:hover {
-  background: white;
-  border-color: #00A3E0;
-  box-shadow: 0 4px 12px rgba(0, 163, 224, 0.1);
-  transform: translateX(4px);
-}
-
-.action-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.quick-action-item:hover .action-icon {
-  transform: scale(1.1);
-}
-
-/* Timeline */
-.timeline-item {
-  opacity: 0;
-  animation: slide-in 0.5s ease forwards;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 4px solid white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.timeline-completed {
-  background: linear-gradient(135deg, #00A651, #16a34a);
-}
-
-.timeline-active {
-  background: linear-gradient(135deg, #FFB81C, #f59e0b);
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-.timeline-upcoming {
-  background: #e5e7eb;
-}
-
-.timeline-content {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 20px;
-  transition: all 0.3s ease;
-}
-
-.timeline-item:hover .timeline-content {
-  background: white;
-  border-color: #00A3E0;
-  box-shadow: 0 4px 12px rgba(0, 163, 224, 0.1);
-}
-
-.timeline-badge {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* Animations */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 184, 28, 0.7); }
-  50% { box-shadow: 0 0 0 10px rgba(255, 184, 28, 0); }
-}
-
-@keyframes badge-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-</style>

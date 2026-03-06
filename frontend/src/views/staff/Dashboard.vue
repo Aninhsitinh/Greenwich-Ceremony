@@ -2,151 +2,183 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Staff Dashboard"
-    :show-notifications="true"
+    :page-title="$t('staff.dashboard')"
   >
-    <div class="w-full max-w-7xl mx-auto px-4 py-6">
-      <!-- Header Card -->
-      <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 lg:p-8 text-white mb-6 shadow-xl">
-        <div class="flex items-center justify-between">
+    <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <!-- Minimalist Hero Section -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
+        <div class="flex items-start justify-between">
           <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined">badge</span>
-              <span class="text-sm uppercase tracking-wider opacity-90">Staff Portal</span>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 rounded-lg bg-gray-900 dark:bg-white flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl text-white dark:text-gray-900">workspace_premium</span>
+              </div>
+              <div>
+                <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{{ $t('staff.dashboard') }}</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('auth.welcome_back') }}!</h1>
+              </div>
             </div>
-            <h1 class="text-3xl font-bold mb-2">Welcome, {{ user?.fullName }}</h1>
-            <p class="text-blue-100">Manage ceremony operations and student check-ins</p>
+            <p class="text-xl font-medium text-gray-900 dark:text-white max-w-2xl">
+              {{ user?.fullName }}
+            </p>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Manage ceremony operations with confidence</p>
           </div>
-          <div class="hidden lg:block">
-            <div class="bg-white/20 backdrop-blur-md px-6 py-4 rounded-xl border border-white/30">
-              <p class="text-xs uppercase tracking-wider mb-1">Today's Date</p>
-              <p class="text-2xl font-bold">{{ currentDate }}</p>
+          
+          <!-- Date Card -->
+          <div class="hidden lg:block text-right">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Today</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ currentDate }}</p>
+            <div class="mt-2 flex items-center justify-end gap-2">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span class="text-gray-500 text-xs font-medium">System Online</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Stats Grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div
-          v-for="stat in stats"
-          :key="stat.label"
-          class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm"
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div 
+          v-for="(stat, index) in stats" 
+          :key="index"
+          class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
         >
-          <div class="flex items-center justify-between mb-3">
-            <div :class="['w-12 h-12 rounded-xl flex items-center justify-center', stat.bgColor]">
-              <span class="material-symbols-outlined text-2xl" :class="stat.textColor">{{ stat.icon }}</span>
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" :class="stat.iconBgClass">
+              <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
             </div>
-            <span :class="['text-xs font-semibold px-2 py-1 rounded-full', stat.badge.class]">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold" :class="stat.badge.class">
               {{ stat.badge.text }}
             </span>
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ stat.value }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="mb-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <button
-            v-for="action in quickActions"
-            :key="action.label"
-            @click="$router.push(action.path)"
-            :class="[
-              'flex flex-col items-center justify-center gap-3 p-6 rounded-xl transition-all hover:scale-105',
-              action.variant === 'primary'
-                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-primary'
-            ]"
-          >
-            <span class="material-symbols-outlined text-4xl">{{ action.icon }}</span>
-            <span class="font-semibold text-sm text-center">{{ action.label }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Two Column Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left: Recent Activity + Scan Stats -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Scan Statistics -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-bold text-gray-900 dark:text-white">Today's Scan Activity</h2>
-              <button class="text-primary text-sm font-semibold hover:underline">View All</button>
-            </div>
-            <div class="grid grid-cols-3 gap-4 mb-4">
-              <div class="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <p class="text-3xl font-bold text-green-600">{{ scanStats.valid }}</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Valid Scans</p>
-              </div>
-              <div class="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <p class="text-3xl font-bold text-red-600">{{ scanStats.invalid }}</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Invalid</p>
-              </div>
-              <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p class="text-3xl font-bold text-blue-600">{{ scanStats.total }}</p>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Total</p>
-              </div>
+          
+          <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+            {{ stat.value }}
+          </h3>
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {{ stat.label }}
+          </p>
+          
+          <!-- Progress bar -->
+          <div v-if="stat.progress" class="mt-4">
+            <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                class="h-full rounded-full transition-all duration-1000"
+                :class="stat.progressClass"
+                :style="{ width: `${stat.progress}%` }"
+              ></div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Recent Activity -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
+      <!-- Quick Actions & Recent Activity -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Quick Actions -->
+        <div class="lg:col-span-1">
+          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+              <span class="material-symbols-outlined text-gray-900 dark:text-white">bolt</span>
+              {{ $t('student.quick_actions') }}
+            </h2>
             <div class="space-y-3">
-              <div
-                v-for="activity in recentActivity"
-                :key="activity.id"
-                class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+              <router-link
+                v-for="action in quickActions"
+                :key="action.path"
+                :to="action.path"
+                class="block group"
               >
-                <div :class="['w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0', activity.iconBg]">
-                  <span class="material-symbols-outlined text-white text-lg">{{ activity.icon }}</span>
+                <div class="flex items-center gap-4 p-4 rounded-lg border transition-all duration-200"
+                  :class="action.variant === 'primary' 
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white hover:opacity-90' 
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-900 dark:text-white'"
+                >
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                    :class="action.variant === 'primary' ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700'"
+                  >
+                    <span class="material-symbols-outlined text-xl" 
+                      :class="action.variant === 'primary' ? 'text-white dark:text-gray-900' : 'text-gray-900 dark:text-white'"
+                    >
+                      {{ action.icon }}
+                    </span>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-sm">
+                      {{ action.label }}
+                    </p>
+                    <p class="text-xs opacity-70">
+                      {{ action.description || 'Click to open' }}
+                    </p>
+                  </div>
+                  <span class="material-symbols-outlined text-sm opacity-50 group-hover:translate-x-1 transition-transform">
+                    arrow_forward
+                  </span>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="lg:col-span-2">
+          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 h-full">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-900 dark:text-white">schedule</span>
+                Recent Activity
+              </h2>
+              <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium underline">View All</button>
+            </div>
+            
+            <div class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+              <div 
+                v-for="activity in recentActivity" 
+                :key="activity.id"
+                class="flex items-start gap-4 p-4 rounded-lg border border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all"
+              >
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" :class="activity.iconBgClass">
+                  <span class="material-symbols-outlined text-lg">{{ activity.icon }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="font-semibold text-sm text-gray-900 dark:text-white">{{ activity.title }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ activity.description }}</p>
-                  <p class="text-xs text-gray-400 mt-1">{{ activity.time }}</p>
+                  <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ activity.title }}</p>
+                  <p class="text-xs text-gray-500 truncate mt-0.5">{{ activity.description }}</p>
+                  <p class="text-[10px] text-gray-400 mt-1">{{ activity.time }}</p>
                 </div>
-                <span :class="['text-xs font-semibold px-2 py-1 rounded-full', activity.badge.class]">
+                <span class="px-2 py-1 rounded text-[10px] font-bold flex-shrink-0" :class="activity.badge.class">
                   {{ activity.badge.text }}
                 </span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Right: Tasks + Alerts -->
-        <div class="space-y-6">
-          <!-- Pending Tasks -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Pending Tasks</h2>
-            <div class="space-y-3">
-              <div
-                v-for="task in pendingTasks"
-                :key="task.id"
-                class="flex items-start gap-3 pb-3 border-b border-gray-100 dark:border-gray-700 last:border-0 last:pb-0"
-              >
-                <input type="checkbox" class="mt-1 w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary" />
-                <div class="flex-1">
-                  <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ task.title }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ task.due }}</p>
-                </div>
+      <!-- Scan Stats -->
+      <div v-if="scanStats.total > 0" class="bg-gray-900 dark:bg-white rounded-lg p-6 shadow-sm text-white dark:text-gray-900">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold mb-4">Today's Scan Statistics</h3>
+            <div class="flex items-center gap-8">
+              <div>
+                <p class="text-3xl font-black">{{ scanStats.valid }}</p>
+                <p class="text-xs opacity-70 uppercase tracking-wider font-semibold">Valid</p>
+              </div>
+              <div>
+                <p class="text-3xl font-black">{{ scanStats.invalid }}</p>
+                <p class="text-xs opacity-70 uppercase tracking-wider font-semibold">Invalid</p>
+              </div>
+              <div class="w-px h-10 bg-white/20 dark:bg-black/10"></div>
+              <div>
+                <p class="text-3xl font-black">{{ scanStats.total }}</p>
+                <p class="text-xs opacity-70 uppercase tracking-wider font-semibold">Total</p>
               </div>
             </div>
           </div>
-
-          <!-- System Status -->
-          <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
-            <div class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-3xl">verified</span>
-              <div>
-                <h3 class="font-bold text-lg mb-1">All Systems Operational</h3>
-                <p class="text-sm text-green-100">Check-in system running smoothly</p>
-              </div>
-            </div>
+          <div class="hidden lg:block relative">
+             <div class="flex items-center gap-2">
+                <span class="text-4xl font-bold">{{ Math.round((scanStats.valid / scanStats.total) * 100) }}%</span>
+                <span class="text-sm font-medium opacity-70">Success Rate</span>
+             </div>
           </div>
         </div>
       </div>
@@ -155,121 +187,222 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, onActivated } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
+import api from '@/services/api';
 
 const authStore = useAuthStore();
+const { t } = useI18n();
 const user = computed(() => authStore.user);
 
-const navigation = [
-  { path: '/staff', icon: 'dashboard', label: 'Dashboard' },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: 'QR Scanner' },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: 'Gown Collection' },
-  { path: '/staff/seat-management', icon: 'event_seat', label: 'Seat Management' },
-  { path: '/staff/student-list', icon: 'group', label: 'Student List' },
-  { path: '/staff/settings', icon: 'settings', label: 'Settings' }
-];
+const navigation = computed(() => [
+  { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
+  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
+  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
+  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
+  { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
+  { path: '/staff/settings', icon: 'settings', label: t('staff.nav_settings') },
+  { path: '/staff/chat', icon: 'support_agent', label: t('staff.nav_chat') }
+]);
 
-const bottomNavigation = [
-  { path: '/staff', icon: 'home', label: 'Home' },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: 'Scan' },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: 'Gown' },
-  { path: '/staff/student-list', icon: 'group', label: 'Students' }
-];
+const bottomNavigation = computed(() => [
+  { path: '/staff', icon: 'home', label: t('staff.nav_home') },
+  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
+  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
+]);
 
-const currentDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
 
-const stats = [
-  {
-    icon: 'confirmation_number',
-    value: '247',
-    label: 'Total Registrations',
-    bgColor: 'bg-blue-100 dark:bg-blue-900/20',
-    textColor: 'text-blue-600',
-    badge: { text: '+12 today', class: 'bg-blue-100 text-blue-600' }
-  },
-  {
-    icon: 'verified',
-    value: '189',
-    label: 'Confirmed Students',
-    bgColor: 'bg-green-100 dark:bg-green-900/20',
-    textColor: 'text-green-600',
-    badge: { text: '76%', class: 'bg-green-100 text-green-600' }
-  },
-  {
-    icon: 'qr_code_scanner',
-    value: '45',
-    label: 'Scanned Today',
-    bgColor: 'bg-purple-100 dark:bg-purple-900/20',
-    textColor: 'text-purple-600',
-    badge: { text: 'Live', class: 'bg-purple-100 text-purple-600' }
-  },
-  {
-    icon: 'checkroom',
-    value: '123',
-    label: 'Gowns Collected',
-    bgColor: 'bg-orange-100 dark:bg-orange-900/20',
-    textColor: 'text-orange-600',
-    badge: { text: '65%', class: 'bg-orange-100 text-orange-600' }
-  }
-];
+// Real-time data from MongoDB
+const loading = ref(true);
+const statistics = ref(null);
+const recentRegistrations = ref([]);
 
-const quickActions = [
-  { icon: 'qr_code_scanner', label: 'Scan QR Code', path: '/staff/qr-scanner', variant: 'primary' },
-  { icon: 'checkroom', label: 'Gown Collection', path: '/staff/gown-collection' },
-  { icon: 'event_seat', label: 'Seat Management', path: '/staff/seat-management' },
-  { icon: 'group', label: 'Student List', path: '/staff/student-list' }
-];
-
-const scanStats = ref({
-  valid: 42,
-  invalid: 3,
-  total: 45
+// Computed stats for UI
+const stats = computed(() => {
+  if (!statistics.value) return [];
+  
+  const { overview, seats, gowns } = statistics.value;
+  
+  return [
+    {
+      icon: 'groups',
+      value: overview?.totalRegistrations || 0,
+      label: 'Total Registrations',
+      iconBgClass: 'bg-blue-600',
+      badge: { 
+        text: `+${overview?.recentRegistrations || 0} recent`, 
+        class: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' 
+      },
+      progress: overview?.registrationRate || 0,
+      progressClass: 'bg-blue-600'
+    },
+    {
+      icon: 'verified_user',
+      value: overview?.confirmedRegistrations || 0,
+      label: 'Confirmed Students',
+      iconBgClass: 'bg-emerald-600',
+      badge: { 
+        text: `${overview?.registrationRate || 0}%`, 
+        class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' 
+      },
+      progress: overview?.registrationRate || 0,
+      progressClass: 'bg-emerald-600'
+    },
+    {
+      icon: 'confirmation_number',
+      value: overview?.totalTickets || 0,
+      label: 'Tickets Generated',
+      iconBgClass: 'bg-purple-600',
+      badge: { 
+        text: `${overview?.ticketGenerationRate || 0}%`, 
+        class: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' 
+      },
+      progress: overview?.ticketGenerationRate || 0,
+      progressClass: 'bg-purple-600'
+    },
+    {
+      icon: 'checkroom',
+      value: gowns?.totalCollected || 0,
+      label: 'Gowns Collected',
+      iconBgClass: 'bg-orange-600',
+      badge: { 
+        text: `${gowns?.collectionRate || 0}%`, 
+        class: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' 
+      },
+      progress: gowns?.collectionRate || 0,
+      progressClass: 'bg-orange-600'
+    }
+  ];
 });
 
-const recentActivity = [
-  {
-    id: 1,
-    icon: 'qr_code_scanner',
-    iconBg: 'bg-green-500',
-    title: 'Ticket Scanned Successfully',
-    description: 'John Doe - GCS220001',
-    time: '2 minutes ago',
-    badge: { text: 'Valid', class: 'bg-green-100 text-green-600' }
+const quickActions = [
+  { 
+    icon: 'qr_code_scanner', 
+    label: 'Scan QR Code', 
+    path: '/staff/qr-scanner', 
+    variant: 'primary',
+    description: 'Verify student tickets'
   },
-  {
-    id: 2,
-    icon: 'checkroom',
-    iconBg: 'bg-blue-500',
-    title: 'Gown Collected',
-    description: 'Jane Smith - Size M',
-    time: '5 minutes ago',
-    badge: { text: 'Completed', class: 'bg-blue-100 text-blue-600' }
+  { 
+    icon: 'checkroom', 
+    label: 'Gown Collection', 
+    path: '/staff/gown-collection',
+    description: 'Manage gown distribution'
   },
-  {
-    id: 3,
-    icon: 'warning',
-    iconBg: 'bg-red-500',
-    title: 'Invalid Ticket Detected',
-    description: 'Duplicate scan attempt',
-    time: '12 minutes ago',
-    badge: { text: 'Alert', class: 'bg-red-100 text-red-600' }
+  { 
+    icon: 'event_seat', 
+    label: 'Seat Management', 
+    path: '/staff/seat-management',
+    description: 'View seat assignments'
   },
-  {
-    id: 4,
-    icon: 'event_seat',
-    iconBg: 'bg-purple-500',
-    title: 'Seat Assignment Updated',
-    description: 'Row A, Seat 15',
-    time: '25 minutes ago',
-    badge: { text: 'Updated', class: 'bg-purple-100 text-purple-600' }
+  { 
+    icon: 'group', 
+    label: 'Student List', 
+    path: '/staff/student-list',
+    description: 'View all students'
   }
 ];
 
-const pendingTasks = [
-  { id: 1, title: 'Verify student registrations', due: 'Due today' },
-  { id: 2, title: 'Update seating arrangement', due: 'Due tomorrow' },
-  { id: 3, title: 'Prepare gown inventory', due: 'Due in 3 days' }
-];
+const scanStats = computed(() => {
+  // TODO: Implement real scan stats from backend
+  return {
+    valid: 0,
+    invalid: 0,
+    total: 0
+  };
+});
+
+// Recent activity computed from registrations
+const recentActivity = computed(() => {
+  if (!recentRegistrations.value || recentRegistrations.value.length === 0) {
+    return [];
+  }
+  
+  return recentRegistrations.value.slice(0, 5).map((reg) => {
+    const timeAgo = getTimeAgo(new Date(reg.createdAt));
+    
+    return {
+      id: reg._id,
+      icon: 'how_to_reg',
+      iconBgClass: 'bg-indigo-600',
+      title: 'New Registration',
+      description: `${reg.userId?.fullName || 'Unknown'} - ${reg.userId?.studentId || 'N/A'}`,
+      time: timeAgo,
+      badge: { 
+        text: reg.registrationStatus === 'confirmed' ? 'Confirmed' : 'Pending', 
+        class: reg.registrationStatus === 'confirmed' 
+          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' 
+          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+      }
+    };
+  });
+});
+
+// Load dashboard statistics
+const loadStatistics = async () => {
+  loading.value = true;
+  try {
+    const response = await api.get('/staff/statistics');
+    if (response.data.success) {
+      statistics.value = response.data.data;
+    }
+  } catch (error) {
+    console.error('Error loading statistics:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Load recent registrations
+const loadRecentRegistrations = async () => {
+  try {
+    const response = await api.get('/staff/registrations/recent?limit=10');
+    if (response.data.success) {
+      recentRegistrations.value = response.data.data.registrations;
+    }
+  } catch (error) {
+    console.error('Error loading recent registrations:', error);
+  }
+};
+
+// Helper function
+const getTimeAgo = (date) => {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+  return `${Math.floor(seconds / 86400)} days ago`;
+};
+
+// Load on mount
+onMounted(() => {
+  loadStatistics();
+  loadRecentRegistrations();
+});
+
+// Reload when navigating back (like student dashboard)
+onActivated(() => {
+  loadStatistics();
+  loadRecentRegistrations();
+});
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-700 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400;
+}
+</style>

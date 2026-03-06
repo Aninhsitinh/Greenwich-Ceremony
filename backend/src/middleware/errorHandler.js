@@ -5,26 +5,28 @@ export const errorHandler = (err, req, res, next) => {
     // Log error for debugging
     console.error('Error:', err);
 
-    // Mongoose bad ObjectId
-    if (err.name === 'CastError') {
+    // Prisma Not Found Error (usually when trying to findUnique or update with non-existent ID)
+    if (err.code === 'P2025') {
         const message = 'Resource not found';
         error = { message, statusCode: 404 };
     }
 
-    // Mongoose duplicate key
-    if (err.code === 11000) {
-        const field = Object.keys(err.keyPattern)[0];
+    // Prisma Unique Constraint Violation
+    if (err.code === 'P2002') {
+        const field = err.meta?.target?.[0] || 'Field';
         const message = `${field} already exists`;
         error = { message, statusCode: 400 };
     }
 
-    // Mongoose validation error
-    if (err.name === 'ValidationError') {
-        const message = Object.values(err.errors).map(val => val.message).join(', ');
+    // Prisma Validation Error
+    if (err.name === 'PrismaClientValidationError') {
+        const message = err.message.split('\n').pop() || 'Validation Error';
         error = { message, statusCode: 400 };
     }
 
-    res.status(error.statusCode || 500).json({
+    const statusCode = error.statusCode || error.status || err.statusCode || err.status || 500;
+
+    res.status(statusCode).json({
         success: false,
         message: error.message || 'Server Error',
     });

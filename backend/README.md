@@ -20,12 +20,12 @@ Backend API for FPT Greenwich Graduation Ceremony Management System.
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: MongoDB with Mongoose
+- **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: JWT (jsonwebtoken)
 - **Real-time**: Socket.io
 - **Security**: Helmet.js, CORS, bcryptjs
 - **Validation**: express-validator
-- **File Upload**: Multer
+- **File Upload**: Cloudinary
 - **QR Code**: qrcode library
 
 ## Installation
@@ -36,14 +36,20 @@ npm install
 ```
 
 2. Configure environment variables:
-   - Copy `.env` and update values
-   - Set your MongoDB connection string
+   - Copy `.env.example` to `.env` and fill in the values
+   - Set your PostgreSQL connection string in `DATABASE_URL`
    - Set JWT secret key
 
-3. Start MongoDB:
+3. Set up the database:
 ```bash
-# Make sure MongoDB is running on your system
-mongod
+# Push Prisma schema to PostgreSQL
+npx prisma db push
+
+# (Optional) Open Prisma Studio to inspect data
+npx prisma studio
+
+# Seed default data
+npm run seed
 ```
 
 4. Run the server:
@@ -93,28 +99,32 @@ npm start
 ## Socket.io Events
 
 ### Client → Server
-- `join` - Join user room
-- `chat_message` - Send chat message
+- `join` - Join user room with `{ userId, role }`
+- `ceremony:join` - Join ceremony room
+- `chat:send` - Send chat message
 - `send_notification` - Send notification
 
 ### Server → Client
-- `new_message` - Receive new message
+- `chat:message` - Receive new chat message
 - `new_notification` - Receive new notification
+- `ceremony:ticket_scanned` - Ticket scanned event (MC)
+- `ceremony:seat_confirmed` - Seat confirmed event (MC)
+- `user:online` / `user:offline` - Presence status
 
 ## Project Structure
 
 ```
 backend/
 ├── src/
-│   ├── config/          # Configuration files
-│   ├── controllers/     # Route controllers
-│   ├── middleware/      # Custom middleware
-│   ├── models/          # Mongoose models
-│   ├── routes/          # API routes
-│   ├── utils/           # Utility functions
+│   ├── config/          # Configuration files (database, cloudinary)
+│   ├── controllers/     # Route controllers (15 files)
+│   ├── middleware/      # Custom middleware (auth, error handler)
+│   ├── routes/          # API routes (17 files)
+│   ├── utils/           # Utility functions (QR, mail)
 │   └── app.js           # Main application file
-├── uploads/             # Uploaded files
-├── .env                 # Environment variables
+├── prisma/
+│   └── schema.prisma    # PostgreSQL schema definition
+├── .env                 # Environment variables (not committed)
 ├── .gitignore
 └── package.json
 ```
@@ -124,16 +134,18 @@ backend/
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/stitch_ceremony
+DATABASE_URL=postgresql://user:password@localhost:5432/stitch_ceremony
 JWT_SECRET=your-secret-key
 JWT_EXPIRE=24h
-FRONTEND_URL=http://localhost:3000
-MAX_FILE_SIZE=5242880
+FRONTEND_URL=http://localhost:5173
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-## Database Models
+## Database Models (Prisma / PostgreSQL)
 
-1. **User** - User accounts
+1. **User** - User accounts (uuid primary key)
 2. **Registration** - Ceremony registrations
 3. **SeatBooking** - Seat bookings
 4. **Ticket** - QR code tickets
@@ -144,6 +156,7 @@ MAX_FILE_SIZE=5242880
 9. **ProcessionQueue** - Ceremony queue
 10. **Payment** - Payment records
 11. **SystemSettings** - Global settings
+12. **GownCollection** - Gown collection records
 
 ## Security Features
 
@@ -163,6 +176,9 @@ npm install -D nodemon
 
 # Run in development mode
 npm run dev
+
+# View database with Prisma Studio
+npx prisma studio
 ```
 
 ## Testing API

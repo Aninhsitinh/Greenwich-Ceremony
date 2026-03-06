@@ -1,16 +1,18 @@
 <template>
-  <div class="flex h-screen bg-background-light dark:bg-background-dark overflow-hidden">
+  <div class="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
     <!-- Desktop Sidebar -->
-    <aside class="hidden lg:flex lg:flex-col lg:w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+    <aside class="hidden lg:flex lg:flex-col lg:w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
       <!-- Logo -->
-      <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-800">
-        <div class="flex size-12 items-center justify-center bg-white rounded-xl p-1.5 shadow-sm">
-          <img 
-            src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-            alt="University of Greenwich" 
-            class="w-full h-full object-contain"
-          />
-        </div>
+      <div class="flex items-center gap-3 p-6 border-b border-gray-100 dark:border-gray-700">
+            <img 
+              src="@/assets/images/university-of-greenwich.jpg" 
+              alt="University of Greenwich" 
+              class="h-10 w-auto object-contain"
+            />
+
+
+
+
         <div>
           <h2 class="font-bold text-gray-900 dark:text-white font-greenwich">Greenwich</h2>
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ roleLabel }}</p>
@@ -18,7 +20,7 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 p-4 overflow-y-auto">
+      <nav class="flex-1 p-4 overflow-y-auto custom-scrollbar">
         <div class="space-y-1">
           <router-link
             v-for="item in navigation"
@@ -30,10 +32,10 @@
             <button
               @click="$router.push(item.path)"
               :class="[
-                'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-colors',
+                'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all',
                 isActive
-                  ? 'bg-greenwich-navy dark:bg-greenwich-blue text-white'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
               ]"
             >
               <span class="material-symbols-outlined text-xl">{{ item.icon }}</span>
@@ -44,50 +46,67 @@
       </nav>
 
       <!-- User Profile -->
-      <div class="p-4 border-t border-gray-200 dark:border-gray-800">
-        <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
-          <div class="w-10 h-10 rounded-full bg-greenwich-blue/10 flex items-center justify-center">
-            <span class="text-greenwich-navy dark:text-greenwich-blue font-bold">{{ userInitial }}</span>
+      <div class="p-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+        <router-link 
+          to="/student/profile"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all group"
+        >
+          <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-gray-600">
+            <div 
+              v-if="userPhoto"
+              class="w-full h-full bg-cover bg-center"
+              :style="`background-image: url('${userPhoto}')`"
+            ></div>
+            <span v-else class="text-gray-600 dark:text-gray-300 font-bold">{{ userInitial }}</span>
           </div>
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-sm text-gray-900 dark:text-white truncate">{{ userName }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ userEmail }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ userEmail }}</p>
           </div>
-          <button @click="handleLogout" class="text-gray-400 hover:text-red-500">
+          <button @click.prevent="handleLogout" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
             <span class="material-symbols-outlined text-xl">logout</span>
           </button>
-        </div>
+        </router-link>
       </div>
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col overflow-hidden">
-      <!-- Mobile Header -->
-      <header class="lg:hidden sticky top-0 z-40 flex items-center bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-4">
-        <button @click="toggleMobileMenu" class="mr-3">
-          <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
-        </button>
-        <div class="flex items-center gap-2 flex-1">
-          <div class="flex size-9 items-center justify-center bg-white rounded-lg p-1 shadow-sm">
-            <img 
-              src="@/assets/images/inprep-partner-logos-06-300x200.png" 
-              alt="Greenwich" 
-              class="w-full h-full object-contain"
-            />
-          </div>
-          <h2 class="font-bold text-gray-900 dark:text-white">{{ pageTitle }}</h2>
-        </div>
+    <div class="flex-1 flex flex-col overflow-hidden relative">
+      <!-- Desktop Header (for Language Switcher & Notifications) -->
+      <header :class="['hidden lg:flex absolute right-0 z-40 p-4 items-center gap-3', desktopHeaderClass]">
+        <LanguageSwitcher />
         <NotificationBell v-if="showNotifications" />
       </header>
 
+      <!-- Mobile Header -->
+      <header class="lg:hidden sticky top-0 z-40 flex items-center bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 py-2">
+        <button @click="toggleMobileMenu" class="mr-3">
+          <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
+        </button>
+        <div class="flex items-center gap-2 flex-1 min-w-0">
+            <img 
+              src="@/assets/images/university-of-greenwich.jpg" 
+              alt="Greenwich" 
+              class="h-7 w-auto object-contain flex-shrink-0"
+            />
+          <h2 class="font-bold text-gray-900 dark:text-white text-sm truncate">{{ pageTitle }}</h2>
+        </div>
+        
+        <!-- Header Actions -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <LanguageSwitcher />
+          <NotificationBell v-if="showNotifications" />
+        </div>
+      </header>
+
       <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto pb-20 lg:pb-0">
+      <main class="flex-1 overflow-y-auto pb-24 lg:pb-0 custom-scrollbar" style="padding-bottom: calc(4rem + env(safe-area-inset-bottom))" >
         <slot></slot>
       </main>
 
       <!-- Mobile Bottom Navigation -->
-      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 safe-bottom">
-        <div class="flex items-center justify-around px-2 py-2">
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700" style="padding-bottom: env(safe-area-inset-bottom)">
+        <div class="flex items-center justify-around px-1 py-2.5">
           <router-link
             v-for="item in bottomNavigation"
             :key="item.path"
@@ -98,14 +117,14 @@
             <button
               @click="$router.push(item.path)"
               :class="[
-                'flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-lg flex-1 transition-colors',
+                'flex flex-col items-center justify-center gap-0.5 px-2 py-2 rounded-xl flex-1 transition-all min-w-0',
                 isActive
-                  ? 'text-primary'
-                  : 'text-gray-500 dark:text-gray-400'
+                  ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800'
+                  : 'text-gray-400 dark:text-gray-500'
               ]"
             >
-              <span class="material-symbols-outlined text-2xl">{{ item.icon }}</span>
-              <span class="text-xs font-semibold">{{ item.label }}</span>
+              <span class="material-symbols-outlined text-[22px] leading-none" :class="isActive ? 'font-variation-filled' : ''">{{ item.icon }}</span>
+              <span class="text-[9px] font-semibold leading-none truncate w-full text-center">{{ item.label }}</span>
             </button>
           </router-link>
         </div>
@@ -115,26 +134,32 @@
     <!-- Mobile Menu Overlay -->
     <div
       v-if="mobileMenuOpen"
-      class="lg:hidden fixed inset-0 z-50 bg-black/50"
+      class="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
       @click="toggleMobileMenu"
     >
       <div
-        class="absolute left-0 top-0 bottom-0 w-80 bg-white dark:bg-gray-900 shadow-2xl"
+        class="absolute left-0 top-0 bottom-0 w-72 max-w-[85vw] shadow-2xl bg-white dark:bg-gray-800"
         @click.stop
       >
         <!-- Mobile Menu Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+        <div class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
           <div class="flex items-center gap-3">
-            <div class="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-600 text-white">
-              <span class="material-symbols-outlined text-xl">school</span>
-            </div>
+            <img 
+              src="@/assets/images/university-of-greenwich.jpg" 
+              alt="University of Greenwich" 
+              class="h-10 w-auto object-contain"
+            />
+
+
+
+
             <div>
               <h2 class="font-bold text-gray-900 dark:text-white">Greenwich</h2>
               <p class="text-xs text-gray-500 dark:text-gray-400">{{ roleLabel }}</p>
             </div>
           </div>
-          <button @click="toggleMobileMenu">
-            <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">close</span>
+          <button @click="toggleMobileMenu" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
+            <span class="material-symbols-outlined">close</span>
           </button>
         </div>
 
@@ -151,10 +176,10 @@
               <button
                 @click="navigateAndClose(item.path)"
                 :class="[
-                  'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-colors',
+                  'w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all',
                   isActive
-                    ? 'bg-primary text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                 ]"
               >
                 <span class="material-symbols-outlined text-xl">{{ item.icon }}</span>
@@ -165,22 +190,30 @@
         </nav>
 
         <!-- Mobile Menu User -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-          <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span class="text-primary font-bold">{{ userInitial }}</span>
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-gray-700">
+          <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all">
+            <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-gray-600">
+              <div 
+                v-if="userPhoto"
+                class="w-full h-full bg-cover bg-center"
+                :style="`background-image: url('${userPhoto}')`"
+              ></div>
+              <span v-else class="text-gray-600 dark:text-gray-300 font-bold">{{ userInitial }}</span>
             </div>
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-sm text-gray-900 dark:text-white truncate">{{ userName }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ userEmail }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ userEmail }}</p>
             </div>
-            <button @click="handleLogout" class="text-gray-400 hover:text-red-500">
+            <button @click="handleLogout" class="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0">
               <span class="material-symbols-outlined text-xl">logout</span>
             </button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Internal Chat Widget (Hidden for students) -->
+    <InternalChatWidget v-if="['admin', 'staff', 'mc'].includes(userRole)" />
   </div>
 </template>
 
@@ -189,6 +222,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import NotificationBell from './NotificationBell.vue';
+import InternalChatWidget from './InternalChatWidget.vue';
+import LanguageSwitcher from './LanguageSwitcher.vue';
 
 const props = defineProps({
   navigation: {
@@ -206,6 +241,10 @@ const props = defineProps({
   showNotifications: {
     type: Boolean,
     default: false
+  },
+  desktopHeaderClass: {
+    type: String,
+    default: 'top-0'
   }
 });
 
@@ -219,12 +258,14 @@ const userRole = computed(() => authStore.userRole);
 const roleLabel = computed(() => {
   if (userRole.value === 'admin') return 'Admin Portal';
   if (userRole.value === 'staff') return 'Staff Portal';
+  if (userRole.value === 'mc') return 'MC Console';
   return 'Student Portal';
 });
 
 const userName = computed(() => user.value?.fullName || 'User');
 const userEmail = computed(() => user.value?.email || '');
-const userInitial = computed(() => userName.value.charAt(0).toUpperCase());
+const userInitial = computed(() => userName.value?.charAt(0).toUpperCase() || 'U');
+const userPhoto = computed(() => user.value?.profilePhoto || null);
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -242,57 +283,25 @@ const handleLogout = async () => {
 </script>
 
 <style scoped>
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-/* Mobile menu animations */
-.mobile-menu-enter-active,
-.mobile-menu-leave-active {
-  transition: all 0.3s ease;
+.font-variation-filled {
+  font-variation-settings: 'FILL' 1;
 }
 
-.mobile-menu-enter-from {
-  opacity: 0;
-  transform: translateX(-100%);
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
 }
 
-.mobile-menu-leave-to {
-  opacity: 0;
-  transform: translateX(-100%);
-}
-
-/* Bottom navigation */
-.bottom-nav-enter-active,
-.bottom-nav-leave-active {
-  transition: all 0.3s ease;
-}
-
-.bottom-nav-enter-from,
-.bottom-nav-leave-to {
-  opacity: 0;
-  transform: translateY(100%);
-}
-
-/* Smooth scroll */
-.overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 59, 92, 0.3) transparent;
-}
-
-.overflow-y-auto::-webkit-scrollbar {
-  width: 6px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 59, 92, 0.3);
-  border-radius: 3px;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
 }
 
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 59, 92, 0.5);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 </style>

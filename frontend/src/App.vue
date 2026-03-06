@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <RouterView />
-    <FloatingChat />
   </div>
 </template>
 
@@ -9,7 +8,6 @@
 import { onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { RouterView } from 'vue-router';
-import FloatingChat from '@/components/FloatingChat.vue';
 
 const authStore = useAuthStore();
 

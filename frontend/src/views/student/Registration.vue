@@ -2,263 +2,209 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Ceremony Registration"
+    :page-title="$t('nav.register')"
   >
     <div class="w-full max-w-4xl mx-auto px-4 py-6 space-y-6">
-      <!-- Header Section -->
-      <div class="modern-card text-center relative overflow-hidden">
-        <div class="absolute inset-0 opacity-5" style="background: linear-gradient(135deg, #003B5C, #00A3E0);"></div>
-        <div class="relative z-10 p-8">
-          <div class="w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, #003B5C, #00A3E0);">
-            <span class="material-symbols-outlined text-white text-4xl">school</span>
-          </div>
-          <h1 class="text-3xl font-bold mb-2" style="color: #111827; font-family: 'Montserrat', sans-serif;">Graduation Ceremony 2024</h1>
-          <p class="text-gray-600">University of Greenwich • Confirm Your Attendance</p>
-        </div>
+      
+      <!-- Back Button -->
+      <div class="flex items-center justify-between">
+        <button @click="$router.push('/student/dashboard')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span class="text-sm font-semibold">Back to Dashboard</span>
+        </button>
       </div>
 
       <!-- Messages -->
-      <div v-if="successMessage" class="modern-card" style="background: linear-gradient(135deg, rgba(0, 166, 81, 0.1), rgba(22, 163, 74, 0.05)); border-color: #00A651;">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined" style="color: #00A651;">check_circle</span>
-          <p class="font-semibold" style="color: #00A651;">{{ successMessage }}</p>
-        </div>
+      <div v-if="successMessage" class="p-4 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 flex items-center gap-3 animate-fade-in">
+        <span class="material-symbols-outlined text-green-600 dark:text-green-400">check_circle</span>
+        <p class="text-green-700 dark:text-green-300 font-medium">{{ successMessage }}</p>
       </div>
 
-      <div v-if="error" class="modern-card" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05)); border-color: #ef4444;">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined" style="color: #ef4444;">error</span>
-          <p class="font-semibold" style="color: #ef4444;">{{ error }}</p>
-        </div>
+      <div v-if="error" class="p-4 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 flex items-center gap-3 animate-fade-in">
+        <span class="material-symbols-outlined text-red-600 dark:text-red-400">error</span>
+        <p class="text-red-700 dark:text-red-300 font-medium">{{ error }}</p>
       </div>
 
-      <!-- Existing Registration -->
-      <div v-if="hasRegistration && !editing" class="space-y-6">
-        <div class="modern-card">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold flex items-center gap-3" style="color: #111827; font-family: 'Montserrat', sans-serif;">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #00A651, #16a34a);">
-                <span class="material-symbols-outlined text-white text-2xl">how_to_reg</span>
+      <!-- Main Content -->
+      <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Event Card -->
+        <div class="lg:col-span-1">
+          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden sticky top-24">
+            <div class="bg-gray-900 dark:bg-gray-700 h-32 relative flex items-center justify-center overflow-hidden">
+               <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
+               <span class="material-symbols-outlined text-gray-700 dark:text-gray-600 text-8xl absolute -bottom-4 -right-4 transform rotate-12">school</span>
+               <div class="relative z-10 text-center">
+                 <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg">
+                   <img src="@/assets/images/2022-Greenwich-Eng.webp" alt="Logo" class="w-10 h-10 object-contain" />
+                 </div>
+               </div>
+            </div>
+            
+            <div class="p-6">
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white text-center mb-1">Graduation 2026</h2>
+              <p class="text-sm text-gray-500 text-center mb-6">University of Greenwich</p>
+              
+              <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-gray-400">calendar_month</span>
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ settings?.ceremonyDate ? new Date(settings.ceremonyDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Loading...' }}</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-gray-400">schedule</span>
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Time</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ settings?.ceremonyDate ? new Date(settings.ceremonyDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'Loading...' }}</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-gray-400">location_on</span>
+                  <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Venue</p>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ settings?.ceremonyLocation || 'Loading...' }}</p>
+                  </div>
+                </div>
               </div>
-              Your Registration
+            </div>
+          </div>
+        </div>
+
+        <!-- Registration Status / Form -->
+        <div class="lg:col-span-2">
+          <!-- Existing Registration View -->
+          <div v-if="hasRegistration && !editing" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div class="flex items-center justify-between mb-8">
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                Your Registration
+              </h2>
+              <span :class="[
+                'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider',
+                registration.status === 'CONFIRMED' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                registration.status === 'PENDING' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+              ]">
+                {{ registration.status || 'CONFIRMED' }}
+              </span>
+            </div>
+
+            <div class="space-y-6">
+              <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-2">
+                   <span class="material-symbols-outlined text-gray-400">person</span>
+                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Student Info</p>
+                </div>
+                <p class="font-bold text-gray-900 dark:text-white">{{ authStore.user?.fullName }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ authStore.user?.studentId }}</p>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Guests</p>
+                  <p class="font-bold text-gray-900 dark:text-white">{{ registration.guestCount || 0 }} Guests</p>
+                </div>
+              </div>
+
+              <div v-if="registration.specialNeeds" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Special Needs</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ registration.specialNeeds }}</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 mt-8 pt-8 border-t border-gray-100 dark:border-gray-700">
+              <button @click="editing = true" class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">edit</span>
+                Edit Details
+              </button>
+              <button @click="confirmCancel" class="px-4 py-2.5 rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                Cancel Registration
+              </button>
+            </div>
+          </div>
+
+          <!-- Registration Form -->
+          <div v-else class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              {{ editing ? 'Update Registration' : 'Confirm Attendance' }}
             </h2>
-            <span class="px-4 py-2 rounded-full font-bold text-sm" :style="statusBadgeStyle">
-              {{ registration.status || 'CONFIRMED' }}
-            </span>
-          </div>
 
-          <div class="grid md:grid-cols-2 gap-4 mb-6">
-            <!-- Ceremony Date -->
-            <div class="info-card">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(0, 163, 224, 0.1);">
-                  <span class="material-symbols-outlined" style="color: #00A3E0;">calendar_month</span>
-                </div>
-                <div>
-                  <p class="text-xs" style="color: #6b7280;">Ceremony Date</p>
-                  <p class="font-bold" style="color: #111827;">June 15, 2024</p>
+            <form @submit.prevent="submitRegistration" class="space-y-8">
+              <!-- Guest Count -->
+              <div>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Number of Guests</label>
+                <div class="flex items-center gap-4">
+                  <button type="button" @click="form.guestCount = Math.max(0, form.guestCount - 1)" class="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
+                    <span class="material-symbols-outlined">remove</span>
+                  </button>
+                  <span class="text-xl font-bold text-gray-900 dark:text-white w-8 text-center">{{ form.guestCount }}</span>
+                  <button type="button" @click="form.guestCount = Math.min(3, form.guestCount + 1)" class="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
+                    <span class="material-symbols-outlined">add</span>
+                  </button>
+                  <span class="text-xs text-gray-500 ml-2">Max 3 guests</span>
                 </div>
               </div>
-            </div>
 
-            <!-- Gown Size -->
-            <div class="info-card">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(255, 184, 28, 0.1);">
-                  <span class="material-symbols-outlined" style="color: #FFB81C;">checkroom</span>
-                </div>
-                <div>
-                  <p class="text-xs" style="color: #6b7280;">Gown Size</p>
-                  <p class="font-bold" style="color: #111827;">{{ registration.gownSize || 'Not specified' }}</p>
-                </div>
+
+
+              <!-- Special Needs -->
+              <div>
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Special Accessibility Needs</label>
+                <textarea
+                  v-model="form.specialNeeds"
+                  rows="3"
+                  placeholder="E.g., wheelchair access, sign language interpreter..."
+                  class="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:border-transparent outline-none transition-all dark:text-white resize-none"
+                ></textarea>
               </div>
-            </div>
 
-            <!-- Dietary Requirements -->
-            <div v-if="registration.dietaryRequirements" class="info-card md:col-span-2">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(0, 166, 81, 0.1);">
-                  <span class="material-symbols-outlined" style="color: #00A651;">restaurant</span>
-                </div>
-                <div class="flex-1">
-                  <p class="text-xs" style="color: #6b7280;">Dietary Requirements</p>
-                  <p class="font-semibold" style="color: #111827;">{{ registration.dietaryRequirements }}</p>
-                </div>
+              <!-- Confirmation Checkbox -->
+              <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <div class="relative flex items-center">
+                    <input
+                      v-model="form.confirmed"
+                      type="checkbox"
+                      class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 transition-all checked:border-gray-900 checked:bg-gray-900 dark:border-gray-600 dark:checked:border-white dark:checked:bg-white"
+                    />
+                    <div class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 dark:text-gray-900">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-bold text-gray-900 dark:text-white text-sm">I confirm my attendance</p>
+                    <p class="text-xs text-gray-500 mt-1">I understand that this registration is required to receive my certificate.</p>
+                  </div>
+                </label>
               </div>
-            </div>
 
-            <!-- Special Needs -->
-            <div v-if="registration.specialNeeds" class="info-card md:col-span-2">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(139, 92, 246, 0.1);">
-                  <span class="material-symbols-outlined" style="color: #8b5cf6;">accessible</span>
-                </div>
-                <div class="flex-1">
-                  <p class="text-xs" style="color: #6b7280;">Special Accessibility Needs</p>
-                  <p class="font-semibold" style="color: #111827;">{{ registration.specialNeeds }}</p>
-                </div>
+              <!-- Submit Buttons -->
+              <div class="flex gap-4">
+                <button
+                  v-if="editing"
+                  type="button"
+                  @click="cancelEdit"
+                  class="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  :disabled="!form.confirmed || loading"
+                  class="flex-1 px-6 py-3 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <div v-if="loading" class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  <template v-else>
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span>{{ editing ? 'Update Registration' : 'Confirm Attendance' }}</span>
+                  </template>
+                </button>
               </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex gap-3">
-            <button @click="editing = true" class="action-button flex-1" style="background: linear-gradient(135deg, #003B5C, #00A3E0);">
-              <span class="material-symbols-outlined">edit</span>
-              Edit Registration
-            </button>
-            <button @click="confirmCancel" class="action-button" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-              <span class="material-symbols-outlined">close</span>
-            </button>
+            </form>
           </div>
         </div>
-      </div>
-
-      <!-- Registration Form -->
-      <div v-else class="modern-card">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3" style="color: #111827; font-family: 'Montserrat', sans-serif;">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #003B5C, #00A3E0);">
-            <span class="material-symbols-outlined text-white text-2xl">edit_document</span>
-          </div>
-          Confirm Your Attendance
-        </h2>
-
-        <form @submit.prevent="submitRegistration" class="space-y-6">
-          <!-- Ceremony Info -->
-          <div class="info-banner">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(0, 163, 224, 0.1);">
-                <span class="material-symbols-outlined" style="color: #00A3E0;">info</span>
-              </div>
-              <div>
-                <p class="font-bold mb-1" style="color: #003B5C;">Ceremony Details</p>
-                <p class="text-sm" style="color: #6b7280;">📅 <strong>Date:</strong> June 15, 2024</p>
-                <p class="text-sm" style="color: #6b7280;">🕒 <strong>Time:</strong> 9:00 AM</p>
-                <p class="text-sm" style="color: #6b7280;">📍 <strong>Venue:</strong> University Arena</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gown Size Selection -->
-          <div>
-            <label class="label-text">Gown Size <span style="color: #ef4444;">*</span></label>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
-              <button
-                v-for="size in gownSizes"
-                :key="size"
-                type="button"
-                @click="form.gownSize = size"
-                class="size-option"
-                :class="{ 'size-option-selected': form.gownSize === size }"
-              >
-                <span class="material-symbols-outlined">checkroom</span>
-                {{ size }}
-              </button>
-            </div>
-          </div>
-
-          <!-- Dietary Requirements -->
-          <div>
-            <label class="label-text">Dietary Requirements</label>
-            <p class="text-xs mb-2" style="color: #6b7280;">Let us know if you have any dietary restrictions</p>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
-              <button
-                v-for="diet in dietaryOptions"
-                :key="diet"
-                type="button"
-                @click="toggleDietary(diet)"
-                class="dietary-option"
-                :class="{ 'dietary-option-selected': form.dietaryRequirements.includes(diet) }"
-              >
-                {{ diet }}
-              </button>
-            </div>
-            <input
-              v-model="form.dietaryOther"
-              type="text"
-              placeholder="Other dietary requirements..."
-              class="form-input"
-            />
-          </div>
-
-          <!-- Special Accessibility Needs -->
-          <div>
-            <label class="label-text">Special Accessibility Needs</label>
-            <p class="text-xs mb-2" style="color: #6b7280;">Please specify any accessibility requirements</p>
-            <textarea
-              v-model="form.specialNeeds"
-              rows="3"
-              placeholder="E.g., wheelchair access, sign language interpreter, hearing loop..."
-              class="form-input"
-            ></textarea>
-          </div>
-
-          <!-- Guest Count -->
-          <div>
-            <label class="label-text">Number of Guests</label>
-            <p class="text-xs mb-2" style="color: #6b7280;">Maximum 3 guests per graduate</p>
-            <div class="flex items-center gap-4">
-              <button
-                type="button"
-                @click="form.guestCount = Math.max(0, form.guestCount - 1)"
-                class="counter-button"
-              >
-                <span class="material-symbols-outlined">remove</span>
-              </button>
-              <div class="counter-display">{{ form.guestCount }}</div>
-              <button
-                type="button"
-                @click="form.guestCount = Math.min(3, form.guestCount + 1)"
-                class="counter-button"
-              >
-                <span class="material-symbols-outlined">add</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Confirmation -->
-          <div class="confirmation-box">
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input
-                v-model="form.confirmed"
-                type="checkbox"
-                class="mt-1"
-                style="width: 20px; height: 20px; accent-color: #00A3E0;"
-              />
-              <div>
-                <p class="font-semibold" style="color: #111827;">I confirm my attendance</p>
-                <p class="text-sm" style="color: #6b7280;">I understand that this registration is required to attend the graduation ceremony and receive my certificate.</p>
-              </div>
-            </label>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="flex gap-3">
-            <button
-              v-if="editing"
-              type="button"
-              @click="cancelEdit"
-              class="action-button"
-              style="background: #e5e7eb; color: #374151;"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              :disabled="!form.confirmed || !form.gownSize || loading"
-              class="action-button flex-1"
-              :style="!form.confirmed || !form.gownSize || loading 
-                ? 'background: #e5e7eb; color: #9ca3af; cursor: not-allowed;' 
-                : 'background: linear-gradient(135deg, #00A651, #16a34a);'"
-            >
-              <div v-if="loading" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              <template v-else>
-                <span class="material-symbols-outlined">check_circle</span>
-                {{ editing ? 'Update Registration' : 'Confirm Attendance' }}
-              </template>
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   </ResponsiveLayout>
@@ -273,76 +219,64 @@ import api from '@/services/api';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
-const navigation = [
-  { path: '/student/dashboard', icon: 'dashboard', label: 'Dashboard' },
-  { path: '/student/profile', icon: 'person', label: 'My Profile' },
-  { path: '/student/ticket', icon: 'qr_code_2', label: 'My Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Guest Seats' },
-  { path: '/student/gown-collection', icon: 'checkroom', label: 'Gown Collection' },
-  { path: '/student/booking-confirmation', icon: 'payments', label: 'Payments' }
-];
+const navigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_dashboard') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats') },
+  { path: '/student/gown-collection', icon: 'checkroom', label: t('student.nav_gown') },
+  { path: '/student/booking-confirmation', icon: 'payments', label: t('student.nav_payments') },
+  { path: '/student/chat', icon: 'support_agent', label: t('student.nav_chat') }
+]);
 
-const bottomNavigation = [
-  { path: '/student/dashboard', icon: 'dashboard', label: 'Home' },
-  { path: '/student/ticket', icon: 'qr_code_2', label: 'Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Seats' },
-  { path: '/student/profile', icon: 'person', label: 'Profile' }
-];
+const bottomNavigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_home') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket_short') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats_short') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') }
+]);
 
 const registration = ref(null);
+const settings = ref(null);
 const editing = ref(false);
 const loading = ref(false);
 const error = ref('');
 const successMessage = ref('');
 
 const form = ref({
-  gownSize: '',
-  dietaryRequirements: [],
-  dietaryOther: '',
   specialNeeds: '',
   guestCount: 0,
   confirmed: false
 });
 
-const gownSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-const dietaryOptions = ['Vegetarian', 'Vegan', 'Halal', 'Gluten-Free', 'Nut Allergy'];
-
 const hasRegistration = computed(() => !!registration.value);
 
-const statusBadgeStyle = computed(() => {
-  const status = registration.value?.status || 'CONFIRMED';
-  if (status === 'CONFIRMED') return 'background: #00A651; color: white;';
-  if (status === 'PENDING') return 'background: #FFB81C; color: white;';
-  return 'background: #e5e7eb; color: #6b7280;';
-});
-
-const toggleDietary = (option) => {
-  const index = form.value.dietaryRequirements.indexOf(option);
-  if (index > -1) {
-    form.value.dietaryRequirements.splice(index, 1);
-  } else {
-    form.value.dietaryRequirements.push(option);
+const loadSettings = async () => {
+  try {
+    const response = await api.get('/settings');
+    if (response.data.success) {
+      settings.value = response.data.data;
+    }
+  } catch (err) {
+    console.error('Error loading settings:', err);
   }
 };
 
 const loadRegistration = async () => {
   try {
     const response = await api.get('/registrations/me');
-    if (response.data.success && response.data.data) {
-      registration.value = response.data.data;
+    if (response.data.success && response.data.data && response.data.data.registration) {
+      registration.value = response.data.data.registration;
       // Populate form for editing
       form.value = {
-        gownSize: registration.value.gownSize || '',
-        dietaryRequirements: registration.value.dietaryRequirements?.split(', ').filter(d => dietaryOptions.includes(d)) || [],
-        dietaryOther: registration.value.dietaryRequirements?.split(', ').find(d => !dietaryOptions.includes(d)) || '',
         specialNeeds: registration.value.specialNeeds || '',
         guestCount: registration.value.guestCount || 0,
         confirmed: true
       };
     }
   } catch (err) {
-    // 404 means user hasn't registered yet - this is normal
     if (err.response?.status === 404) {
       registration.value = null;
     } else {
@@ -353,8 +287,8 @@ const loadRegistration = async () => {
 };
 
 const submitRegistration = async () => {
-  if (!form.value.confirmed || !form.value.gownSize) {
-    error.value = 'Please fill in all required fields and confirm attendance';
+  if (!form.value.confirmed) {
+    error.value = 'Please confirm your attendance';
     return;
   }
 
@@ -363,34 +297,22 @@ const submitRegistration = async () => {
   successMessage.value = '';
 
   try {
-    const dietaryReqs = [...form.value.dietaryRequirements];
-    if (form.value.dietaryOther) {
-      dietaryReqs.push(form.value.dietaryOther);
-    }
-
     const data = {
-      ceremonyDate: '2024-06-15',
-      gownSize: form.value.gownSize,
-      dietaryRequirements: dietaryReqs.join(', '),
+      ceremonyDate: settings.value?.ceremonyDate || '2026-06-15',
       specialNeeds: form.value.specialNeeds,
       guestCount: form.value.guestCount
     };
 
     if (editing.value) {
-      await api.put(`/registrations/${registration.value._id}`, data);
+      await api.put(`/registrations/${registration.value.id || registration.value._id}`, data);
       successMessage.value = 'Registration updated successfully!';
       editing.value = false;
       await loadRegistration();
     } else {
       await api.post('/registrations', data);
-      
-      // Update journey status and refresh user data
       await authStore.refreshUser();
-      
-      // Show success message briefly then redirect to Dashboard
       successMessage.value = 'Attendance confirmed! Redirecting to dashboard...';
       
-      // Redirect to dashboard after 1.5 seconds
       setTimeout(() => {
         router.push('/student/dashboard');
       }, 1500);
@@ -417,13 +339,10 @@ const confirmCancel = () => {
 const cancelRegistration = async () => {
   loading.value = true;
   try {
-    await api.delete(`/registrations/${registration.value._id}`);
+    await api.delete(`/registrations/${registration.value.id || registration.value._id}`);
     registration.value = null;
     successMessage.value = 'Registration cancelled successfully';
     form.value = {
-      gownSize: '',
-      dietaryRequirements: [],
-      dietaryOther: '',
       specialNeeds: '',
       guestCount: 0,
       confirmed: false
@@ -436,174 +355,18 @@ const cancelRegistration = async () => {
 };
 
 onMounted(() => {
+  loadSettings();
   loadRegistration();
 });
 </script>
 
 <style scoped>
-.modern-card {
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f3f4f6;
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
-.info-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
-  transition: all 0.3s ease;
-}
-
-.info-card:hover {
-  background: white;
-  border-color: #00A3E0;
-  box-shadow: 0 4px 12px rgba(0, 163, 224, 0.1);
-}
-
-.info-banner {
-  background: linear-gradient(135deg, rgba(0, 163, 224, 0.05), rgba(0, 59, 92, 0.05));
-  border: 1px solid rgba(0, 163, 224, 0.2);
-  border-radius: 16px;
-  padding: 20px;
-}
-
-.label-text {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #00A3E0;
-  box-shadow: 0 0 0 4px rgba(0, 163, 224, 0.1);
-}
-
-.size-option {
-  padding: 12px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-weight: 600;
-  background: white;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.size-option:hover {
-  border-color: #00A3E0;
-  background: rgba(0, 163, 224, 0.05);
-}
-
-.size-option-selected {
-  background: linear-gradient(135deg, #00A3E0, #0891b2);
-  border-color: #00A3E0;
-  color: white;
-}
-
-.dietary-option {
-  padding: 10px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  background: white;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.dietary-option:hover {
-  border-color: #00A651;
-  background: rgba(0, 166, 81, 0.05);
-}
-
-.dietary-option-selected {
-  background: linear-gradient(135deg, #00A651, #16a34a);
-  border-color: #00A651;
-  color: white;
-}
-
-.counter-button {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.counter-button:hover {
-  background: #00A3E0;
-  border-color: #00A3E0;
-  color: white;
-}
-
-.counter-display {
-  width: 80px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
-  background: #f9fafb;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-}
-
-.confirmation-box {
-  background: linear-gradient(135deg, rgba(0, 166, 81, 0.05), rgba(22, 163, 74, 0.03));
-  border: 2px solid rgba(0, 166, 81, 0.2);
-  border-radius: 16px;
-  padding: 20px;
-}
-
-.action-button {
-  padding: 14px 24px;
-  border-radius: 12px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.action-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spin 0.8s linear infinite;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

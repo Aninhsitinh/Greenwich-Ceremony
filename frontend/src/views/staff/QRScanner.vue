@@ -52,19 +52,50 @@
       <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm mb-6">
         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Scan Ticket</h3>
         
-        <!-- QR Scanner Placeholder -->
-        <div class="mb-4 bg-gray-100 dark:bg-gray-700 rounded-xl p-8 text-center">
-          <div class="flex flex-col items-center gap-4">
-            <div class="w-32 h-32 border-4 border-dashed border-primary rounded-xl flex items-center justify-center">
-              <span class="material-symbols-outlined text-6xl text-primary">qr_code_scanner</span>
-            </div>
-            <p class="text-gray-600 dark:text-gray-400">Camera scanner coming soon</p>
-            <p class="text-xs text-gray-500 dark:text-gray-500">Use manual input below for now</p>
+        <!-- QR Scanner Camera -->
+        <div v-show="useCamera" class="mb-6">
+          <div v-if="cameraError" class="p-4 bg-red-50 text-red-600 rounded-lg text-center mb-4">
+            {{ cameraError }}
+          </div>
+          <div id="qr-reader" class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-black w-full min-h-[250px] relative"></div>
+          
+          <div class="flex justify-center gap-3 mt-4">
+            <button 
+              v-if="!isScanningCamera"
+              @click="startCamera" 
+              class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-sm">videocam</span> Start Camera
+            </button>
+            <button 
+              v-if="isScanningCamera"
+              @click="stopCamera" 
+              class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-sm">videocam_off</span> Stop Camera
+            </button>
           </div>
         </div>
 
+        <!-- Toggle Switch -->
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ useCamera ? 'Switch to Manual Input' : 'Switch to Camera Scanner' }}
+          </span>
+          <button 
+            @click="toggleInputMethod"
+            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            :class="useCamera ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-600'"
+          >
+            <span 
+              class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+              :class="useCamera ? 'translate-x-6' : 'translate-x-1'"
+            />
+          </button>
+        </div>
+
         <!-- Manual Input -->
-        <form @submit.prevent="handleScan" class="space-y-4">
+        <form v-show="!useCamera" @submit.prevent="handleScan" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Ticket Number
@@ -72,9 +103,9 @@
             <input
               v-model="ticketNumber"
               ref="ticketInput"
-              required
+              :required="!useCamera"
               type="text"
-              placeholder="GRAD-2024-XXXXXXXXXX-XXX"
+              placeholder="GRAD-2026-XXXXXXXXXX-XXX"
               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white font-mono text-sm"
               @input="ticketNumber = ticketNumber.toUpperCase()"
             />
@@ -108,13 +139,21 @@
             <span class="text-sm text-gray-500 dark:text-gray-400">Student ID</span>
             <span class="font-semibold text-gray-900 dark:text-white">{{ lastScannedTicket.userId?.studentId }}</span>
           </div>
+          <div class="flex justify-between items-center" v-if="lastScannedTicket.userId?.major">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Major</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ lastScannedTicket.userId?.major }} <span v-if="lastScannedTicket.userId?.classOf">({{ lastScannedTicket.userId?.classOf }})</span></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Ticket Type</span>
+            <span class="font-semibold capitalize text-gray-900 dark:text-white">{{ lastScannedTicket.ticketType || 'Student' }}</span>
+          </div>
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-500 dark:text-gray-400">Ticket Number</span>
             <span class="font-mono text-xs text-gray-900 dark:text-white">{{ lastScannedTicket.ticketNumber }}</span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-sm text-gray-500 dark:text-gray-400">Seat Number</span>
-            <span class="font-semibold text-gray-900 dark:text-white">{{ lastScannedTicket.seatNumber || 'N/A' }}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Seat Number(s)</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ lastScannedTicket.seatList || lastScannedTicket.seatNumber || 'N/A' }}</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-sm text-gray-500 dark:text-gray-400">Scanned At</span>
@@ -131,9 +170,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import api from '@/services/api';
+import { Html5Qrcode } from 'html5-qrcode';
+import { io } from 'socket.io-client';
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
@@ -148,6 +189,111 @@ const scannedToday = ref(0);
 const totalValid = ref(0);
 const totalInvalid = ref(0);
 
+// Camera Scanner State
+const useCamera = ref(false);
+const isScanningCamera = ref(false);
+const cameraError = ref('');
+let html5QrCode = null;
+
+// Ceremony sync socket
+let ceremonySocket = null;
+
+const toggleInputMethod = () => {
+  useCamera.value = !useCamera.value;
+  if (useCamera.value) {
+    // Start camera when switching to camera mode
+    startCamera();
+  } else {
+    // Stop camera and focus input when switching to manual mode
+    stopCamera();
+    setTimeout(() => {
+        ticketInput.value?.focus();
+    }, 100);
+  }
+};
+
+const onScanSuccess = (decodedText) => {
+    // Prevent double scanning rapidly
+    if (scanning.value) return;
+    
+    // Play a distinct beep for detection
+    playSound('beep');
+    
+    // Temporary visual feedback
+    cameraError.value = 'Detected: Processing...';
+    
+    // Stop scanning briefly, then verify
+    html5QrCode.pause();
+    
+    let scannedTicketNumber = decodedText;
+    
+    // The backend ticketController.generateTicket encodes a JSON object into the QR code
+    // Try to parse it and extract the ticketNumber
+    try {
+        const parsed = JSON.parse(decodedText);
+        if (parsed && parsed.ticketNumber) {
+            scannedTicketNumber = parsed.ticketNumber;
+        }
+    } catch (e) {
+        // It's not JSON, so it might just be the raw ticket number string. Valid fallback.
+        console.log('Scanned QR is not JSON, treating as raw string:', decodedText);
+    }
+    
+    ticketNumber.value = scannedTicketNumber;
+    
+    handleScan().then(() => {
+        cameraError.value = '';
+        setTimeout(() => {
+            if (isScanningCamera.value && html5QrCode) {
+                html5QrCode.resume();
+            }
+        }, 1500); // Wait 1.5 seconds before accepting next scan
+    });
+};
+
+const onScanFailure = (error) => {
+    // Ignore frequent scan failures (happens every frame it doesn't find a code)
+};
+
+const startCamera = async () => {
+    cameraError.value = '';
+    isScanningCamera.value = true;
+    
+    try {
+        if (!html5QrCode) {
+            html5QrCode = new Html5Qrcode('qr-reader');
+        }
+        
+        const config = { 
+            fps: 10, 
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        
+        await html5QrCode.start(
+            { facingMode: 'environment' }, // Prefer back camera
+            config,
+            onScanSuccess,
+            onScanFailure
+        );
+    } catch (err) {
+        console.error('Failed to start camera:', err);
+        cameraError.value = 'Camera access denied or not available. Please allow camera permissions or use manual input.';
+        isScanningCamera.value = false;
+    }
+};
+
+const stopCamera = async () => {
+    if (html5QrCode && html5QrCode.isScanning) {
+        try {
+            await html5QrCode.stop();
+            isScanningCamera.value = false;
+        } catch (err) {
+            console.error('Failed to stop camera:', err);
+        }
+    }
+};
+
 const handleScan = async () => {
   scanning.value = true;
   scanResult.value = null;
@@ -158,13 +304,29 @@ const handleScan = async () => {
     });
 
     if (response.data.success) {
+      const ticket = response.data.data.ticket;
       scanResult.value = {
         success: true,
-        message: `Ticket scanned successfully for ${response.data.data.ticket.userId?.fullName}`
+        message: `Ticket scanned successfully for ${ticket.userId?.fullName}`
       };
-      lastScannedTicket.value = response.data.data.ticket;
+      lastScannedTicket.value = ticket;
       totalValid.value++;
       scannedToday.value++;
+
+      // Fallback: Manually emit from client in case backend broadcast is blocked by proxy
+      const socket = window._ceremonySocket || window.ceremonySocket;
+      if (socket?.connected) {
+        socket.emit('ceremony:ticket_scanned', {
+          id: ticket.id,
+          studentName: ticket.userId?.fullName,
+          studentId: ticket.userId?.studentId,
+          major: ticket.userId?.major,
+          seatNumber: ticket.seatList || ticket.seatNumber || null,
+          ticketNumber: ticket.ticketNumber,
+          scannedBy: user.value?.fullName,
+          timestamp: new Date()
+        });
+      }
 
       // Play success sound (if available)
       playSound('success');
@@ -177,11 +339,18 @@ const handleScan = async () => {
       }, 3000);
     }
   } catch (error) {
+    const errorData = error.response?.data;
+    
     scanResult.value = {
       success: false,
-      message: error.response?.data?.message || 'Invalid or already scanned ticket'
+      message: errorData?.message || 'Invalid or already scanned ticket'
     };
     totalInvalid.value++;
+
+    // If API returns ticket data (e.g., for "Already Scanned"), show it
+    if (errorData?.data?.ticket) {
+        lastScannedTicket.value = errorData.data.ticket;
+    }
 
     // Play error sound (if available)
     playSound('error');
@@ -199,10 +368,35 @@ const handleScan = async () => {
 
 const playSound = (type) => {
   // Optional: Implement sound feedback
-  if (type === 'success') {
-    // Play success beep
-  } else {
-    // Play error buzzer
+  try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      if (type === 'success') {
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // High pitch
+        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.1);
+      } else if (type === 'error') {
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(300, audioContext.currentTime); // Low pitch
+        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.3);
+      } else if (type === 'beep') {
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.05);
+      }
+  } catch (err) {
+      console.log('Audio feedback not supported');
   }
 };
 
@@ -217,9 +411,29 @@ const formatTime = (date) => {
 
 onMounted(() => {
   // Focus input on mount
-  ticketInput.value?.focus();
+  if (!useCamera.value) {
+      ticketInput.value?.focus();
+  }
+
+  // Connect to ceremony room for real-time sync with MC
+  const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+  ceremonySocket = io(backendUrl, { transports: ['websocket', 'polling'] });
+  ceremonySocket.on('connect', () => {
+    ceremonySocket.emit('join', { userId: user.value?.id, role: 'staff' });
+    ceremonySocket.emit('ceremony:join', { role: 'staff', name: user.value?.fullName });
+  });
 
   // Fetch today's stats
   // TODO: Implement stats API
+});
+
+onUnmounted(() => {
+    stopCamera();
+    if (html5QrCode) {
+        html5QrCode.clear();
+    }
+    if (ceremonySocket) {
+        ceremonySocket.disconnect();
+    }
 });
 </script>

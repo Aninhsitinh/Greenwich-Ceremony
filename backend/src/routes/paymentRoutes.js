@@ -6,7 +6,8 @@ import {
     getPaymentById,
     updatePaymentStatus,
     getAllPayments,
-    generateReceipt
+    generateReceipt,
+    sendOTP
 } from '../controllers/paymentController.js';
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.use(protect);
 
 // Student routes
 router.post('/', createPayment);
+router.post('/otp', sendOTP);
 router.get('/my-payments', getMyPayments);
 router.get('/:id', getPaymentById);
 router.get('/:id/receipt', generateReceipt);

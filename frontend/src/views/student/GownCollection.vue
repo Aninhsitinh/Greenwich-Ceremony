@@ -2,86 +2,91 @@
   <ResponsiveLayout
     :navigation="navigation"
     :bottom-navigation="bottomNavigation"
-    page-title="Gown Collection"
+    :page-title="$t('student.gown_title')"
   >
-    <div class="w-full max-w-4xl mx-auto px-4 py-6">
-      <!-- Header -->
-      <div class="glass-card p-6 mb-6">
-        <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-            <span class="material-symbols-outlined text-4xl text-white">checkroom</span>
-          </div>
-          <div class="flex-1">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Graduation Gown Collection</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Schedule your gown collection appointment</p>
-          </div>
-        </div>
+    <div class="w-full max-w-5xl mx-auto px-4 py-6 space-y-6">
+      
+      <!-- Back Button & Header -->
+      <div class="flex items-center justify-between">
+        <button @click="$router.back()" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span class="text-sm font-semibold">Back</span>
+        </button>
       </div>
 
       <!-- Prerequisites Check -->
-      <div v-if="!canRequestGown" class="glass-card p-6 mb-6 border-2 border-amber-500/30">
+      <div v-if="!canRequestGown" class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-            <span class="material-symbols-outlined text-2xl text-amber-500">lock</span>
-          </div>
+          <span class="material-symbols-outlined text-amber-600 dark:text-amber-500 text-3xl">lock</span>
           <div>
-            <h3 class="font-bold text-gray-900 dark:text-white mb-2">Complete Previous Steps First</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
-              You need to complete seat booking before you can request gown collection.
-            </p>
-            <router-link to="/student/seat-booking" class="btn btn-primary">
-              <span class="material-symbols-outlined">event_seat</span>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Complete Previous Steps First</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">You need to complete seat booking before you can request gown collection.</p>
+            <router-link to="/student/seat-booking" class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold transition-colors">
+              <span class="material-symbols-outlined text-sm">event_seat</span>
               Go to Seat Booking
             </router-link>
           </div>
         </div>
       </div>
 
-      <!-- Existing Request -->
+      <!-- Existing Request View -->
       <div v-else-if="gownRequest && !showForm" class="space-y-6">
         <!-- Status Card -->
-        <div class="glass-card p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Your Gown Request</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-4xl text-purple-600 dark:text-purple-400">checkroom</span>
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Your Gown Request</h1>
+                <p class="text-gray-500 dark:text-gray-400">Collection details and status</p>
+              </div>
+            </div>
             <span :class="[
-              'px-4 py-2 rounded-full text-sm font-semibold',
-              gownRequest.status === 'collected' ? 'bg-green-500/20 text-green-600 dark:text-green-400' :
-              gownRequest.status === 'scheduled' ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400' :
-              gownRequest.status === 'returned' ? 'bg-gray-500/20 text-gray-600 dark:text-gray-400' :
-              'bg-amber-500/20 text-amber-600 dark:text-amber-400'
+              'px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wider',
+              gownRequest.status === 'collected' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+              gownRequest.status === 'scheduled' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+              gownRequest.status === 'returned' ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400' :
+              'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
             ]">
-              {{ gownRequest.status.toUpperCase() }}
+              {{ gownRequest.status }}
             </span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-4 bg-white/5 rounded-xl">
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Gown Size</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ gownRequest.size }}</p>
+          <!-- Info Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+              <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Gown Size</p>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ gownRequest.size }}</p>
             </div>
-            <div class="p-4 bg-white/5 rounded-xl">
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Scheduled Date</p>
-              <p class="text-lg font-bold text-gray-900 dark:text-white">{{ formatDate(gownRequest.scheduledDate) }}</p>
+
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+              <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Scheduled Date</p>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-400">calendar_today</span>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ formatDate(gownRequest.scheduledDate) }}</p>
+              </div>
             </div>
-            <div class="p-4 bg-white/5 rounded-xl">
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Collection Location</p>
-              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ gownRequest.collectionLocation }}</p>
-            </div>
-            <div class="p-4 bg-white/5 rounded-xl">
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Deposit</p>
-              <p class="text-lg font-bold text-gray-900 dark:text-white">
-                {{ gownRequest.depositPaid ? '✓ Paid' : formatCurrency(gownRequest.depositAmount) }}
-              </p>
+
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+              <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Location</p>
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-gray-400">location_on</span>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ gownRequest.collectionLocation }}</p>
+              </div>
             </div>
           </div>
 
-          <div v-if="gownRequest.notes" class="mt-6 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Notes</p>
-            <p class="text-sm text-gray-900 dark:text-white">{{ gownRequest.notes }}</p>
+          <!-- Notes -->
+          <div v-if="gownRequest.notes" class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 mb-6">
+            <p class="text-xs text-blue-600 dark:text-blue-400 uppercase tracking-wider font-semibold mb-1">Your Notes</p>
+            <p class="text-sm text-blue-900 dark:text-blue-100">{{ gownRequest.notes }}</p>
           </div>
 
-          <div v-if="gownRequest.status === 'scheduled'" class="mt-6 flex gap-3">
-            <button @click="showForm = true" class="btn btn-secondary flex-1">
+          <!-- Actions -->
+          <div v-if="gownRequest.status === 'scheduled'">
+            <button @click="showForm = true" class="px-6 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2">
               <span class="material-symbols-outlined">edit</span>
               Update Request
             </button>
@@ -89,135 +94,106 @@
         </div>
 
         <!-- Collection Instructions -->
-        <div class="glass-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-blue-500">info</span>
+            <span class="material-symbols-outlined text-blue-600">info</span>
             Collection Instructions
           </h3>
           <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
-              <span class="text-sm text-gray-600 dark:text-gray-300">Bring your student ID card</span>
+            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+              <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+              <span>Bring your student ID card</span>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
-              <span class="text-sm text-gray-600 dark:text-gray-300">Deposit of 500,000₫ required (refundable upon return)</span>
+            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+              <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+              <span>Gown must be returned within 3 days after ceremony</span>
             </li>
-            <li class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
-              <span class="text-sm text-gray-600 dark:text-gray-300">Gown must be returned within 3 days after ceremony</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
-              <span class="text-sm text-gray-600 dark:text-gray-300">Office hours: Monday - Friday, 8:00 AM - 5:00 PM</span>
+            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+              <span class="material-symbols-outlined text-green-500 text-xl">check_circle</span>
+              <span>Office hours: Monday - Friday, 8:00 AM - 5:00 PM</span>
             </li>
           </ul>
         </div>
       </div>
 
       <!-- Request Form -->
-      <div v-else-if="canRequestGown" class="space-y-6">
+      <div v-else-if="canRequestGown" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-sm">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Schedule Gown Collection</h1>
+
         <!-- Size Selection -->
-        <div class="glass-card p-6">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Select Your Gown Size</h2>
-          
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div class="mb-10">
+          <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-gray-400">straighten</span>
+            Select Size
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
             <button
               v-for="size in gownSizes"
               :key="size.value"
               @click="selectedSize = size.value"
               :class="[
-                'p-6 rounded-2xl border-2 transition-all duration-300',
+                'p-4 rounded-lg border-2 text-center transition-all',
                 selectedSize === size.value
-                  ? 'border-purple-500 bg-purple-500/20 scale-[1.02]'
-                  : 'border-white/20 bg-white/5 hover:border-purple-500/50'
+                  ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900 ring-2 ring-gray-200 dark:ring-gray-700'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-600'
               ]"
             >
-              <div class="text-3xl font-black text-gray-900 dark:text-white mb-2">{{ size.value }}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">{{ size.label }}</div>
+              <div class="text-xl font-bold mb-1">{{ size.value }}</div>
+              <div class="text-[10px] opacity-80">{{ size.label }}</div>
             </button>
           </div>
-
-          <!-- Size Guide -->
-          <div class="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
-              <strong>Size Guide:</strong> XS (150-160cm), S (160-165cm), M (165-170cm), L (170-175cm), XL (175-180cm), XXL (180cm+)
-            </p>
+          <div class="p-3 bg-blue-50 dark:bg-blue-900/10 rounded-lg text-xs text-blue-700 dark:text-blue-300">
+            <strong>Size Guide:</strong> XS (150-160cm), S (160-165cm), M (165-170cm), L (170-175cm), XL (175-180cm), XXL (180cm+)
           </div>
         </div>
 
         <!-- Schedule Date -->
-        <div class="glass-card p-6">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Schedule Collection Date</h2>
-          
-          <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              Preferred Collection Date
-            </label>
-            <input
-              v-model="scheduledDate"
-              type="date"
-              :min="minDate"
-              :max="maxDate"
-              class="w-full h-14 px-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white focus:border-purple-500 focus:outline-none"
-            />
-          </div>
-
-          <div class="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
-            <p class="text-sm text-gray-600 dark:text-gray-300">
-              <strong>Note:</strong> Collection available from May 20 to June 10, 2024. Please schedule at least 2 days before the ceremony.
-            </p>
-          </div>
+        <div class="mb-10">
+          <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-gray-400">calendar_today</span>
+            Select Date
+          </h2>
+          <input
+            v-model="scheduledDate"
+            type="date"
+            :min="minDate"
+            :max="maxDate"
+            class="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:border-transparent outline-none transition-all"
+          />
+          <p class="mt-2 text-xs text-gray-500">Collection available from May 20 to June 10, 2026</p>
         </div>
 
-        <!-- Additional Notes -->
-        <div class="glass-card p-6">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Additional Notes (Optional)</h2>
-          
+        <!-- Notes -->
+        <div class="mb-10">
+          <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-gray-400">note</span>
+            Notes
+          </h2>
           <textarea
             v-model="notes"
-            rows="4"
-            placeholder="Any special requests or notes..."
-            class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none resize-none"
+            rows="3"
+            placeholder="Any special requests..."
+            class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-white focus:border-transparent outline-none transition-all resize-none"
           ></textarea>
         </div>
 
-        <!-- Deposit Information -->
-        <div class="glass-card p-6 border-2 border-purple-500/30">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-2xl text-purple-500">account_balance_wallet</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-gray-900 dark:text-white mb-2">Deposit Required</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                A refundable deposit of <strong class="text-purple-600 dark:text-purple-400">500,000₫</strong> is required upon collection.
-              </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                Deposit will be fully refunded when you return the gown in good condition.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="flex gap-4">
-          <button
-            v-if="gownRequest"
-            @click="showForm = false"
-            class="btn btn-secondary flex-1"
+        <!-- Actions -->
+        <div class="flex gap-4 pt-6 border-t border-gray-100 dark:border-gray-700">
+          <button 
+            @click="gownRequest ? (showForm = false) : $router.back()" 
+            class="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             Cancel
           </button>
           <button
             @click="submitRequest"
             :disabled="!selectedSize || !scheduledDate || isSubmitting"
-            class="btn btn-primary flex-1"
+            class="flex-1 px-6 py-3 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            <div v-if="isSubmitting" class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <div v-if="isSubmitting" class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
             <template v-else>
-              <span class="material-symbols-outlined">check_circle</span>
-              {{ gownRequest ? 'Update Request' : 'Submit Request' }}
+              <span class="material-symbols-outlined text-lg">send</span>
+              <span>Submit Request</span>
             </template>
           </button>
         </div>
@@ -228,34 +204,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
+import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-const navigation = [
-  { path: '/student', icon: 'dashboard', label: 'Dashboard' },
-  { path: '/student/registration', icon: 'how_to_reg', label: 'Registration' },
-  { path: '/student/ticket', icon: 'confirmation_number', label: 'My Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Seat Booking' },
-  { path: '/student/payment', icon: 'payments', label: 'Payment' },
-  { path: '/student/notifications', icon: 'notifications', label: 'Notifications' },
-  { path: '/student/profile', icon: 'person', label: 'Profile' },
-  { path: '/student/gown-collection', icon: 'checkroom', label: 'Gown Collection' },
-  { path: '/student/help', icon: 'help', label: 'Help & Support' },
-  { path: '/student/settings', icon: 'settings', label: 'Settings' }
-];
-
-const bottomNavigation = [
-  { path: '/student', icon: 'home', label: 'Home' },
-  { path: '/student/ticket', icon: 'confirmation_number', label: 'Ticket' },
-  { path: '/student/seat-booking', icon: 'event_seat', label: 'Seats' },
-  { path: '/student/notifications', icon: 'notifications', label: 'Alerts' },
-  { path: '/student/profile', icon: 'person', label: 'Profile' }
-];
+const { t } = useI18n();
 
 const gownRequest = ref(null);
 const selectedSize = ref('');
@@ -263,6 +220,7 @@ const scheduledDate = ref('');
 const notes = ref('');
 const isSubmitting = ref(false);
 const showForm = ref(false);
+const hasSeatBookings = ref(false);
 
 const gownSizes = [
   { value: 'XS', label: '150-160cm' },
@@ -273,38 +231,50 @@ const gownSizes = [
   { value: 'XXL', label: '180cm+' }
 ];
 
+// ... Navigation constants
+const navigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_dashboard') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats') },
+  { path: '/student/gown-collection', icon: 'checkroom', label: t('student.nav_gown') },
+  { path: '/student/booking-confirmation', icon: 'payments', label: t('student.nav_payments') },
+  { path: '/student/chat', icon: 'support_agent', label: t('student.nav_chat') }
+]);
+
+const bottomNavigation = computed(() => [
+  { path: '/student/dashboard', icon: 'dashboard', label: t('student.nav_home') },
+  { path: '/student/ticket', icon: 'qr_code_2', label: t('student.nav_ticket_short') },
+  { path: '/student/seat-booking', icon: 'event_seat', label: t('student.nav_seats_short') },
+  { path: '/student/profile', icon: 'person', label: t('student.nav_profile') }
+]);
+
 const canRequestGown = computed(() => {
-  return authStore.user?.journeyStatus?.seatsBooked || false;
+  return hasSeatBookings.value;
 });
 
 const minDate = computed(() => {
-  const date = new Date('2024-05-20');
+  const date = new Date('2026-05-20');
   return date.toISOString().split('T')[0];
 });
 
 const maxDate = computed(() => {
-  const date = new Date('2024-06-10');
+  const date = new Date('2026-06-10');
   return date.toISOString().split('T')[0];
 });
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
   });
-};
-
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(amount);
 };
 
 const fetchGownRequest = async () => {
   try {
-    const response = await api.get('/gown/my-request');
+    const response = await api.get('/gown-collection/my-collection');
     if (response.data.success && response.data.data.gownCollection) {
       gownRequest.value = response.data.data.gownCollection;
       selectedSize.value = gownRequest.value.size;
@@ -313,6 +283,19 @@ const fetchGownRequest = async () => {
     }
   } catch (error) {
     console.log('No existing gown request');
+  }
+};
+
+const checkSeatBookings = async () => {
+  try {
+    const response = await api.get('/seats/my-bookings');
+    if (response.data.success) {
+      const bookings = response.data.data.bookings || [];
+      hasSeatBookings.value = bookings.length > 0;
+    }
+  } catch (error) {
+    console.log('No seat bookings found');
+    hasSeatBookings.value = false;
   }
 };
 
@@ -325,26 +308,29 @@ const submitRequest = async () => {
   isSubmitting.value = true;
 
   try {
-    const data = {
+    const requestData = {
       size: selectedSize.value,
       scheduledDate: scheduledDate.value,
-      notes: notes.value
+      notes: notes.value,
+      collectionLocation: 'Main Office - Building A, Room 101',
+      depositAmount: 500000,
+      depositPaid: false
     };
 
+    let response;
     if (gownRequest.value) {
-      // Update existing request
-      await api.put(`/gown/${gownRequest.value._id}`, data);
-      alert('Gown request updated successfully!');
+      response = await api.put('/gown-collection', requestData);
     } else {
-      // Create new request
-      await api.post('/gown/request', data);
-      alert('Gown request submitted successfully!');
+      response = await api.post('/gown-collection', requestData);
     }
 
-    showForm.value = false;
-    await fetchGownRequest();
+    if (response.data.success) {
+      alert(gownRequest.value ? 'Request updated successfully!' : 'Request submitted successfully!');
+      await fetchGownRequest();
+      showForm.value = false;
+    }
   } catch (error) {
-    console.error('Error submitting gown request:', error);
+    console.error('Error submitting request:', error);
     alert(error.response?.data?.message || 'Failed to submit request. Please try again.');
   } finally {
     isSubmitting.value = false;
@@ -352,27 +338,7 @@ const submitRequest = async () => {
 };
 
 onMounted(() => {
+  checkSeatBookings();
   fetchGownRequest();
 });
 </script>
-
-<style scoped>
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-}
-
-.btn {
-  @apply h-14 px-6 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2;
-}
-
-.btn-primary {
-  @apply bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
-}
-
-.btn-secondary {
-  @apply bg-white/10 text-gray-900 dark:text-white hover:bg-white/20;
-}
-</style>

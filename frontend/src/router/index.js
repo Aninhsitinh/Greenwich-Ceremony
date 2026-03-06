@@ -13,6 +13,11 @@ const routes = [
         component: () => import('@/views/auth/LoginPage.vue'),
     },
     {
+        path: '/posts/:id',
+        name: 'PostDetail',
+        component: () => import('@/views/PostDetail.vue'),
+    },
+    {
         path: '/register',
         name: 'Register',
         component: () => import('@/views/auth/RegisterPage.vue'),
@@ -21,6 +26,27 @@ const routes = [
         path: '/forgot-password',
         name: 'ForgotPassword',
         component: () => import('@/views/auth/ForgotPassword.vue'),
+    },
+    // Quick Links Pages
+    {
+        path: '/about',
+        name: 'About',
+        component: () => import('@/views/About.vue'),
+    },
+    {
+        path: '/programs',
+        name: 'Programs',
+        component: () => import('@/views/Programs.vue'),
+    },
+    {
+        path: '/contact',
+        name: 'Contact',
+        component: () => import('@/views/Contact.vue'),
+    },
+    {
+        path: '/faq',
+        name: 'FAQ',
+        component: () => import('@/views/FAQ.vue'),
     },
     // Student Routes
     {
@@ -54,6 +80,21 @@ const routes = [
                 component: () => import('@/views/student/Profile.vue'),
             },
             {
+                path: 'change-password',
+                name: 'StudentChangePassword',
+                component: () => import('@/views/student/ChangePassword.vue'),
+            },
+            {
+                path: 'notification-settings',
+                name: 'StudentNotificationSettings',
+                component: () => import('@/views/student/NotificationSettings.vue'),
+            },
+            {
+                path: 'privacy-settings',
+                name: 'StudentPrivacySettings',
+                component: () => import('@/views/student/PrivacySettings.vue'),
+            },
+            {
                 path: 'settings',
                 name: 'StudentSettings',
                 component: () => import('@/views/student/Settings.vue'),
@@ -69,6 +110,16 @@ const routes = [
                 component: () => import('@/views/student/BookingConfirmation.vue'),
             },
             {
+                path: 'payment-gateway',
+                name: 'StudentPaymentGateway',
+                component: () => import('@/views/student/PaymentGateway.vue'),
+            },
+            {
+                path: 'gateway-simulation',
+                name: 'StudentSimulatedGateway',
+                component: () => import('@/views/student/SimulatedGateway.vue'),
+            },
+            {
                 path: 'notifications',
                 name: 'StudentNotifications',
                 component: () => import('@/views/student/Notifications.vue'),
@@ -82,6 +133,11 @@ const routes = [
                 path: 'gown-collection',
                 name: 'StudentGownCollection',
                 component: () => import('@/views/student/GownCollection.vue'),
+            },
+            {
+                path: 'chat',
+                name: 'StudentSupportChat',
+                component: () => import('@/views/student/StudentChat.vue'),
             },
         ],
     },
@@ -107,11 +163,23 @@ const routes = [
             },
             {
                 path: 'seat-management',
+                alias: 'seats',
                 name: 'StaffSeatManagement',
                 component: () => import('@/views/staff/SeatManagement.vue'),
             },
             {
+                path: 'monitor',
+                name: 'StaffCeremonyMonitor',
+                component: () => import('@/views/staff/CeremonyMonitor.vue'),
+            },
+            {
+                path: 'chat',
+                name: 'StaffSupportChat',
+                component: () => import('@/views/staff/SupportChat.vue'),
+            },
+            {
                 path: 'student-list',
+                alias: 'students',
                 name: 'StaffStudentList',
                 component: () => import('@/views/staff/StudentList.vue'),
             },
@@ -125,46 +193,96 @@ const routes = [
     // Admin Routes
     {
         path: '/admin',
+        component: () => import('@/views/admin/AdminLayout.vue'),
         meta: { requiresAuth: true, role: 'admin' },
         children: [
             {
                 path: '',
+                redirect: '/admin/users',
+            },
+            {
+                path: 'dashboard',
                 name: 'AdminDashboard',
-                component: () => import('@/views/admin/Dashboard.vue'),
+                component: () => import('@/views/admin/PostManagement.vue'),
             },
             {
-                path: 'students',
-                name: 'AdminStudents',
-                component: () => import('@/views/admin/StudentManagement.vue'),
+                path: 'users',
+                name: 'AdminUsers',
+                component: () => import('@/views/admin/UserManagement.vue'),
             },
             {
-                path: 'registrations',
-                name: 'AdminRegistrations',
-                component: () => import('@/views/admin/RegistrationManagement.vue'),
-            },
-            {
-                path: 'tickets',
-                name: 'AdminTickets',
-                component: () => import('@/views/admin/TicketManagement.vue'),
-            },
-            {
-                path: 'seats',
-                name: 'AdminSeats',
-                component: () => import('@/views/admin/SeatManagement.vue'),
-            },
-            {
-                path: 'announcements',
-                name: 'AdminAnnouncements',
-                component: () => import('@/views/admin/Announcements.vue'),
+                path: 'posts',
+                name: 'AdminPosts',
+                component: () => import('@/views/admin/PostManagement.vue'),
             },
             {
                 path: 'settings',
                 name: 'AdminSettings',
-                component: () => import('@/views/admin/SystemSettings.vue'),
+                component: () => import('@/views/admin/AdminSettings.vue'),
             },
         ],
     },
+    // MC Routes
+    {
+        path: '/mc',
+        component: () => import('@/views/mc/MCLayout.vue'),
+        meta: { requiresAuth: true, role: 'mc' },
+        children: [
+            {
+                path: '',
+                redirect: '/mc/dashboard',
+            },
+            {
+                path: 'dashboard',
+                name: 'MCDashboard',
+                component: () => import('@/views/mc/Dashboard.vue'),
+            },
+            {
+                path: 'students',
+                name: 'MCStudentAttendance',
+                component: () => import('@/views/mc/StudentAttendance.vue'),
+            },
+            {
+                path: 'ceremony',
+                name: 'MCCeremony',
+                component: () => import('@/views/mc/CeremonyControl.vue'),
+            },
+            {
+                path: 'chat',
+                name: 'MCInternalChat',
+                component: () => import('@/views/mc/InternalChat.vue'),
+            },
+            {
+                path: 'lookup',
+                name: 'MCLookup',
+                component: () => import('@/views/mc/StudentLookup.vue'),
+            },
+            {
+                path: 'settings',
+                name: 'MCSettings',
+                component: () => import('@/views/mc/MCSettings.vue'),
+            },
+        ],
+    },
+    // Legal Pages
+    {
+        path: '/terms',
+        name: 'TermsAndConditions',
+        component: () => import('@/views/TermsAndConditions.vue'),
+    },
+    {
+        path: '/privacy',
+        name: 'PrivacyPolicy',
+        component: () => import('@/views/PrivacyPolicy.vue'),
+    },
+    // Public Live Screen
+    {
+        path: '/live',
+        name: 'PublicLiveDisplay',
+        component: () => import('@/views/live/PublicDisplay.vue'),
+    },
     // 404 Not Found
+
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
@@ -186,7 +304,13 @@ router.beforeEach((to, from, next) => {
             next('/login');
         } else if (to.meta.role && authStore.userRole !== to.meta.role) {
             // Redirect to appropriate dashboard based on role
-            next(`/${authStore.userRole}`);
+            const roleRedirectMap = {
+                student: '/student/dashboard',
+                staff: '/staff',
+                admin: '/admin/users',
+                mc: '/mc/dashboard',
+            };
+            next(roleRedirectMap[authStore.userRole] || '/');
         } else {
             next();
         }

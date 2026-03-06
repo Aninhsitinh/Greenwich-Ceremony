@@ -1,5 +1,6 @@
-import Payment from '../models/Payment.js';
-import { formatResponse } from '../utils/helpers.js';
+import prisma from '../prisma.js';
+import { formatResponse, generateOTP } from '../utils/helpers.js';
+import { sendPaymentOTP } from '../utils/emailService.js';
 
 // @desc    Create a new payment
 // @route   POST /api/payments
@@ -8,19 +9,50 @@ export const createPayment = async (req, res, next) => {
     try {
         const { amount, paymentType, paymentMethod, transactionId, status, items, notes } = req.body;
 
-        const payment = await Payment.create({
-            userId: req.user._id,
-            amount,
-            paymentType,
-            paymentMethod,
-            transactionId,
-            status: status || 'pending',
-            items: items || [],
-            notes,
+        const payment = await prisma.payment.create({
+            data: {
+                userId: req.user.id,
+                amount,
+                paymentType,
+                paymentMethod,
+                transactionId,
+                status: status || 'pending',
+                // Prisma Json type needs to be a valid JSON object or array. Wait, in schema it's `Json?`.
+                items: items || [],
+                notes,
+            }
         });
 
         res.status(201).json(
             formatResponse(true, 'Payment created successfully', { payment })
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Send Payment OTP
+// @route   POST /api/payments/otp
+// @access  Public
+export const sendOTP = async (req, res, next) => {
+    try {
+        const { email, amount, provider } = req.body;
+
+        if (!email) {
+            return res.status(400).json(formatResponse(false, 'Email is required'));
+        }
+
+        const otp = generateOTP(6);
+
+        await sendPaymentOTP({
+            email,
+            otp,
+            amount: new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0),
+            provider: provider || 'Card Payment'
+        });
+
+        res.status(200).json(
+            formatResponse(true, 'OTP sent successfully', { otp })
         );
     } catch (error) {
         next(error);
@@ -32,8 +64,10 @@ export const createPayment = async (req, res, next) => {
 // @access  Private
 export const getMyPayments = async (req, res, next) => {
     try {
-        const payments = await Payment.find({ userId: req.user._id })
-            .sort({ createdAt: -1 });
+        const payments = await prisma.payment.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' }
+        });
 
         const totalPaid = payments
             .filter(p => p.status === 'completed')
@@ -43,9 +77,11 @@ export const getMyPayments = async (req, res, next) => {
             .filter(p => p.status === 'pending')
             .reduce((sum, p) => sum + p.amount, 0);
 
+        const mappedPayments = payments.map(p => ({ ...p, _id: p.id }));
+
         res.status(200).json(
             formatResponse(true, 'Payments retrieved successfully', {
-                payments,
+                payments: mappedPayments,
                 summary: {
                     totalPaid,
                     pendingAmount,
@@ -63,7 +99,9 @@ export const getMyPayments = async (req, res, next) => {
 // @access  Private
 export const getPaymentById = async (req, res, next) => {
     try {
-        const payment = await Payment.findById(req.params.id);
+        const payment = await prisma.payment.findUnique({
+            where: { id: req.params.id }
+        });
 
         if (!payment) {
             return res.status(404).json(
@@ -72,7 +110,7 @@ export const getPaymentById = async (req, res, next) => {
         }
 
         // Check ownership
-        if (req.user.role === 'student' && payment.userId.toString() !== req.user._id.toString()) {
+        if (req.user.role === 'student' && payment.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to view this payment')
             );
@@ -93,7 +131,9 @@ export const updatePaymentStatus = async (req, res, next) => {
     try {
         const { status, transactionId, receiptUrl } = req.body;
 
-        const payment = await Payment.findById(req.params.id);
+        const payment = await prisma.payment.findUnique({
+            where: { id: req.params.id }
+        });
 
         if (!payment) {
             return res.status(404).json(
@@ -101,16 +141,23 @@ export const updatePaymentStatus = async (req, res, next) => {
             );
         }
 
-        if (status) payment.status = status;
-        if (transactionId) payment.transactionId = transactionId;
-        if (receiptUrl) payment.receiptUrl = receiptUrl;
+        const updatedData = {};
+        if (status) updatedData.status = status;
+        if (transactionId) updatedData.transactionId = transactionId;
+        if (receiptUrl) updatedData.receiptUrl = receiptUrl;
 
-        await payment.save();
+        const updatedPayment = await prisma.payment.update({
+            where: { id: payment.id },
+            data: updatedData
+        });
 
         res.status(200).json(
-            formatResponse(true, 'Payment updated successfully', { payment })
+            formatResponse(true, 'Payment updated successfully', { payment: updatedPayment })
         );
     } catch (error) {
+        if (error.code === 'P2025') {
+            return res.status(404).json(formatResponse(false, 'Payment not found'));
+        }
         next(error);
     }
 };
@@ -121,39 +168,50 @@ export const updatePaymentStatus = async (req, res, next) => {
 export const getAllPayments = async (req, res, next) => {
     try {
         const { status, paymentType, page = 1, limit = 20 } = req.query;
+        const parsedLimit = parseInt(limit);
+        const parsedPage = parseInt(page);
 
-        const query = {};
-        if (status) query.status = status;
-        if (paymentType) query.paymentType = paymentType;
+        const where = {};
+        if (status) where.status = status;
+        if (paymentType) where.paymentType = paymentType;
 
-        const payments = await Payment.find(query)
-            .populate('userId', 'fullName email studentId')
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .sort({ createdAt: -1 });
+        const payments = await prisma.payment.findMany({
+            where,
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            },
+            take: parsedLimit,
+            skip: (parsedPage - 1) * parsedLimit,
+            orderBy: { createdAt: 'desc' }
+        });
 
-        const count = await Payment.countDocuments(query);
+        const count = await prisma.payment.count({ where });
 
-        // Calculate totals
-        const allPayments = await Payment.find({});
-        const totalReceived = allPayments
-            .filter(p => p.status === 'completed')
-            .reduce((sum, p) => sum + p.amount, 0);
-        const totalPending = allPayments
-            .filter(p => p.status === 'pending')
-            .reduce((sum, p) => sum + p.amount, 0);
+        // Calculate totals using aggregations
+        const totals = await prisma.payment.groupBy({
+            by: ['status'],
+            _sum: { amount: true },
+            _count: { id: true }
+        });
+
+        const completedStats = totals.find(t => t.status === 'completed') || { _sum: { amount: 0 }, _count: { id: 0 } };
+        const pendingStats = totals.find(t => t.status === 'pending') || { _sum: { amount: 0 }, _count: { id: 0 } };
+
+        const mappedPayments = payments.map(p => ({ ...p, _id: p.id }));
 
         res.status(200).json(
             formatResponse(true, 'Payments retrieved successfully', {
-                payments,
-                totalPages: Math.ceil(count / limit),
-                currentPage: parseInt(page),
+                payments: mappedPayments,
+                totalPages: Math.ceil(count / parsedLimit),
+                currentPage: parsedPage,
                 total: count,
                 summary: {
-                    totalReceived,
-                    totalPending,
-                    completedCount: allPayments.filter(p => p.status === 'completed').length,
-                    pendingCount: allPayments.filter(p => p.status === 'pending').length
+                    totalReceived: completedStats._sum.amount,
+                    totalPending: pendingStats._sum.amount,
+                    completedCount: completedStats._count.id,
+                    pendingCount: pendingStats._count.id
                 }
             })
         );
@@ -167,8 +225,14 @@ export const getAllPayments = async (req, res, next) => {
 // @access  Private
 export const generateReceipt = async (req, res, next) => {
     try {
-        const payment = await Payment.findById(req.params.id)
-            .populate('userId', 'fullName email studentId');
+        const payment = await prisma.payment.findUnique({
+            where: { id: req.params.id },
+            include: {
+                user: {
+                    select: { fullName: true, email: true, studentId: true }
+                }
+            }
+        });
 
         if (!payment) {
             return res.status(404).json(
@@ -177,7 +241,7 @@ export const generateReceipt = async (req, res, next) => {
         }
 
         // Check ownership
-        if (req.user.role === 'student' && payment.userId._id.toString() !== req.user._id.toString()) {
+        if (req.user.role === 'student' && payment.userId !== req.user.id) {
             return res.status(403).json(
                 formatResponse(false, 'Not authorized to access this receipt')
             );
@@ -185,12 +249,12 @@ export const generateReceipt = async (req, res, next) => {
 
         // Generate receipt data
         const receipt = {
-            receiptNumber: `RCP-${payment._id.toString().slice(-8).toUpperCase()}`,
+            receiptNumber: `RCP-${(payment.transactionId || payment.id).slice(-8).toUpperCase()}`,
             date: payment.createdAt,
             student: {
-                name: payment.userId.fullName,
-                email: payment.userId.email,
-                studentId: payment.userId.studentId
+                name: payment.user.fullName,
+                email: payment.user.email,
+                studentId: payment.user.studentId
             },
             payment: {
                 amount: payment.amount,

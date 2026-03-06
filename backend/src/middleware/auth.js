@@ -1,5 +1,5 @@
 import { verifyToken } from '../config/jwt.js';
-import User from '../models/User.js';
+import prisma from '../prisma.js';
 
 export const protect = async (req, res, next) => {
     let token;
@@ -29,7 +29,9 @@ export const protect = async (req, res, next) => {
         }
 
         // Get user from token
-        req.user = await User.findById(decoded.id).select('-password');
+        req.user = await prisma.user.findUnique({
+            where: { id: decoded.id }
+        });
 
         if (!req.user) {
             return res.status(404).json({
@@ -74,3 +76,6 @@ export const authorize = (...roles) => {
         next();
     };
 };
+
+// Alias for authorize (for compatibility)
+export const restrictTo = authorize;
