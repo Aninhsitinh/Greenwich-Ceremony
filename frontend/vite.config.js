@@ -10,7 +10,15 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'Logo Trường Đại học Greenwich Việt Nam.svg'],
+      includeAssets: [
+        'favicon.ico',
+        'apple-touch-icon.png',
+        'apple-touch-icon-precomposed.png',
+        'Logo Trường Đại học Greenwich Việt Nam.svg',
+        'pwa-192x192.png',
+        'pwa-180x180.png',
+        'pwa-512x512.png'
+      ],
       manifest: {
         name: 'Greenwich Ceremony Registration',
         short_name: 'Greenwich Ceremony',
@@ -20,12 +28,14 @@ export default defineConfig({
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'pwa-180x180.png',
             sizes: '180x180',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'pwa-512x512.png',
