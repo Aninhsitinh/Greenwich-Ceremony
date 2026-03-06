@@ -11,8 +11,7 @@ Stitch là một giải pháp quản lý lễ tốt nghiệp toàn diện (SaaS-
 - [🧩 Các Module Chức năng](#-các-module-chức-năng)
 - [🏗️ Kiến trúc Hệ thống](#️-kiến-trúc-hệ-thống)
 - [🛠️ Công nghệ Sử dụng](#️-công-nghệ-sử-dụng)
-- [🚀 Hướng dẫn Cài đặt](#-hướng-dẫn-cài-đặt)
-- [📱 Giao diện & Trải nghiệm](#-giao-diện--trải-nghiệm)
+- [ Giao diện & Trải nghiệm](#-giao-diện--trải-nghiệm)
 - [🔐 Bảo mật & Hiệu năng](#-bảo-mật--hiệu-năng)
 - [🤝 Đóng góp](#-đóng-góp)
 
@@ -90,48 +89,7 @@ graph TD
 
 ---
 
-## 🚀 Hướng dẫn Cài đặt
-
-### **1. Clone dự án**
-```bash
-git clone https://github.com/Aninhsitinh/Greenwich-Ceremony.git
-```
-
-### **2. Cấu hình Backend**
-Vào thư mục `backend`, tạo file `.env`:
-```env
-PORT=5000
-DATABASE_URL="postgresql://user:password@localhost:5432/stitch_ceremony"
-JWT_SECRET="your_secret_key"
-FRONTEND_URL="http://localhost:5173"
-CLOUDINARY_CLOUD_NAME="..."
-CLOUDINARY_API_KEY="..."
-CLOUDINARY_API_SECRET="..."
-```
-Cài đặt & Chạy:
-```bash
-npm install
-npx prisma db push
-npx prisma generate
-npm run seed
-npm run dev
-```
-
-### **3. Cấu hình Frontend**
-Vào thư mục `frontend`, tạo file `.env`:
-```env
-VITE_API_URL="http://localhost:5000/api"
-VITE_SOCKET_URL="http://localhost:5000"
-```
-Cài đặt & Chạy:
-```bash
-npm install
-npm run dev
-```
-
----
-
-## 📱 Giao diện & Trải nghiệm
+##  Giao diện & Trải nghiệm
 - **Glassmorphism:** Sử dụng hiệu ứng kính mờ cho các card và sidebar, tạo cảm giác cao cấp.
 - **Dynamic Themes:** Hỗ trợ Dark Mode hoàn chỉnh, bảo vệ mắt người dùng.
 - **Micro-animations:** Các hiệu ứng chuyển cảnh mượt mà từ `transition-group` của Vue.
@@ -149,7 +107,7 @@ npm run dev
 ## 🤵 Tác giả
 **Phan Công Duy Khương**
 - 🎓 *Greenwich University Vietnam*
-- 📧 Email: duykhuongpc@gmail.com
+- 📧 Email: khuongpcdgcs230042@fpt.edu.vn
 - 🎨 Design & Full-stack Architecture
 
 ---
