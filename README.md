@@ -1,189 +1,125 @@
-# Stitch Ceremony Registration System
+# 🎓 Stitch Ceremony Registration System
 
-🎓 A modern, full-stack graduation ceremony registration and management system built with **Vue.js** and **Node.js/Express**.
+> **A premium, full-stack graduation ceremony management system** built for FPT Greenwich University. 🚀
 
-## 🌟 Features
-
-### Student Portal
-- **Registration** - Ceremony attendance confirmation with gown size selection
-- **E-Ticket Generation** - Digital tickets with QR codes
-- **Seat Booking** - Reserve seats for family members (up to 3 guests)
-- **Journey Tracking** - Visual progress through registration steps
-- **Profile Management** - Update personal information
-
-### Staff Portal
-- **QR Code Scanner** - Check-in attendees at the ceremony
-- **Registration Management** - View and manage student registrations
-- **Analytics Dashboard** - Real-time statistics and insights
-
-## 🛠️ Tech Stack
-
-### Frontend
-- Vue 3 (Composition API)
-- Vue Router
-- Pinia (State Management)
-- Tailwind CSS
-- Material Symbols Icons
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB + Mongoose
-- JWT Authentication
-- Socket.io (Real-time updates)
-- QR Code Generation
-
-## 📋 Prerequisites
-
-- Node.js (v16 or higher)
-- MongoDB (local or cloud)
-- npm or yarn
-
-## 🚀 Installation
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/YOUR_USERNAME/stitch-ceremony-registration.git
-cd stitch-ceremony-registration
-```
-
-### 2. Setup Backend
-```bash
-cd backend
-npm install
-```
-
-Create `.env` file in backend directory:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/ceremony_registration
-JWT_SECRET=your_super_secret_jwt_key_here
-JWT_EXPIRE=7d
-FRONTEND_URL=http://localhost:3000
-NODE_ENV=development
-```
-
-### 3. Setup Frontend
-```bash
-cd frontend
-npm install
-```
-
-Create `.env` file in frontend directory:
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-## ▶️ Running the Application
-
-### Development Mode
-
-**Backend** (from backend directory):
-```bash
-npm run start
-```
-Server runs on http://localhost:5000
-
-**Frontend** (from frontend directory):
-```bash
-npm run dev
-```
-App runs on http://localhost:3000
-
-### Production Build
-
-**Frontend**:
-```bash
-cd frontend
-npm run build
-```
-
-## 📱 Default Users
-
-### Student Account
-- Email: `student@example.com`
-- Password: `password123`
-- Student ID: `GCS230042`
-
-### Staff Account
-- Email: `staff@example.com`
-- Password: `password123`
-
-## 🎯 User Journey
-
-1. **Registration** → Complete graduation details
-2. **Generate E-Ticket** → Get digital entry pass
-3. **Book Seats** → Reserve guest seating
-4. **Collect Gown** → Schedule gown pickup
-5. **Complete Payment** → Pay for packages
-
-## 📂 Project Structure
-
-```
-stitch-ceremony-registration/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/      # Request handlers
-│   │   ├── models/            # MongoDB schemas
-│   │   ├── routes/            # API routes
-│   │   ├── middleware/        # Auth, error handling
-│   │   ├── utils/             # Helper functions
-│   │   └── app.js             # Express app
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/        # Reusable components
-│   │   ├── views/             # Page components
-│   │   ├── stores/            # Pinia stores
-│   │   ├── services/          # API services
-│   │   ├── router/            # Vue Router
-│   │   └── assets/            # Images, styles
-│   └── package.json
-└── README.md
-```
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Password hashing with bcrypt
-- Rate limiting
-- CORS protection
-- Helmet.js security headers
-- Input validation
-
-## 🎨 UI/UX Highlights
-
-- **Modern Glassmorphism Design**
-- **Greenwich University Branding** (Navy, Blue, Gold)
-- **Responsive Layout** (Mobile, Tablet, Desktop)
-- **Smooth Animations & Transitions**
-- **Dark Mode Support**
-- **Premium Visual Effects**
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**Phan Công Duy Khương**
-- Student ID: GCS230042
-- Email: duykhuongpc@gmail.com
-
-## 🙏 Acknowledgments
-
-- FPT Greenwich University
-- Vue.js Team
-- Node.js Community
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-316192?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Vue 3](https://img.shields.io/badge/Frontend-Vue%203-4FC08D?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![Express](https://img.shields.io/badge/Backend-Express.js-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![Socket.io](https://img.shields.io/badge/Realtime-Socket.io-010101?logo=socketdotio&logoColor=white)](https://socket.io/)
 
 ---
 
-Made with ❤️ for FPT Greenwich Graduation 2026
+## 🌟 Overview
+
+Stitch là một hệ thống quản lý lễ tốt nghiệp hiện đại, tự động hóa toàn bộ quy trình từ đăng ký, chọn trang phục, đặt chỗ cho phụ huynh đến việc check-in và gọi tên sinh viên trên sân khấu trong thời gian thực.
+
+## 👥 Portals & Features
+
+### 🎓 Student Portal
+- **Smart Registration** - Xác nhận tham gia lễ tốt nghiệp và chọn size áo cử nhân.
+- **E-Ticket & QR Styling** - Tạo vé điện tử với mã QR có thể tùy chỉnh màu sắc, hình dạng và logo.
+- **Interactive Seat Booking** - Đặt tối đa 3 ghế cho khách mời với bản đồ chỗ ngồi trực quan.
+- **Support Chat** - Chat trực tiếp với nhân viên hỗ trợ thông qua Socket.io.
+- **Journey Tracking** - Thanh trạng thái theo dõi lộ trình 5 bước tốt nghiệp.
+- **Payments** - Quản lý và xem lịch sử thanh toán các gói dịch vụ.
+
+### 🏢 Staff Portal
+- **High-speed QR Scanner** - Quét mã QR check-in sinh viên và khách mời ngay tại cổng.
+- **Real-time Student List** - Quản lý danh sách sinh viên, trạng thái nhận áo và check-in.
+- **Support Chat Archive** - Trả lời thắc mắc của sinh viên trong thời gian thực.
+- **Seat Management** - Điều phối chỗ ngồi và xử lý các tình huống phát sinh.
+
+### 🎤 MC Console
+- **Live Ceremony Feed** - Theo dõi danh sách sinh viên đã check-in và sẵn sàng lên sân khấu.
+- **Procession Control** - Điều khiển luồng gọi tên sinh viên lên bục nhận bằng.
+- **Real-time Synchronization** - Đồng bộ dữ liệu tức thì giữa Staff (quét QR) và MC.
+
+### 🖥️ Admin Portal
+- **Full System Configuration** - Cài đặt ngày lễ, địa điểm, thời hạn đăng ký.
+- **User & Role Management** - Quản lý tài khoản Student, Staff, MC.
+- **Broadcast Notifications** - Gửi thông báo đẩy đến toàn bộ người dùng.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Vue 3 (Composition API), Pinia, Vite, Tailwind CSS |
+| **Backend** | Node.js, Express.js |
+| **Database** | **PostgreSQL** with **Prisma ORM** |
+| **Real-time** | **Socket.io** (Chat, Live Sync) |
+| **i18n** | **vue-i18n** (Full support for English & Vietnamese) |
+| **Security** | JWT, bcrypt, Helmet, Express Rate Limit |
+
+---
+
+## 🚀 Installation & Setup
+
+### 1. Prerequisites
+- Node.js (v18+)
+- PostgreSQL (Running locally or via Docker)
+- mkcert (For local HTTPS development)
+
+### 2. Clone & Install
+```bash
+git clone https://github.com/Aninhsitinh/Greenwich-Ceremony.git
+cd stitch_ceremony_registration
+
+# Install dependencies for both
+cd backend && npm install
+cd ../frontend && npm install
+```
+
+### 3. Database Setup (Prisma)
+Configure your `.env` in the `backend` folder:
+```bash
+DATABASE_URL="postgresql://user:password@localhost:5432/stitch_ceremony?schema=public"
+```
+Then run:
+```bash
+npx prisma db push
+npx prisma generate
+npm run seed
+```
+
+### 4. Running the Project
+**Backend:**
+```bash
+cd backend
+npm run dev
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+
+---
+
+## 🎨 UI/UX Features
+- **Premium Design**: Glassmorphism, smooth animations, và typography hiện đại.
+- **Multi-language**: Chuyển đổi linh hoạt giữa Tiếng Anh và Tiếng Việt.
+- **Responsive Layout**: Tối ưu hóa hoàn hảo cho Mobile (iPhone 14 Pro Max chuẩn) và Desktop.
+- **PWA Ready**: Có thể cài đặt như một ứng dụng trên điện thoại.
+
+## 📂 Project Structure
+```
+├── backend/
+│   ├── prisma/             # Database schema
+│   ├── src/
+│   │   ├── controllers/    # Business logic
+│   │   ├── routes/         # API endpoints
+│   │   └── socket/         # Real-time event handlers
+├── frontend/
+│   ├── src/
+│   │   ├── views/          # Portal pages (Student, Staff, MC, Admin)
+│   │   ├── components/     # UI design system
+│   │   └── i18n/           # Translation files
+```
+
+---
+
+Made with ❤️ for **FPT Greenwich Graduation 2026**
