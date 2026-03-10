@@ -39,8 +39,8 @@
                 <span class="material-symbols-outlined text-4xl text-purple-600 dark:text-purple-400">checkroom</span>
               </div>
               <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Your Gown Request</h1>
-                <p class="text-gray-500 dark:text-gray-400">Collection details and status</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Your Gown Collection</h1>
+                <p class="text-gray-500 dark:text-gray-400">Collection details and recorded status</p>
               </div>
             </div>
             <span :class="[
@@ -118,7 +118,7 @@
 
       <!-- Request Form -->
       <div v-else-if="canRequestGown" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 shadow-sm">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Schedule Gown Collection</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">Record Gown Collection</h1>
 
         <!-- Size Selection -->
         <div class="mb-10">
@@ -193,7 +193,7 @@
             <div v-if="isSubmitting" class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
             <template v-else>
               <span class="material-symbols-outlined text-lg">send</span>
-              <span>Submit Request</span>
+              <span>Record Collection</span>
             </template>
           </button>
         </div>
@@ -325,7 +325,7 @@ const submitRequest = async () => {
     }
 
     if (response.data.success) {
-      alert(gownRequest.value ? 'Request updated successfully!' : 'Request submitted successfully!');
+      alert(gownRequest.value ? 'Collection details updated!' : 'Gown collection recorded successfully!');
       await fetchGownRequest();
       showForm.value = false;
     }

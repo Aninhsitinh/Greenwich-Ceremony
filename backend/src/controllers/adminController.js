@@ -1,5 +1,6 @@
 import prisma from '../prisma.js';
 import { formatResponse } from '../utils/helpers.js';
+import bcrypt from 'bcryptjs';
 
 // @desc    Get all users with their roles, statuses, and creation dates
 // @route   GET /api/admin/users
@@ -108,6 +109,55 @@ export const updateUserRole = async (req, res, next) => {
         if (error.code === 'P2025') {
             return res.status(404).json(formatResponse(false, 'User not found.'));
         }
+        next(error);
+    }
+};
+
+// @desc    Create a new staff account with default password
+// @route   POST /api/admin/users/staff
+// @access  Private (Admin)
+export const createStaffAccount = async (req, res, next) => {
+    try {
+        const { email, fullName } = req.body;
+
+        if (!email || !fullName) {
+            return res.status(400).json(formatResponse(false, 'Please provide email and full name.'));
+        }
+
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
+        });
+
+        if (existingUser) {
+            return res.status(400).json(formatResponse(false, 'An account with this email already exists.'));
+        }
+
+        // Hash default password '123456'
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash('123456', salt);
+
+        // Create the staff user
+        const newStaff = await prisma.user.create({
+            data: {
+                email,
+                fullName,
+                password: hashedPassword,
+                role: 'staff'
+            },
+            select: {
+                id: true,
+                email: true,
+                fullName: true,
+                role: true,
+                createdAt: true
+            }
+        });
+
+        res.status(201).json(
+            formatResponse(true, 'Staff account created successfully with default password "123456"', { user: newStaff })
+        );
+    } catch (error) {
         next(error);
     }
 };

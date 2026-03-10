@@ -1,10 +1,17 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('staff.student_list')"
-  >
-    <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </router-link>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.student_list') }}</h1>
+      </div>
+    </div>
+
+    <!-- Main Content Flow -->
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Ultra Modern Hero -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-8 lg:p-10 shadow-2xl">
         <div class="absolute inset-0">
@@ -81,9 +88,21 @@
       <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-6 shadow-lg">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white">All Students</h2>
-          <span class="px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-bold w-fit">
-            {{ students.length }} students
-          </span>
+          <div class="flex items-center gap-3">
+            <input type="file" ref="studentImportInput" class="hidden" accept=".xlsx, .xls" @change="handleImport">
+            <button 
+              @click="$refs.studentImportInput.click()"
+              :disabled="importing"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-indigo-500/30 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              <span v-if="importing" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              <span class="material-symbols-outlined text-lg" v-else>upload_file</span>
+              Import Excel
+            </button>
+            <span class="px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-bold w-fit">
+              {{ students.length }} students
+            </span>
+          </div>
         </div>
 
         <div v-if="loading" class="text-center py-16">
@@ -136,14 +155,6 @@
                     <span v-if="togglingId === student._id" class="inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                     {{ student.status || 'Unknown' }}
                   </button>
-                    <!-- View Payments Button -->
-                    <button
-                      @click.stop="viewUserPayments(student)"
-                      class="p-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors ml-auto"
-                      title="View Payments"
-                    >
-                      <span class="material-symbols-outlined text-xl">receipt_long</span>
-                    </button>
                   </div>
 
                 <!-- Details Grid -->
@@ -231,22 +242,14 @@
         </div>
       </div>
     </div>
-    
-    <!-- Payments Modal -->
-    <UserPaymentsModal 
-        v-if="selectedUserForPayments" 
-        :user="selectedUserForPayments" 
-        @close="selectedUserForPayments = null" 
-    />
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
 const { t } = useI18n();
 import { ref, computed, onMounted, onActivated, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
-import UserPaymentsModal from '@/components/staff/UserPaymentsModal.vue';
+
 import api from '@/services/api';
 import { useToast } from 'vue-toastification';
 
@@ -256,6 +259,8 @@ const navigation = computed(() => [
   { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
   { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
   { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/logistics', icon: 'inventory_2', label: 'Logistics' },
+  { path: '/staff/finance', icon: 'payments', label: 'Refunds' },
   { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
   { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
   { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
@@ -266,11 +271,15 @@ const bottomNavigation = computed(() => [
   { path: '/staff', icon: 'home', label: t('staff.nav_home') },
   { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
   { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/logistics', icon: 'inventory_2', label: 'Logistics' },
+  { path: '/staff/finance', icon: 'payments', label: 'Refunds' },
   { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
 ]);
 
 // State
 const loading = ref(true);
+const importing = ref(false);
+const studentImportInput = ref(null);
 const togglingId = ref(null); // Track which student is currently being toggled
 const students = ref([]);
 const statistics = ref(null);
@@ -281,11 +290,7 @@ const searchQuery = ref('');
 const filterMajor = ref('');
 const filterStatus = ref('');
 
-// Payment Modal State
-const selectedUserForPayments = ref(null);
-const viewUserPayments = (student) => {
-  selectedUserForPayments.value = student;
-};
+
 
 // Computed stats
 const statCards = computed(() => [
@@ -411,6 +416,33 @@ const toggleRegistrationStatus = async (studentId, currentRegistration) => {
     toast.error(error.response?.data?.message || 'Failed to update registration status');
   } finally {
     togglingId.value = null;
+  }
+};
+
+const handleImport = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  importing.value = true;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await api.post('/import/students', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    
+    if (response.data.success) {
+      toast.success(response.data.message);
+      loadStudents(1);
+    }
+  } catch (error) {
+    console.error('Error importing students:', error);
+    toast.error(error.response?.data?.message || 'Failed to import students');
+  } finally {
+    importing.value = false;
+    // Reset input
+    if (event.target) event.target.value = '';
   }
 };
 

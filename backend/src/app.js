@@ -18,6 +18,8 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import gownRoutes from './routes/gownRoutes.js';
 import contactRoutes from './routes/contact.js';
 import chatRoutes from './routes/chatRoutes.js';
+import importRoutes from './routes/import.js';
+import financeRoutes from './routes/finance.js';
 
 // Load environment variables
 dotenv.config();
@@ -57,8 +59,8 @@ connectDB();
 // Middleware
 app.use(helmet()); // Security headers
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '50mb' })); // Parse JSON bodies (increased for large base64)
-app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Parse URL-encoded bodies
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -93,6 +95,8 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/gown', gownRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/import', importRoutes);
+app.use('/api/finance', financeRoutes);
 
 // Staff routes
 import staffRoutes from './routes/staff.js';

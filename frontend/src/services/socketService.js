@@ -12,9 +12,10 @@ class SocketService {
             return this.socket;
         }
 
-        let url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-        if (import.meta.env.DEV && url.includes('localhost')) {
-            url = url.replace('localhost', window.location.hostname);
+        let url = import.meta.env.VITE_SOCKET_URL || '/';
+        if (import.meta.env.DEV && (url === '/' || url.includes('localhost'))) {
+            // In dev, if using proxy, we should use the same origin as the app
+            url = window.location.origin;
         }
 
         this.socket = io(url, {

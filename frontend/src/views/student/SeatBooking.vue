@@ -77,10 +77,7 @@
             </div>
             <span class="text-gray-600 dark:text-gray-300">Occupied</span>
           </div>
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded bg-amber-100 border border-amber-300 dark:bg-amber-900/30 dark:border-amber-700"></div>
-            <span class="text-gray-600 dark:text-gray-300">VIP</span>
-          </div>
+
         </div>
 
         <!-- Stage -->
@@ -105,34 +102,45 @@
                   :class="{ 'mb-6': (rIndex + 1) % 5 === 0 && rIndex !== stage.rows.length - 1 }"
                 >
                   <!-- Row Label -->
-                  <div class="w-6 text-center text-[10px] font-bold text-gray-400">{{ row.row }}</div>
+                  <div class="w-8 text-center text-[10px] font-bold text-gray-400">{{ row.row }}</div>
 
                   <!-- Seats -->
-                  <div class="flex gap-1.5">
-                    <button
-                      v-for="seat in row.seats"
-                      :key="seat.id"
-                      @click="toggleSeat(seat)"
-                      :disabled="seat.status === 'occupied' || seat.status === 'reserved'"
-                      :class="[
-                        'w-8 h-8 rounded text-[9px] font-bold transition-all duration-200 flex items-center justify-center',
-                        seat.status === 'occupied' 
-                          ? 'bg-gray-50 border border-gray-200 text-gray-300 cursor-not-allowed dark:bg-gray-900 dark:border-gray-700 dark:text-gray-600' 
-                          : isSelected(seat)
-                            ? 'bg-blue-600 text-white shadow-md transform scale-105'
-                            : seat.isVip
-                              ? 'bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 hover:border-amber-300 dark:bg-amber-900/10 dark:border-amber-800 dark:text-amber-500'
-                              : 'bg-white border border-gray-300 text-gray-600 hover:border-gray-400 hover:shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:border-gray-500'
-                      ]"
-                    >
-                      <span v-if="seat.status === 'occupied'" class="material-symbols-outlined text-xs">close</span>
-                      <span v-else-if="isSelected(seat)" class="material-symbols-outlined text-xs">check</span>
-                      <span v-else>{{ seat.number }}</span>
-                    </button>
+                  <div class="flex gap-1">
+                    <div v-for="(seat, sIndex) in row.seats" :key="seat.id" class="flex items-center">
+                      <!-- Add gap between pairs -->
+                      <div v-if="sIndex > 0 && sIndex % 2 === 0" class="w-2"></div>
+                      
+                      <button
+                        @click="toggleSeat(seat)"
+                        :disabled="seat.status === 'occupied' || seat.status === 'reserved'"
+                        :class="[
+                          'w-10 h-10 rounded text-[8px] leading-tight font-bold transition-all duration-200 flex flex-col items-center justify-center border p-0.5',
+                          seat.status === 'occupied' 
+                            ? 'bg-gray-100 border-gray-200 text-gray-500 cursor-help dark:bg-gray-900 dark:border-gray-700 dark:text-gray-400' 
+                            : isSelected(seat)
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105 z-10'
+                                : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400 hover:shadow-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:border-gray-500'
+                        ]"
+                        :title="seat.occupant || seat.id"
+                      >
+                        <template v-if="seat.status === 'occupied'">
+                           <div class="truncate w-full text-center px-0.5">{{ seat.occupant }}</div>
+                           <div class="text-[6px] opacity-60 uppercase">{{ seat.type === 1 ? 'SV' : 'PH' }}</div>
+                        </template>
+                        <template v-else-if="isSelected(seat)">
+                          <span class="material-symbols-outlined text-xs">check</span>
+                          <span class="text-[6px]">{{ seat.id }}</span>
+                        </template>
+                        <template v-else>
+                          <span class="opacity-40">{{ seat.id }}</span>
+                          <span class="text-[6px] opacity-60">{{ seat.type === 1 ? 'SV' : 'PH' }}</span>
+                        </template>
+                      </button>
+                    </div>
                   </div>
 
                   <!-- Row Label -->
-                  <div class="w-6 text-center text-[10px] font-bold text-gray-400">{{ row.row }}</div>
+                  <div class="w-8 text-center text-[10px] font-bold text-gray-400">{{ row.row }}</div>
                 </div>
               </div>
             </div>
@@ -256,7 +264,6 @@
                 <div class="mt-2 flex flex-wrap gap-2">
                   <span v-if="booking.seatType === 'student'" class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 border border-blue-200 uppercase tracking-wide">STUDENT</span>
                   <span v-else class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200 uppercase tracking-wide">GUEST</span>
-                  <span v-if="booking.seatNumber?.startsWith('A')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 uppercase tracking-wide">VIP</span>
                 </div>
               </div>
             </div>
@@ -337,45 +344,53 @@ const bottomNavigation = computed(() => [
 
 // Generate seat map
 const seatMap = computed(() => {
-  const rowLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const rowLetters = 'abcdefghijklmno'.split('');
   
-  const getRowLabel = (i) => {
-    if (i < 26) return rowLetters[i];
-    const firstLetter = rowLetters[Math.floor((i - 26) / 26)];
-    const secondLetter = rowLetters[(i - 26) % 26];
-    return firstLetter + secondLetter;
-  };
-
-  const generateRows = (startRow, endRow) => {
+  const generateRows = () => {
     const rows = [];
-    for (let i = startRow; i <= endRow; i++) {
-      const rowLabel = getRowLabel(i);
-      
-      rows.push({
-        row: rowLabel,
-        seats: Array.from({ length: 10 }, (_, j) => {
-          const seatNumber = `${rowLabel}${j + 1}`;
-          const isBooked = bookedSeats.value.includes(seatNumber);
-          
-          return {
-            id: seatNumber,
-            row: rowLabel,
-            number: j + 1,
-            status: isBooked ? 'occupied' : 'available',
-            // VIP Logic: First row of every cluster (5 rows) is VIP
-            // Rows 0, 5, 10, 15, 20... are VIP
-            isVip: i % 5 === 0
-          };
-        })
-      });
+    for (let i = 0; i < rowLetters.length; i++) {
+        const rowLabel = rowLetters[i];
+        const rowSeats = [];
+        
+        // 20 pairs = 40 seats
+        for (let group = 1; group <= 20; group++) {
+            // Seat 1 (Student)
+            const seat1Id = `${rowLabel}.${group}.1`;
+            const booking1 = bookedSeats.value.find(b => b.seatNumber === seat1Id);
+            rowSeats.push({
+                id: seat1Id,
+                row: rowLabel,
+                group: group,
+                type: 1, // Student
+                status: booking1 ? 'occupied' : 'available',
+                isVip: false // All seats are standardized
+            });
+
+            // Seat 2 (Guest)
+            const seat2Id = `${rowLabel}.${group}.2`;
+            const booking2 = bookedSeats.value.find(b => b.seatNumber === seat2Id);
+            rowSeats.push({
+                id: seat2Id,
+                row: rowLabel,
+                group: group,
+                type: 2, // Guest
+                status: booking2 ? 'occupied' : 'available',
+                occupant: booking2 ? booking2.occupant : (booking1 ? `${booking1.occupant}'s Guest` : null),
+                isVip: false
+            });
+        }
+        
+        rows.push({
+            row: rowLabel.toUpperCase(),
+            seats: rowSeats
+        });
     }
     return rows;
   };
   
+  const allRows = generateRows();
   return [
-    { name: 'Left Wing', rows: generateRows(0, 14) }, // 3 Clusters (15 rows)
-    { name: 'Center Stage', rows: generateRows(15, 34) }, // 4 Clusters (20 rows)
-    { name: 'Right Wing', rows: generateRows(35, 49) } // 3 Clusters (15 rows)
+    { name: 'Ceremony Hall', rows: allRows }
   ];
 });
 
@@ -384,10 +399,7 @@ const isSelected = (seat) => {
 };
 
 const toggleSeat = (seat) => {
-  // Direct check against bookedSeats to prevent stale state issues
-  if (seat.status === 'occupied' || seat.status === 'reserved' || bookedSeats.value.includes(seat.id)) {
-    return;
-  }
+  if (seat.status === 'occupied' || seat.status === 'reserved') return;
 
   const index = selectedSeats.value.findIndex(s => s.id === seat.id);
   
@@ -395,27 +407,51 @@ const toggleSeat = (seat) => {
     selectedSeats.value.splice(index, 1);
     delete guestInfo.value[seat.id];
   } else {
-    // Check total booked + selected against limit
-    if (totalBooked.value >= totalAllowed.value) {
-      showError(`You have reached the maximum booking limit (${totalAllowed.value} seats)`);
-      return;
+    // Logic for new selection
+    if (seat.type === 1) { // Student seat
+        if (hasStudentSeat.value || selectedSeats.value.some(s => s.type === 1)) {
+            showError('You can only book one student seat.');
+            return;
+        }
+    } else { // Guest seat
+        // Must have a student seat in the same group or already booked
+        const myStudentSeat = myBookings.value.find(b => b.seatType === 'student') || selectedSeats.value.find(s => s.type === 1);
+        
+        if (!myStudentSeat) {
+            showError('Please select your student seat (X.Y.1) first.');
+            return;
+        }
+
+        const [row, group] = myStudentSeat.id ? myStudentSeat.id.split('.') : myStudentSeat.seatNumber.split('.');
+        if (seat.row !== row || seat.group !== parseInt(group)) {
+            showError(`Please select the guest seat matching your student seat: ${row}.${group}.2`);
+            return;
+        }
+
+        if (maxGuests.value < 1) {
+             showError('Your registration does not include guest seats.');
+             return;
+        }
+        
+        if (selectedSeats.value.some(s => s.type === 2)) {
+            showError('You can only book one guest seat.');
+            return;
+        }
     }
+    
     selectedSeats.value.push(seat);
-    // Initialize guest info if it's a guest seat
-    guestInfo.value[seat.id] = { name: '', relation: '' };
+    if (seat.type === 2) {
+        guestInfo.value[seat.id] = { name: '', relation: '' };
+    }
   }
 };
 
-// Helper to check if a specific index in selectedSeats is the student (my) seat
 const isStudentSeat = (index) => {
-    if (hasStudentSeat.value) return false; // Already booked my seat, so all selections are guests
-    return index === 0; // The first selected seat is "My Seat"
+    return selectedSeats.value[index].type === 1;
 };
 
-// Helper to get guest number (offset by 1 if student seat is in mix)
 const getGuestIndex = (index) => {
-    if (hasStudentSeat.value) return index + 1;
-    return index; // If index 0 is student, index 1 is Guest 1. So guest number is index.
+    return 1; // Only 1 guest allowed in this logic
 };
 
 const clearSelection = () => {
@@ -424,10 +460,8 @@ const clearSelection = () => {
 };
 
 const canSubmit = computed(() => {
-    // Check if every selected seat has required info
-    return selectedSeats.value.every((seat, index) => {
-        if (isStudentSeat(index)) return true; // My seat doesn't need manual input here
-        // Guest seat needs name
+    return selectedSeats.value.every((seat) => {
+        if (seat.type === 1) return true;
         return guestInfo.value[seat.id]?.name?.trim();
     });
 });
@@ -442,37 +476,27 @@ const confirmBooking = async () => {
   clearMessages();
 
   try {
-    const bookings = selectedSeats.value.map((seat, index) => {
-        const isStudent = isStudentSeat(index);
+    for (const seat of selectedSeats.value) {
+        const payload = {
+            seatNumber: seat.id,
+            seatType: seat.type === 1 ? 'student' : 'guest',
+        };
         
-        if (isStudent) {
-            return {
-                seatNumber: seat.id,
-                seatType: 'student',
-                status: 'confirmed'
-            };
-        } else {
-            return {
-                seatNumber: seat.id,
-                seatType: 'guest',
-                guestName: guestInfo.value[seat.id].name,
-                guestRelation: guestInfo.value[seat.id].relation,
-                status: 'confirmed'
-            };
+        if (seat.type === 2) {
+            payload.guestName = guestInfo.value[seat.id].name;
+            payload.guestRelation = guestInfo.value[seat.id].relation;
         }
-    });
 
-    for (const booking of bookings) {
-      await api.post('/seats/book', booking);
+        await api.post('/seats/book', payload);
     }
 
-    showSuccess('Seats booked successfully! Your ticket has been updated.');
+    showSuccess('Seats booked successfully!');
     await fetchAvailability();
     await fetchMyBookings();
     clearSelection();
   } catch (error) {
     console.error('Booking error:', error);
-    showError(error.response?.data?.message || 'Failed to book seats. Please try again.');
+    showError(error.response?.data?.message || 'Failed to book seats.');
   } finally {
     isSubmitting.value = false;
   }
@@ -482,11 +506,9 @@ const fetchAvailability = async () => {
   try {
     const response = await api.get('/seats');
     if (response.data.success) {
-      const booked = response.data.data.bookedSeats || [];
-      bookedSeats.value = booked.map(seat => seat.seatNumber);
-      
-      totalCapacity.value = response.data.data.totalCapacity || 500;
-      availableSeats.value = response.data.data.availableSeats || 500;
+      bookedSeats.value = response.data.data.bookedSeats || [];
+      totalCapacity.value = response.data.data.totalCapacity || 600;
+      availableSeats.value = response.data.data.availableSeats || 600;
     }
   } catch (error) {
     console.error('Error fetching availability:', error);

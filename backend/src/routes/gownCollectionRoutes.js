@@ -13,6 +13,7 @@ router.use(protect);
 
 // Student gown collection routes
 router.post('/', createGownCollection);
+router.put('/', createGownCollection);
 router.get('/my-collection', getMyGownCollection);
 router.patch('/:id', updateGownSize);
 

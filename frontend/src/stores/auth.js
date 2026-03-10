@@ -29,18 +29,6 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        async register(userData) {
-            try {
-                const data = await authService.register(userData);
-                this.user = data.data.user;
-                this.token = data.data.token;
-                this.isAuthenticated = true;
-                return data;
-            } catch (error) {
-                throw error;
-            }
-        },
-
         logout() {
             authService.logout();
             this.user = null;

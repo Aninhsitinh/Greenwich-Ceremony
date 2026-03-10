@@ -196,32 +196,6 @@
             </div>
             <span class="material-symbols-outlined text-gray-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
           </router-link>
-
-          <router-link 
-            to="/student/notification-settings"
-            class="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
-          >
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
-                <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">notifications</span>
-              </div>
-              <span class="font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Notification Settings</span>
-            </div>
-            <span class="material-symbols-outlined text-gray-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
-          </router-link>
-
-          <router-link 
-            to="/student/privacy-settings"
-            class="flex items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
-          >
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
-                <span class="material-symbols-outlined text-green-600 dark:text-green-400">privacy_tip</span>
-              </div>
-              <span class="font-semibold text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">Privacy Settings</span>
-            </div>
-            <span class="material-symbols-outlined text-gray-400 group-hover:translate-x-1 transition-transform">chevron_right</span>
-          </router-link>
         </div>
       </div>
     </div>

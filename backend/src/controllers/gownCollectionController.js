@@ -25,20 +25,54 @@ export const createGownCollection = async (req, res, next) => {
             );
         }
 
-        // Create gown collection
+        const colDate = scheduledDate ? new Date(scheduledDate) : new Date();
+
+        // Create gown collection - AUTOMATED as 'collected'
         const gownCollection = await prisma.gownCollection.create({
             data: {
                 userId,
                 registrationId: registration.id,
                 size,
-                scheduledDate: scheduledDate ? new Date(scheduledDate) : new Date(),
-                status: 'pending',
+                scheduledDate: colDate,
+                collectionDate: colDate,
+                status: 'collected',
                 notes
             }
         });
 
+        // Update User journey status
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                journeyGownCollected: true,
+                journeyCurrentStep: 5 // Move to next step (Payment/Confirmation)
+            }
+        });
+
+        // Update Registration record
+        await prisma.registration.update({
+            where: { id: registration.id },
+            data: {
+                gownCollected: true,
+                gownSize: size,
+                gownCollectionTime: colDate
+            }
+        });
+
+        // Emit real-time update to staff
+        const io = req.app.get('io');
+        if (io) {
+            io.to('ceremony').emit('gown:updated', {
+                studentId: req.user.studentId,
+                studentName: req.user.fullName,
+                size,
+                status: 'collected',
+                collectionDate: colDate
+            });
+        }
+
         res.status(201).json(
-            formatResponse(true, 'Gown collection created successfully', {
+            formatResponse(true, 'Gown collection recorded successfully', {
                 gownCollection
             })
         );

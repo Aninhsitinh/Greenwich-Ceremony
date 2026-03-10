@@ -104,7 +104,7 @@
               <div class="grid md:grid-cols-2 gap-4">
                 <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Guests</p>
-                  <p class="font-bold text-gray-900 dark:text-white">{{ registration.guestCount || 0 }} Guests</p>
+                  <p class="font-bold text-gray-900 dark:text-white">1 Guest (Standard)</p>
                 </div>
               </div>
 
@@ -132,18 +132,16 @@
             </h2>
 
             <form @submit.prevent="submitRegistration" class="space-y-8">
-              <!-- Guest Count -->
-              <div>
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Number of Guests</label>
-                <div class="flex items-center gap-4">
-                  <button type="button" @click="form.guestCount = Math.max(0, form.guestCount - 1)" class="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
-                    <span class="material-symbols-outlined">remove</span>
-                  </button>
-                  <span class="text-xl font-bold text-gray-900 dark:text-white w-8 text-center">{{ form.guestCount }}</span>
-                  <button type="button" @click="form.guestCount = Math.min(3, form.guestCount + 1)" class="w-10 h-10 rounded-lg flex items-center justify-center border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors">
-                    <span class="material-symbols-outlined">add</span>
-                  </button>
-                  <span class="text-xs text-gray-500 ml-2">Max 3 guests</span>
+              <!-- Guest Count (Defaulted to 1) -->
+              <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">Number of Guests</label>
+                    <p class="text-xs text-gray-500 mt-1">Every student is allowed 1 guest ticket by default.</p>
+                  </div>
+                  <div class="px-3 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 font-bold text-gray-900 dark:text-white">
+                    1 Guest
+                  </div>
                 </div>
               </div>
 
@@ -213,6 +211,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
@@ -247,7 +246,7 @@ const successMessage = ref('');
 
 const form = ref({
   specialNeeds: '',
-  guestCount: 0,
+  guestCount: 1,
   confirmed: false
 });
 
@@ -272,7 +271,7 @@ const loadRegistration = async () => {
       // Populate form for editing
       form.value = {
         specialNeeds: registration.value.specialNeeds || '',
-        guestCount: registration.value.guestCount || 0,
+        guestCount: 1,
         confirmed: true
       };
     }
@@ -300,7 +299,7 @@ const submitRegistration = async () => {
     const data = {
       ceremonyDate: settings.value?.ceremonyDate || '2026-06-15',
       specialNeeds: form.value.specialNeeds,
-      guestCount: form.value.guestCount
+      guestCount: 1
     };
 
     if (editing.value) {
@@ -344,7 +343,7 @@ const cancelRegistration = async () => {
     successMessage.value = 'Registration cancelled successfully';
     form.value = {
       specialNeeds: '',
-      guestCount: 0,
+      guestCount: 1,
       confirmed: false
     };
   } catch (err) {

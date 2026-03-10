@@ -4,10 +4,13 @@ import path from 'path'
 import fs from 'fs'
 import { VitePWA } from 'vite-plugin-pwa'
 
+import basicSsl from '@vitejs/plugin-basic-ssl'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    basicSsl(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
@@ -46,7 +49,7 @@ export default defineConfig({
         ]
       },
       devOptions: {
-        enabled: true,
+        enabled: false, // Disable PWA in dev to bypass SSL script fetch errors
         type: 'module',
         suppressWarnings: true,
       }
@@ -59,15 +62,19 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
+    host: '0.0.0.0', // Listen on all network interfaces
+    strictPort: true, // Ensuring port 3000 is always used
+    hmr: {
+      host: 'khuong.local', // Target the mDNS hostname
+      clientPort: 3000,
+      protocol: 'wss',
     },
+    https: true, // Use the basic-ssl plugin certificates
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:5000',
         changeOrigin: true,
-        secure: false, // Bypass SSL validation for proxying to HTTP backend
+        secure: false,
       },
       '/socket.io': {
         target: 'http://127.0.0.1:5000',

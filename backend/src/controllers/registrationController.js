@@ -39,7 +39,7 @@ export const createRegistration = async (req, res, next) => {
                 specialRequirements,
                 dietaryRequirements,
                 specialNeeds,
-                guestCount,
+                guestCount: 1,
                 registrationStatus: 'confirmed',  // Auto-confirm for students
                 attendanceConfirmed: true,
             },
@@ -70,6 +70,9 @@ export const getMyRegistration = async (req, res, next) => {
             include: {
                 user: {
                     select: { fullName: true, email: true, studentId: true, profilePhoto: true }
+                },
+                collectionConfirmedBy: {
+                    select: { fullName: true }
                 }
             }
         });
@@ -168,13 +171,57 @@ export const cancelRegistration = async (req, res, next) => {
             );
         }
 
-        await prisma.registration.update({
-            where: { id },
-            data: { registrationStatus: 'cancelled' }
+        // Use a transaction to ensure all cleanup happens together
+        await prisma.$transaction(async (tx) => {
+            // 1. Update registration status
+            await tx.registration.update({
+                where: { id },
+                data: {
+                    registrationStatus: 'cancelled',
+                    attendanceConfirmed: false,
+                    gownCollected: false,
+                    isDepositRefunded: false,
+                    refundAmount: 0
+                }
+            });
+
+            // 2. Delete related tickets
+            await tx.ticket.deleteMany({
+                where: { userId: registration.userId }
+            });
+
+            // 3. Delete seat bookings (releases the seats)
+            await tx.seatBooking.deleteMany({
+                where: { userId: registration.userId }
+            });
+
+            // 4. Delete gown collections
+            await tx.gownCollection.deleteMany({
+                where: { userId: registration.userId }
+            });
+
+            // 5. Delete payments related to this registration/journey
+            // (Keeping logs might be better in real systems, but for this requirement we wipe)
+            await tx.payment.deleteMany({
+                where: { userId: registration.userId }
+            });
+
+            // 6. Reset user journey status
+            await tx.user.update({
+                where: { id: registration.userId },
+                data: {
+                    journeyRegistrationCompleted: false,
+                    journeyTicketGenerated: false,
+                    journeySeatsBooked: false,
+                    journeyGownCollected: false,
+                    journeyPaymentCompleted: false,
+                    journeyCurrentStep: 1
+                }
+            });
         });
 
         res.status(200).json(
-            formatResponse(true, 'Registration cancelled successfully')
+            formatResponse(true, 'Registration and all associated records cancelled successfully')
         );
     } catch (error) {
         if (error.code === 'P2025') {
@@ -203,6 +250,9 @@ export const getAllRegistrations = async (req, res, next) => {
             include: {
                 user: {
                     select: { fullName: true, email: true, studentId: true, major: true, classOf: true }
+                },
+                collectionConfirmedBy: {
+                    select: { fullName: true }
                 }
             },
             take: parsedLimit,
@@ -384,6 +434,154 @@ export const markGownCollected = async (req, res, next) => {
         if (error.code === 'P2025') {
             return res.status(404).json(formatResponse(false, 'Registration not found'));
         }
+        next(error);
+    }
+};
+// @desc    Update logistics status (Invitation/Wristband)
+// @route   PATCH /api/registrations/:id/logistics
+// @access  Private (Staff, Admin)
+export const updateLogisticsStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { invitationCollected, wristbandCollected } = req.body;
+
+        const registration = await prisma.registration.findUnique({
+            where: { id }
+        });
+
+        if (!registration) {
+            return res.status(404).json(
+                formatResponse(false, 'Registration not found')
+            );
+        }
+
+        const updatedData = {};
+        if (invitationCollected !== undefined) updatedData.invitationCollected = invitationCollected;
+        if (wristbandCollected !== undefined) updatedData.wristbandCollected = wristbandCollected;
+
+        const finalInvitation = invitationCollected !== undefined ? !!invitationCollected : registration.invitationCollected;
+        const finalWristband = wristbandCollected !== undefined ? !!wristbandCollected : registration.wristbandCollected;
+
+        if (finalInvitation || finalWristband) {
+            // Always update staff ID if a staff member is performing the update
+            updatedData.collectionConfirmedAt = registration.collectionConfirmedAt || new Date();
+            updatedData.collectionConfirmedById = req.user.id;
+        } else {
+            // Both are false, clear the confirmation info
+            updatedData.collectionConfirmedAt = null;
+            updatedData.collectionConfirmedById = null;
+        }
+
+        const updatedRegistration = await prisma.registration.update({
+            where: { id },
+            data: updatedData,
+            include: {
+                user: {
+                    select: { fullName: true, studentId: true, major: true }
+                },
+                collectionConfirmedBy: {
+                    select: { fullName: true }
+                }
+            }
+        });
+
+        // Emit real-time update to staff and other clients in the ceremony room
+        const io = req.app.get('io');
+        if (io) {
+            io.to('ceremony').emit('logistics:updated', {
+                registrationId: updatedRegistration.id,
+                studentId: updatedRegistration.user.studentId,
+                studentName: updatedRegistration.user.fullName,
+                invitationCollected: updatedRegistration.invitationCollected,
+                wristbandCollected: updatedRegistration.wristbandCollected,
+                collectionConfirmedAt: updatedRegistration.collectionConfirmedAt,
+                confirmedBy: req.user.fullName || 'Staff'
+            });
+
+            // Also notify the specific student
+            io.to(updatedRegistration.userId).emit('student:logistics_updated', updatedRegistration);
+        }
+
+        res.status(200).json(
+            formatResponse(true, 'Logistics status updated successfully', { registration: updatedRegistration })
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Self confirm item collection
+// @route   PUT /api/registrations/me/logistics
+// @access  Private (Student)
+export const confirmSelfCollection = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const { invitationCollected, wristbandCollected } = req.body;
+
+        const registration = await prisma.registration.findFirst({
+            where: {
+                userId,
+                registrationStatus: { not: 'cancelled' }
+            }
+        });
+
+        if (!registration) {
+            return res.status(404).json(
+                formatResponse(false, 'Registration not found')
+            );
+        }
+
+        const finalInvitation = invitationCollected !== undefined ? !!invitationCollected : registration.invitationCollected;
+        const finalWristband = wristbandCollected !== undefined ? !!wristbandCollected : registration.wristbandCollected;
+
+        const updatedData = {
+            invitationCollected: finalInvitation,
+            wristbandCollected: finalWristband
+        };
+
+        if (finalInvitation || finalWristband) {
+            if (!registration.collectionConfirmedAt) {
+                updatedData.collectionConfirmedAt = new Date();
+            }
+        } else {
+            updatedData.collectionConfirmedAt = null;
+            updatedData.collectionConfirmedById = null;
+        }
+
+        const updatedRegistration = await prisma.registration.update({
+            where: { id: registration.id },
+            data: updatedData,
+            include: {
+                user: {
+                    select: { fullName: true, studentId: true, major: true }
+                },
+                collectionConfirmedBy: {
+                    select: { fullName: true }
+                }
+            }
+        });
+
+        // Emit real-time update to staff in the ceremony room
+        const io = req.app.get('io');
+        if (io) {
+            io.to('ceremony').emit('logistics:updated', {
+                registrationId: updatedRegistration.id,
+                studentId: updatedRegistration.user.studentId,
+                studentName: updatedRegistration.user.fullName,
+                invitationCollected: updatedRegistration.invitationCollected,
+                wristbandCollected: updatedRegistration.wristbandCollected,
+                collectionConfirmedAt: updatedRegistration.collectionConfirmedAt,
+                confirmedBy: 'Self Confirmed'
+            });
+
+            // Also notify the specific student (in case they have multiple tabs open)
+            io.to(updatedRegistration.userId).emit('student:logistics_updated', updatedRegistration);
+        }
+
+        res.status(200).json(
+            formatResponse(true, 'Collection status updated successfully', { registration: updatedRegistration })
+        );
+    } catch (error) {
         next(error);
     }
 };

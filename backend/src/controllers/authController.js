@@ -121,25 +121,33 @@ export const login = async (req, res, next) => {
         }
 
         // Find user
+        console.log(`[Login] Attempting login for email: ${email}`);
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
+            console.log(`[Login] User not found: ${email}`);
             return res.status(401).json(
                 formatResponse(false, 'Invalid credentials')
             );
         }
+
+        console.log(`[Login] User found: ${user.fullName} (ID: ${user.id})`);
 
         // Check password
         const isPasswordMatch = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatch) {
+            console.log(`[Login] Password mismatch for: ${email}`);
             return res.status(401).json(
                 formatResponse(false, 'Invalid credentials')
             );
         }
 
+        console.log(`[Login] Password match for: ${email}`);
+
         // Check if user is active
         if (user.status !== 'active') {
+            console.log(`[Login] Account inactive: ${email}`);
             return res.status(403).json(
                 formatResponse(false, 'Account is inactive or suspended')
             );

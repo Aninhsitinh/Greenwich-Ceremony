@@ -162,8 +162,104 @@
             </div>
           </div>
         </div>
+        <div v-if="registrationData" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-gray-900 dark:text-white">inventory_2</span>
+            Item Collection Status
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button 
+              @click="toggleCollection('invitation')"
+              :disabled="updatingCollection"
+              class="group/item p-4 rounded-xl border-2 transition-all flex items-center gap-4 text-left w-full"
+              :class="registrationData.invitationCollected 
+                ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800/50 hover:border-emerald-200' 
+                : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-emerald-200'">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center transition-all group-hover/item:scale-110"
+                :class="registrationData.invitationCollected ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-gray-200 dark:bg-gray-700 text-gray-400'">
+                <span class="material-symbols-outlined text-2xl">{{ registrationData.invitationCollected ? 'check_circle' : 'mail' }}</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Invitation Card</p>
+                <p class="font-black text-lg" :class="registrationData.invitationCollected ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'">
+                  {{ registrationData.invitationCollected ? 'YES' : 'NO' }}
+                </p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors"
+                  :class="registrationData.invitationCollected ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-300 dark:border-gray-600'">
+                  <span class="material-symbols-outlined text-[14px]" v-if="registrationData.invitationCollected">check</span>
+                </div>
+                <span class="text-[8px] font-bold uppercase tracking-tighter" :class="registrationData.invitationCollected ? 'text-emerald-500' : 'text-gray-400'">
+                  {{ registrationData.invitationCollected ? 'Collected' : 'Pending' }}
+                </span>
+              </div>
+            </button>
 
+            <!-- Wristband -->
+            <button 
+              @click="toggleCollection('wristband')"
+              :disabled="updatingCollection"
+              class="group/item p-4 rounded-xl border-2 transition-all flex items-center gap-4 text-left w-full"
+              :class="registrationData.wristbandCollected 
+                ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800/50 hover:border-blue-200' 
+                : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 hover:border-blue-200'">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center transition-all group-hover/item:scale-110"
+                :class="registrationData.wristbandCollected ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-200 dark:bg-gray-700 text-gray-400'">
+                <span class="material-symbols-outlined text-2xl">{{ registrationData.wristbandCollected ? 'check_circle' : 'watch' }}</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Wristband</p>
+                <p class="font-black text-lg" :class="registrationData.wristbandCollected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'">
+                  {{ registrationData.wristbandCollected ? 'YES' : 'NO' }}
+                </p>
+              </div>
+              <div class="flex flex-col items-center gap-1">
+                <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors"
+                  :class="registrationData.wristbandCollected ? 'bg-blue-500 border-blue-500 text-white' : 'border-gray-300 dark:border-gray-600'">
+                  <span class="material-symbols-outlined text-[14px]" v-if="registrationData.wristbandCollected">check</span>
+                </div>
+                <span class="text-[8px] font-bold uppercase tracking-tighter" :class="registrationData.wristbandCollected ? 'text-blue-500' : 'text-gray-400'">
+                  {{ registrationData.wristbandCollected ? 'Collected' : 'Pending' }}
+                </span>
+              </div>
+            </button>
+          </div>
 
+          <div v-if="registrationData.collectionConfirmedAt" class="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-800 flex items-center gap-2">
+            <span class="material-symbols-outlined text-gray-400 text-sm">info</span>
+            <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+              Confirmed on {{ formatDate(registrationData.collectionConfirmedAt) }} by {{ registrationData.collectionConfirmedBy?.fullName || 'Self Confirmed' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Refund Status (Back Phí) -->
+        <div v-if="registrationData && registrationData.isDepositRefunded" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3 mb-6">
+            <span class="material-symbols-outlined text-emerald-600">payments</span>
+            Deposit Refund Status (Back Phí)
+          </h2>
+          
+          <div class="p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border-2 border-emerald-100 dark:border-emerald-800/50 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-16 h-16 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <span class="material-symbols-outlined text-3xl">check_circle</span>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <p class="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">Refund Completed</p>
+              <h3 class="text-2xl font-black text-gray-900 dark:text-white">
+                {{ formatCurrency(registrationData.refundAmount) }}
+              </h3>
+              <p class="text-sm text-gray-500 mt-1">
+                Successfully processed on {{ formatDate(registrationData.refundDate) }}
+              </p>
+            </div>
+            <div class="px-6 py-3 bg-white dark:bg-gray-800 rounded-xl border border-emerald-200 dark:border-emerald-800 font-bold text-emerald-700 dark:text-emerald-400">
+              SUCCESS
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Timeline -->
@@ -229,6 +325,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
+import socketService from '@/services/socketService';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -242,6 +339,7 @@ const seatData = ref(null);
 const gownCollectionData = ref(null); // Track gown collection request
 const paymentData = ref(null);
 const loading = ref(true);
+const updatingCollection = ref(false);
 
 // Countdown
 const countdown = ref({ days: 0, hours: 0, mins: 0 });
@@ -349,24 +447,88 @@ const loadJourneyProgress = async () => {
       if (paymentRes.data.success) {
         paymentData.value = paymentRes.data.data.payments;
       }
-    } catch (err) {
-       console.error('Error loading payments:', err);
+    } catch (error) {
+       console.error('Error loading payments:', error);
     }
   } finally {
     loading.value = false;
   }
 };
 
+const toggleCollection = async (item) => {
+    if (!registrationData.value) return;
+
+    updatingCollection.value = true;
+    try {
+        const payload = {};
+        if (item === 'invitation') {
+            payload.invitationCollected = !registrationData.value.invitationCollected;
+        } else {
+            payload.wristbandCollected = !registrationData.value.wristbandCollected;
+        }
+
+        const response = await api.put('/registrations/me/logistics', payload);
+        if (response.data.success) {
+            registrationData.value = { 
+                ...registrationData.value, 
+                ...response.data.data.registration 
+            };
+        }
+    } catch (err) {
+        console.error('Error updating collection:', err);
+    } finally {
+        updatingCollection.value = false;
+    }
+};
+
 onMounted(() => {
   updateCountdown();
   setInterval(updateCountdown, 60000);
   loadJourneyProgress();
+
+  // Socket connection for real-time updates
+  if (authStore.user) {
+    socketService.emit('ceremony:join', { 
+        role: authStore.user.role, 
+        name: authStore.user.fullName 
+    });
+  }
+
+  socketService.on('student:logistics_updated', (updatedRegistration) => {
+    if (registrationData.value && registrationData.value.id === updatedRegistration.id) {
+        registrationData.value = { ...registrationData.value, ...updatedRegistration };
+    }
+  });
+
+  socketService.on('logistics:updated', (data) => {
+    // If it's about me, update my data
+    if (registrationData.value && registrationData.value.id === data.registrationId) {
+        registrationData.value = {
+            ...registrationData.value,
+            invitationCollected: data.invitationCollected,
+            wristbandCollected: data.wristbandCollected,
+            collectionConfirmedAt: data.collectionConfirmedAt,
+            collectionConfirmedBy: { fullName: data.confirmedBy }
+        };
+    }
+  });
 });
 
 // Reload data when navigating back to Dashboard
 onActivated(() => {
   loadJourneyProgress();
 });
+
+const formatDate = (date) => {
+  if (!date) return '';
+  return new Date(date).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
 
 // Navigation - Simplified and organized by flow
 const navigation = computed(() => [

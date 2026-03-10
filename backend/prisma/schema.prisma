@@ -53,6 +53,7 @@ model User {
   tickets             Ticket[]
   checkedInTickets    Ticket[]          @relation("TicketScannedBy")
   checkedInRegs       Registration[]    @relation("RegCheckedInBy")
+  logisticsConfirmedRegs Registration[] @relation("LogisticsConfirmedBy")
 }
 
 model Announcement {
@@ -217,6 +218,19 @@ model Registration {
   specialRequirements String?
   specialNeeds        String?
   guestCount          Int                @default(0)
+  
+  // Logistics Tracking
+  invitationCollected    Boolean           @default(false)
+  wristbandCollected     Boolean           @default(false)
+  collectionConfirmedAt  DateTime?
+  collectionConfirmedById String?
+  collectionConfirmedBy  User?             @relation("LogisticsConfirmedBy", fields: [collectionConfirmedById], references: [id])
+  
+  // Finance/Refund Tracking (for Step 4)
+  isDepositRefunded      Boolean           @default(false)
+  refundAmount           Int               @default(0)
+  refundDate             DateTime?
+
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
 
@@ -224,6 +238,7 @@ model Registration {
 
   @@index([userId])
   @@index([registrationStatus])
+  @@unique([userId, ceremonyDate])
 }
 
 model SeatBooking {
@@ -232,6 +247,8 @@ model SeatBooking {
   user           User              @relation(fields: [userId], references: [id])
   seatNumber     String
   seatType       TicketType
+  rowLetter      String?           // e.g., 'a', 'b'...
+  seatGroup      Int?              // e.g., 1, 2... (Pair group)
   guestName      String?
   guestRelation  GuestRelation?
   guestPhone     String?

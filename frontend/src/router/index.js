@@ -18,11 +18,6 @@ const routes = [
         component: () => import('@/views/PostDetail.vue'),
     },
     {
-        path: '/register',
-        name: 'Register',
-        component: () => import('@/views/auth/RegisterPage.vue'),
-    },
-    {
         path: '/forgot-password',
         name: 'ForgotPassword',
         component: () => import('@/views/auth/ForgotPassword.vue'),
@@ -84,16 +79,7 @@ const routes = [
                 name: 'StudentChangePassword',
                 component: () => import('@/views/student/ChangePassword.vue'),
             },
-            {
-                path: 'notification-settings',
-                name: 'StudentNotificationSettings',
-                component: () => import('@/views/student/NotificationSettings.vue'),
-            },
-            {
-                path: 'privacy-settings',
-                name: 'StudentPrivacySettings',
-                component: () => import('@/views/student/PrivacySettings.vue'),
-            },
+
             {
                 path: 'settings',
                 name: 'StudentSettings',
@@ -160,6 +146,17 @@ const routes = [
                 path: 'gown-collection',
                 name: 'StaffGownCollection',
                 component: () => import('@/views/staff/GownCollection.vue'),
+            },
+            {
+                path: 'logistics',
+                name: 'StaffLogisticsManagement',
+                component: () => import('@/views/staff/LogisticsManagement.vue'),
+            },
+
+            {
+                path: 'finance',
+                name: 'StaffFinanceManagement',
+                component: () => import('@/views/staff/FinanceManagement.vue'),
             },
             {
                 path: 'seat-management',

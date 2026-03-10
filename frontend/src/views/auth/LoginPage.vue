@@ -131,16 +131,7 @@
           </button>
         </form>
 
-        <!-- Sign Up Link -->
-        <p v-if="selectedRole === 'student'" class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?
-          <router-link
-            to="/register"
-            class="font-medium text-gray-900 dark:text-white hover:underline transition-colors"
-          >
-            {{ $t('auth.sign_up') }}
-          </router-link>
-        </p>
+
 
         <!-- Staff Note -->
         <div v-if="selectedRole === 'staff'" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg">

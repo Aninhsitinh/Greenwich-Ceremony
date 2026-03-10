@@ -1,10 +1,17 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('staff.gown_collection')"
-  >
-    <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </router-link>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.gown_collection') }}</h1>
+      </div>
+    </div>
+
+    <!-- Main Content Flow -->
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Ultra Modern Hero -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-8 lg:p-10 shadow-2xl">
         <div class="absolute inset-0">
@@ -207,34 +214,16 @@
             Cancel
           </button>
         </div>
-      </div>
     </div>
-  </ResponsiveLayout>
+  </div>
+</div>
 </template>
 
 <script setup>
 const { t } = useI18n();
 import { ref, computed, onMounted, onActivated } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
-
-const navigation = computed(() => [
-  { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
-  { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
-  { path: '/staff/settings', icon: 'settings', label: t('staff.nav_settings') }
-]);
-
-const bottomNavigation = computed(() => [
-  { path: '/staff', icon: 'home', label: t('staff.nav_home') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
-]);
 
 // State
 const loading = ref(true);

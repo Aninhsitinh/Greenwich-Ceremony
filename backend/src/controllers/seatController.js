@@ -7,21 +7,64 @@ import { updateJourneyStatus } from '../utils/journeyHelpers.js';
 // @access  Private
 export const getAvailableSeats = async (req, res, next) => {
     try {
-        // Get all booked seats
-        const bookedSeats = await prisma.seatBooking.findMany({
+        // Get all booked seats with essential user info for labels
+        const booked = await prisma.seatBooking.findMany({
             where: { status: { not: 'cancelled' } },
-            select: { seatNumber: true, seatType: true }
+            include: {
+                user: {
+                    select: {
+                        fullName: true,
+                        studentId: true,
+                        journeyPaymentCompleted: true
+                    }
+                }
+            }
+        });
+
+        // Transform results to include the correct occupant label based on payment status
+        const transformedBookedSeats = booked.map(seat => {
+            let label = 'Occupied';
+            if (seat.user) {
+                // Modified for Staff: always show Full Name if staff/admin
+                if (req.user.role !== 'student') {
+                    label = seat.user.fullName;
+                } else {
+                    // Rule for students: If paid, show Full Name. If only registered, show Student ID.
+                    if (seat.user.journeyPaymentCompleted) {
+                        label = seat.user.fullName;
+                    } else {
+                        label = seat.user.studentId || 'Registered';
+                    }
+                }
+            }
+
+            // Return limited info for privacy/security while fulfilling the "sync" requirement
+            return {
+                id: seat.id,
+                seatNumber: seat.seatNumber,
+                seatType: seat.seatType,
+                guestName: seat.guestName,
+                occupant: label,
+                studentId: seat.user?.studentId,
+                isPaid: seat.user?.journeyPaymentCompleted || false,
+                // Full details for non-students
+                ...((req.user.role !== 'student') ? {
+                    user: seat.user,
+                    guestRelation: seat.guestRelation,
+                    guestPhone: seat.guestPhone
+                } : {})
+            };
         });
 
         // Get venue capacity
         const settings = await prisma.systemSettings.findFirst();
-        const capacity = settings ? settings.venueCapacity : 500;
+        const capacity = settings ? settings.venueCapacity : 600;
 
         res.status(200).json(
             formatResponse(true, 'Seats retrieved successfully', {
-                bookedSeats,
+                bookedSeats: transformedBookedSeats,
                 totalCapacity: capacity,
-                availableSeats: capacity - bookedSeats.length,
+                availableSeats: capacity - transformedBookedSeats.length,
             })
         );
     } catch (error) {
@@ -36,6 +79,24 @@ export const bookSeat = async (req, res, next) => {
     try {
         const { seatNumber, seatType, guestName, guestRelation, guestPhone } = req.body;
 
+        // NEW LOGIC: Paired seat format [row].[group].[type] (e.g., a.1.1)
+        const seatParts = seatNumber.split('.');
+        if (seatParts.length !== 3) {
+            return res.status(400).json(formatResponse(false, 'Invalid seat format. Expected Row.Group.Type (e.g., a.1.1)'));
+        }
+
+        const rowLetter = seatParts[0].toLowerCase();
+        const seatGroup = parseInt(seatParts[1]);
+        const seatSubtype = parseInt(seatParts[2]); // 1: Student, 2: Guest
+
+        // Enforce seatType based on seatSubtype
+        if (seatSubtype === 1 && seatType !== 'student') {
+            return res.status(400).json(formatResponse(false, 'Seat X.Y.1 must be booked as "student"'));
+        }
+        if (seatSubtype === 2 && seatType !== 'guest') {
+            return res.status(400).json(formatResponse(false, 'Seat X.Y.2 must be booked as "guest"'));
+        }
+
         // Check if seat is already booked
         const existingBooking = await prisma.seatBooking.findFirst({
             where: {
@@ -45,37 +106,68 @@ export const bookSeat = async (req, res, next) => {
         });
 
         if (existingBooking) {
-            return res.status(400).json(
-                formatResponse(false, 'Seat is already booked')
-            );
+            return res.status(400).json(formatResponse(false, 'Seat is already booked'));
         }
 
-        // Check guest limit
+        // Logic for paired booking
+        if (seatType === 'student') {
+            // Check if student already has a seat
+            const existingStudentSeat = await prisma.seatBooking.findFirst({
+                where: {
+                    userId: req.user.id,
+                    seatType: 'student',
+                    status: { not: 'cancelled' },
+                }
+            });
+            if (existingStudentSeat) {
+                return res.status(400).json(formatResponse(false, 'You have already booked your student seat'));
+            }
+        }
+
         if (seatType === 'guest') {
+            // Check registration for guest count
             const registration = await prisma.registration.findFirst({
                 where: { userId: req.user.id }
             });
 
             if (!registration) {
-                return res.status(400).json(
-                    formatResponse(false, 'Please complete your registration first')
-                );
+                return res.status(400).json(formatResponse(false, 'Please complete your registration first'));
             }
 
-            const maxGuests = registration.guestCount;
+            if (registration.guestCount < 1) {
+                return res.status(400).json(formatResponse(false, 'Your registration does not include guest seats'));
+            }
 
-            const userGuestBookings = await prisma.seatBooking.count({
+            // Ensure they book the guest seat in THEIR group (the one matching their student seat)
+            const myStudentSeat = await prisma.seatBooking.findFirst({
+                where: {
+                    userId: req.user.id,
+                    seatType: 'student',
+                    status: { not: 'cancelled' },
+                }
+            });
+
+            if (!myStudentSeat) {
+                return res.status(400).json(formatResponse(false, 'Please book your student seat first'));
+            }
+
+            const studentSeatParts = myStudentSeat.seatNumber.split('.');
+            const studentRow = studentSeatParts[0].toLowerCase();
+            const studentGroup = parseInt(studentSeatParts[1]);
+
+            if (rowLetter !== studentRow || seatGroup !== studentGroup) {
+                return res.status(400).json(formatResponse(false, `You must book guest seat ${studentRow}.${studentGroup}.2 to match your student seat`));
+            }
+
+            const existingGuestSeat = await prisma.seatBooking.findFirst({
                 where: {
                     userId: req.user.id,
                     seatType: 'guest',
                     status: { not: 'cancelled' },
                 }
             });
-
-            if (userGuestBookings >= maxGuests) {
-                return res.status(400).json(
-                    formatResponse(false, `You can only book up to ${maxGuests} guest seats based on your registration`)
-                );
+            if (existingGuestSeat) {
+                return res.status(400).json(formatResponse(false, 'You have already booked your guest seat'));
             }
         }
 
@@ -85,6 +177,8 @@ export const bookSeat = async (req, res, next) => {
                 userId: req.user.id,
                 seatNumber,
                 seatType,
+                rowLetter,
+                seatGroup,
                 guestName,
                 guestRelation,
                 guestPhone,
@@ -96,7 +190,7 @@ export const bookSeat = async (req, res, next) => {
             }
         });
 
-        // Update user journey status (mark as seats booked)
+        // Update user journey status
         await updateJourneyStatus(req.user.id, { seatsBooked: true });
 
         res.status(201).json(

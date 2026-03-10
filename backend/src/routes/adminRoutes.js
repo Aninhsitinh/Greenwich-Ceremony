@@ -2,7 +2,8 @@ import express from 'express';
 import { protect, restrictTo } from '../middleware/auth.js';
 import {
     getAllUsers,
-    updateUserRole
+    updateUserRole,
+    createStaffAccount
 } from '../controllers/adminController.js';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router.use(restrictTo('admin'));
 
 // User Management
 router.get('/users', getAllUsers);
+router.post('/users/staff', createStaffAccount);
 router.patch('/users/:id/role', updateUserRole);
 
 export default router;

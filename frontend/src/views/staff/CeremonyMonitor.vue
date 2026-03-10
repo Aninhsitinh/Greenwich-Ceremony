@@ -1,10 +1,17 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('staff.ceremony_monitor')"
-  >
-    <div class="w-full max-w-5xl mx-auto space-y-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </router-link>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.ceremony_monitor') }}</h1>
+      </div>
+    </div>
+
+    <!-- Main Content Flow -->
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>
@@ -88,14 +95,20 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Waiting List Panel -->
         <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col min-h-[350px]">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
             <h3 class="text-gray-500 dark:text-gray-400 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
               <span class="material-symbols-outlined text-yellow-500 text-sm">groups</span>
-              Waiting / Ready Status ({{ waitingList.length }})
+              Waiting / Ready Status ({{ displayedWaitingList.length }} / {{ waitingList.length }})
             </h3>
-            <button @click="fetchQueue" :disabled="loadingQueue" class="text-blue-500 hover:text-blue-600 transition-colors p-1 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50">
-              <span class="material-symbols-outlined text-sm font-bold" :class="{'animate-spin': loadingQueue}">sync</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <select v-model="filterMajor" class="text-xs bg-gray-50 dark:bg-gray-700 border-none rounded-md px-2 py-1.5 focus:ring-0 text-gray-600 dark:text-gray-300 cursor-pointer">
+                <option value="">All Majors</option>
+                <option v-for="m in uniqueMajors" :key="m" :value="m">{{ m }}</option>
+              </select>
+              <button @click="fetchQueue" :disabled="loadingQueue" class="text-blue-500 hover:text-blue-600 transition-colors p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50">
+                <span class="material-symbols-outlined text-sm font-bold block" :class="{'animate-spin': loadingQueue}">sync</span>
+              </button>
+            </div>
           </div>
 
           <div v-if="loadingQueue && waitingList.length === 0" class="flex-1 flex items-center justify-center">
@@ -103,8 +116,8 @@
           </div>
           
           <draggable 
-            v-else-if="waitingList.length > 0" 
-            v-model="waitingList"
+            v-else-if="displayedWaitingList.length > 0" 
+            v-model="displayedWaitingList"
             group="staff-queue"
             item-key="id"
             @end="onQueueReorder"
@@ -141,7 +154,7 @@
           
           <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-4">
              <span class="material-symbols-outlined text-5xl text-gray-200 dark:text-gray-700 block mb-3">event_seat</span>
-             <p class="text-gray-400 text-sm">Waiting list is empty.</p>
+             <p class="text-gray-400 text-sm">Waiting list is empty or no matches found.</p>
              <p class="text-gray-400 text-xs mt-1">Students will appear here as they are added to the procession queue.</p>
           </div>
         </div>
@@ -169,41 +182,25 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
 const { t } = useI18n();
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import { io } from 'socket.io-client';
 import api from '@/services/api';
 import draggable from 'vuedraggable';
 
 // Same nav as all other staff pages — just added monitor entry
-const navigation = computed(() => [
-  { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
-  { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
-  { path: '/staff/settings', icon: 'settings', label: t('staff.nav_settings') }
-]);
-
-const bottomNavigation = computed(() => [
-  { path: '/staff', icon: 'home', label: t('staff.nav_home') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
-]);
-
+// Data state
 const ceremonyConnected = ref(false);
 const onStageInfo = ref(null);
 const recentCheckins = ref([]);
 const activityLog = ref([]);
 const waitingList = ref([]);
+const filterMajor = ref('');
 const loadingQueue = ref(false);
 const loadingCheckins = ref(false);
 let socket = null;
@@ -261,6 +258,41 @@ const fetchQueue = async () => {
     loadingQueue.value = false;
   }
 };
+
+const uniqueMajors = computed(() => {
+  return [...new Set(waitingList.value.map(s => s.major).filter(Boolean))].sort();
+});
+
+const displayedWaitingList = computed({
+  get: () => {
+    if (!filterMajor.value) return waitingList.value;
+    return waitingList.value.filter(s => s.major === filterMajor.value);
+  },
+  set: (newVal) => {
+    if (!filterMajor.value) {
+      waitingList.value = newVal;
+      return;
+    }
+    
+    // Merge the dragged filtered list back into the main list
+    // We do this by finding the relative positions of the original filtered items in the main list
+    // and replacing them in order with the newly ordered filtered items.
+    const originalFilteredIndices = [];
+    waitingList.value.forEach((item, index) => {
+      if (item.major === filterMajor.value) {
+        originalFilteredIndices.push(index);
+      }
+    });
+
+    const updatedList = [...waitingList.value];
+    // Put the newly ordered items back into the slots they originally occupied
+    for (let i = 0; i < originalFilteredIndices.length; i++) {
+      updatedList[originalFilteredIndices[i]] = newVal[i];
+    }
+    
+    waitingList.value = updatedList;
+  }
+});
 
 const onQueueReorder = async () => {
   try {

@@ -1,10 +1,18 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('staff.seat_management')"
-  >
-    <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </router-link>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">Seat Assignments</h1>
+      </div>
+      <!-- You could place quick stats here if needed, but keeping it clean for now -->
+    </div>
+
+    <!-- Main Content Flow (Full Width) -->
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Ultra Modern Hero -->
       <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 p-8 lg:p-10 shadow-2xl">
         <div class="absolute inset-0">
@@ -130,70 +138,71 @@
           <p class="text-gray-500 font-medium">Loading seat map...</p>
         </div>
 
-        <div v-else-if="Object.keys(seatBlocks).length === 0" class="text-center py-16">
-          <span class="material-symbols-outlined text-8xl text-gray-300 mb-4">event_seat</span>
-          <p class="text-gray-500 font-medium text-lg">No seat assignments found</p>
-        </div>
-
-        <div v-else class="flex flex-col items-center pb-20 overflow-x-auto w-full">
+        <div v-else 
+          class="pb-20 overflow-x-auto w-full custom-scrollbar"
+          ref="scrollContainer"
+          @mousedown="startDrag"
+          @mouseleave="stopDrag"
+          @mouseup="stopDrag"
+          @mousemove="doDrag"
+          :class="{ 'cursor-grab': !isDragging, 'cursor-grabbing select-none': isDragging }"
+        >
           
-          <!-- Cinema/Theater Stage Representation -->
-          <div class="w-full max-w-4xl flex flex-col items-center mb-16 relative perspective-[1000px]">
-             <!-- Stage Screen / Curvature -->
-             <div class="w-[80%] h-12 border-t-[12px] border-cyan-500 rounded-[100%] absolute -top-4 shadow-[0_-20px_40px_rgba(6,-182,-212,0.3)]"></div>
-             <div class="z-10 bg-gradient-to-b from-gray-100 to-white dark:from-gray-700 dark:to-gray-800 px-16 py-3 rounded-b-3xl shadow-lg border border-gray-200 dark:border-gray-600 uppercase tracking-[0.3em] text-sm font-bold text-gray-400 dark:text-gray-400">
-               Main Stage
-             </div>
-             <!-- Spotlight effects -->
-             <div class="absolute top-10 left-1/4 w-32 h-64 bg-cyan-400/10 blur-2xl transform -rotate-12"></div>
-             <div class="absolute top-10 right-1/4 w-32 h-64 bg-cyan-400/10 blur-2xl transform rotate-12"></div>
+          <div class="min-w-full w-max flex flex-col items-center px-4 md:px-8">
+            <!-- Stage -->
+            <div class="mb-12 flex justify-center w-full">
+            <div class="w-2/3 max-w-lg h-16 bg-gray-100 dark:bg-gray-700 rounded-t-[50%] border-t border-x border-gray-200 dark:border-gray-600 flex items-end justify-center pb-4 shadow-sm">
+                <span class="text-gray-400 dark:text-gray-500 font-bold tracking-[0.5em] uppercase text-sm">Main Stage</span>
+            </div>
           </div>
 
-          <!-- Iterate over each block as rows -->
-          <div class="flex flex-col gap-6 items-center max-w-[100%] min-w-max px-4">
-            <div v-for="(members, block) in seatBlocks" :key="block" class="flex items-center gap-6 justify-center group relative">
-              
-              <!-- Row Label Left -->
-              <div class="w-8 text-center text-xl font-black text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 transition-colors select-none">
-                {{ block }}
-              </div>
-              
-              <!-- Seats in the Row -->
-              <div class="flex gap-2 sm:gap-3 md:gap-4 justify-center">
-                <div 
-                  v-for="(seat, index) in members" 
-                  :key="seat.id"
-                  @click="openSeatModal(seat)"
-                  class="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-t-2xl rounded-b-xl flex items-center justify-center cursor-pointer transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-cyan-500/50 border-b-4"
-                  :class="[
-                    seat.seatType === 'guest' ? 'bg-purple-500 dark:bg-purple-600 border-purple-700 text-white' : 
-                    seat.seatType === 'student' ? 'bg-blue-500 dark:bg-blue-600 border-blue-700 text-white' : 
-                    'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
-                  ]"
-                >
-                  <!-- Add a visual "gap" in the middle of a long row if needed (e.g., aisle) -->
-                  <div v-if="index === Math.floor(members.length / 2)" class="absolute -left-3 sm:-left-4 md:-left-6 w-2 sm:w-4 border-l h-full opacity-0 pointer-events-none"></div>
+          <!-- Seat Map Grid -->
+          <div v-for="branch in seatMap" :key="branch.name" class="flex flex-col items-center min-w-max">
+            <div class="flex flex-col gap-1">
+              <div 
+                v-for="row in branch.rows" 
+                :key="row.row" 
+                class="flex items-center gap-3"
+              >
+                <!-- Row Label -->
+                <div class="w-8 text-center text-[10px] font-black text-gray-400">{{ row.row }}</div>
 
-                  <!-- Checked In Indicator / Spotlight -->
-                  <div v-if="seat.userId?.tickets?.some(t => t.isScanned)" class="absolute -top-3 w-4 h-4 bg-green-400 rounded-full blur-[2px] animate-pulse shadow-[0_0_10px_#4ade80]"></div>
-
-                  <span class="font-bold text-xs sm:text-sm md:text-base select-none z-10 block mt-1">
-                    {{ seat.seatNumber.replace(block, '') || seat.seatNumber }}
-                  </span>
-                  
-                  <!-- Seat Armrests Effect -->
-                  <div class="absolute top-2 -left-[2px] w-[2px] h-3/5 bg-black/20 rounded-full"></div>
-                  <div class="absolute top-2 -right-[2px] w-[2px] h-3/5 bg-black/20 rounded-full"></div>
+                <!-- Seats -->
+                <div class="flex gap-1">
+                  <div v-for="(seat, sIndex) in row.seats" :key="seat.id" class="flex items-center">
+                    <!-- Aisle gap between pairs -->
+                    <div v-if="sIndex > 0 && sIndex % 2 === 0" class="w-2"></div>
+                    
+                      <button
+                        @click="openSeatModal(seat)"
+                        :class="[
+                          'w-36 h-12 rounded-lg text-[10px] leading-tight font-bold transition-all duration-300 flex flex-col items-center justify-center border px-1 py-1 shadow-sm transform hover:-translate-y-1',
+                        seat.status === 'occupied' 
+                          ? (seat.type === 1 ? 'bg-blue-500 border-blue-600 text-white shadow-blue-500/20' : 'bg-purple-500 border-purple-600 text-white shadow-purple-500/20')
+                            : 'bg-white border-gray-200 text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500',
+                        !seat.matchesFilter && (searchQuery || filterType) ? 'opacity-20 grayscale-50 scale-95 blur-[0.5px]' : ''
+                      ]"
+                      :title="seat.occupant || seat.id"
+                    >
+                        <template v-if="seat.status === 'occupied'">
+                           <div class="truncate w-full text-center px-1 text-xs font-black mb-0.5">{{ seat.studentId || 'GUEST' }}</div>
+                           <div class="truncate w-full text-center px-1 text-[10px] font-bold text-white/90">{{ seat.occupant }}</div>
+                        </template>
+                        <template v-else>
+                          <span class="opacity-40 text-xs">{{ row.row }}{{ group }}</span>
+                          <span class="text-[9px] opacity-40 uppercase">{{ seat.type === 1 ? 'STUDENT' : 'GUEST' }}</span>
+                        </template>
+                      </button>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Row Label Right -->
-              <div class="w-8 text-center text-xl font-black text-gray-400 dark:text-gray-500 group-hover:text-cyan-500 transition-colors select-none">
-                {{ block }}
+                <!-- Row Label -->
+                <div class="w-8 text-center text-[10px] font-black text-gray-400">{{ row.row }}</div>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <!-- Seat Detail Modal -->
@@ -219,21 +228,43 @@
           </div>
 
           <div class="space-y-4 mb-8">
-            <div v-if="selectedSeat.userId" class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-600">
-              <div class="flex items-center gap-4 mb-2">
-                <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xl overflow-hidden">
-                  <span v-if="!selectedSeat.userId.profilePhoto">🎓</span>
-                  <img v-else :src="getProfilePicture(selectedSeat.userId.profilePhoto)" class="w-full h-full object-cover" />
+            <div v-if="selectedSeat.status === 'occupied'" class="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-600">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-2xl bg-white dark:bg-gray-600 flex items-center justify-center shadow-lg border-2 border-white dark:border-gray-700 overflow-hidden shrink-0">
+                  <span v-if="!selectedSeat.booking?.user?.profilePhoto" class="text-3xl">🎓</span>
+                  <img v-else :src="getProfilePicture(selectedSeat.booking?.user?.profilePhoto)" class="w-full h-full object-cover" />
                 </div>
-                <div>
-                  <p class="font-bold text-gray-900 dark:text-white text-lg">{{ selectedSeat.userId.fullName }}</p>
-                  <p class="text-sm text-gray-500 font-mono">{{ selectedSeat.userId.studentId }}</p>
+                <div class="overflow-hidden">
+                  <p class="font-black text-gray-900 dark:text-white text-xl truncate leading-tight mb-1">{{ selectedSeat.occupant }}</p>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-[10px] font-black uppercase tracking-wider">
+                      {{ selectedSeat.studentId || 'N/A' }}
+                    </span>
+                    <span v-if="selectedSeat.isPaid" class="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-black uppercase tracking-wider">
+                      Paid
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div v-if="selectedSeat.seatType === 'guest'" class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
-                <p class="text-sm font-medium text-gray-500">Guest Info</p>
-                <p class="font-semibold text-gray-800 dark:text-gray-200">{{ selectedSeat.guestName || 'Not provided' }} ({{ selectedSeat.guestRelation || 'N/A' }})</p>
+
+              <div class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+                <div v-if="selectedSeat.booking?.user?.email" class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-gray-400 text-lg">mail</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">{{ selectedSeat.booking.user.email }}</span>
+                </div>
+                
+                <div v-if="selectedSeat.type === 2" class="mt-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-purple-600 text-lg">group</span>
+                    <p class="text-[10px] font-black uppercase text-purple-600 tracking-wider">Guest Information</p>
+                  </div>
+                  <p class="font-bold text-gray-800 dark:text-gray-200">{{ selectedSeat.booking?.guestName || 'Anonymous Guest' }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ selectedSeat.booking?.guestRelation || 'Relation N/A' }} • {{ selectedSeat.booking?.guestPhone || 'Phone N/A' }}</p>
+                </div>
               </div>
+            </div>
+            <div v-else class="p-8 text-center italic text-gray-400">
+              This seat is currently available.
             </div>
           </div>
 
@@ -261,37 +292,47 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
-const { t } = useI18n();
-import { ref, computed, onMounted, onActivated, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onActivated } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
+const { t } = useI18n();
 import api from '@/services/api';
 
-const navigation = computed(() => [
-  { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
-  { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
-  { path: '/staff/settings', icon: 'settings', label: t('staff.nav_settings') }
-]);
+// Drag to scroll logic
+const scrollContainer = ref(null);
+const isDragging = ref(false);
+const startX = ref(0);
+const scrollLeft = ref(0);
 
-const bottomNavigation = computed(() => [
-  { path: '/staff', icon: 'home', label: t('staff.nav_home') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
-]);
+const startDrag = (e) => {
+  // Only start drag if middle mouse button, or left click but NOT on a button (to avoid preventing seat clicks)
+  if (e.target.closest('button')) return;
+  
+  isDragging.value = true;
+  startX.value = e.pageX - scrollContainer.value.offsetLeft;
+  scrollLeft.value = scrollContainer.value.scrollLeft;
+};
+
+const stopDrag = () => {
+  isDragging.value = false;
+};
+
+const doDrag = (e) => {
+  if (!isDragging.value) return;
+  e.preventDefault();
+  const x = e.pageX - scrollContainer.value.offsetLeft;
+  const walk = (x - startX.value) * 1.5; // Scroll speed multiplier
+  scrollContainer.value.scrollLeft = scrollLeft.value - walk;
+};
 
 // Real-time data from MongoDB
 const loading = ref(true);
-const seats = ref([]);
+const bookedSeats = ref([]);
 const statistics = ref(null);
+const totalCapacity = ref(600);
 
 const selectedSeat = ref(null);
 const editSeatNumberValue = ref('');
@@ -356,59 +397,102 @@ const statCards = computed(() => [
   }
 ]);
 
-// Computed filtered seats
-const filteredSeats = computed(() => {
-  let filtered = seats.value;
 
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(seat => 
-      seat.userId?.fullName?.toLowerCase().includes(query) ||
-      seat.userId?.studentId?.toLowerCase().includes(query) ||
-      seat.guestName?.toLowerCase().includes(query) ||
-      seat.seatNumber?.toLowerCase().includes(query)
-    );
-  }
-
-  if (filterType.value) {
-    filtered = filtered.filter(seat => seat.seatType === filterType.value);
-  }
-
-  return filtered;
-});
-
-// Format missing items (if we want to generate placeholders for empty seats between min/max numbering, we could do it here)
-const seatBlocks = computed(() => {
-  const blocks = {};
-  filteredSeats.value.forEach(seat => {
-    // Extract block letter and number (e.g., "A12" -> Block "A", Num 12)
-    const match = seat.seatNumber.match(/^([A-Za-z]+)(\d+)$/);
-    const blockLetter = match ? match[1].toUpperCase() : 'UNKNOWN';
-    
-    if (!blocks[blockLetter]) {
-      blocks[blockLetter] = [];
-    }
-    blocks[blockLetter].push(seat);
-  });
-
-  // Sort blocks alphabetically
-  const sortedBlocks = {};
-  Object.keys(blocks).sort().forEach(key => {
-    // Sort seats within block numerically
-    sortedBlocks[key] = blocks[key].sort((a, b) => {
-      const matchA = a.seatNumber.match(/\d+$/);
-      const matchB = b.seatNumber.match(/\d+$/);
-      const numA = matchA ? parseInt(matchA[0], 10) : 0;
-      const numB = matchB ? parseInt(matchB[0], 10) : 0;
-      return numA - numB;
-    });
-  });
+// Generate seat map
+const seatMap = computed(() => {
+  const rowLetters = 'abcdefghijklmno'.split('');
   
-  return sortedBlocks;
+  const generateRows = () => {
+    const rows = [];
+    for (let i = 0; i < rowLetters.length; i++) {
+        const rowLabel = rowLetters[i];
+        const rowSeats = [];
+        
+        for (let group = 1; group <= 20; group++) {
+            // Seat 1 (Student)
+            const seat1Id = `${rowLabel}.${group}.1`;
+            const booking1 = bookedSeats.value.find(b => b.seatNumber === seat1Id);
+            
+            // Check filters
+            const matchesSearch1 = !searchQuery.value || (
+               seat1Id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+               booking1?.occupant?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+               booking1?.studentId?.toLowerCase().includes(searchQuery.value.toLowerCase())
+            );
+            const matchesType1 = !filterType.value || filterType.value === 'student';
+
+            rowSeats.push({
+                id: seat1Id,
+                row: rowLabel,
+                group: group,
+                type: 1, // Student
+                status: booking1 ? 'occupied' : 'available',
+                occupant: booking1 ? booking1.occupant : null,
+                studentId: booking1?.studentId,
+                isPaid: booking1?.isPaid,
+                isVip: false,
+                matchesFilter: matchesSearch1 && matchesType1,
+                booking: booking1,
+                seatNumber: seat1Id,
+                seatType: 'student'
+            });
+
+            // Seat 2 (Guest)
+            const seat2Id = `${rowLabel}.${group}.2`;
+            const booking2 = bookedSeats.value.find(b => b.seatNumber === seat2Id);
+            
+            const matchesSearch2 = !searchQuery.value || (
+               seat2Id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+               booking2?.occupant?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+               booking2?.guestName?.toLowerCase().includes(searchQuery.value.toLowerCase())
+            );
+            const matchesType2 = !filterType.value || filterType.value === 'guest';
+
+            rowSeats.push({
+                id: seat2Id,
+                row: rowLabel,
+                group: group,
+                type: 2, // Guest
+                status: booking2 ? 'occupied' : 'available',
+                occupant: booking2 ? booking2.occupant : (booking1 ? `${booking1.occupant}'s Guest` : null),
+                bookingId: booking2?.id,
+                isVip: false,
+                matchesFilter: matchesSearch2 && matchesType2,
+                booking: booking2 || booking1, // Fallback to student booking if guest seat is linked but not yet "booked" as a separate record in some logic
+                seatNumber: seat2Id,
+                seatType: 'guest',
+                studentId: booking1?.studentId
+            });
+        }
+        
+        rows.push({
+            row: rowLabel.toUpperCase(),
+            seats: rowSeats
+        });
+    }
+    return rows;
+  };
+  
+  return [
+    { name: 'Ceremony Hall', rows: generateRows() }
+  ];
 });
+
+const fetchAvailability = async () => {
+  try {
+    const response = await api.get('/seats');
+    if (response.data.success) {
+      bookedSeats.value = response.data.data.bookedSeats || [];
+      totalCapacity.value = response.data.data.totalCapacity || 600;
+    }
+  } catch (error) {
+    console.error('Error fetching availability:', error);
+  }
+};
 
 const getProfilePicture = (photo) => {
   if (!photo) return '';
+  if (photo.typeof === 'object') return ''; // Avoid object photo
   if (photo.startsWith('http') || photo.startsWith('data:')) return photo;
   return photo.startsWith('/') ? photo : `/${photo}`;
 };
@@ -417,11 +501,17 @@ const getProfilePicture = (photo) => {
 const loadSeatManagementData = async () => {
   loading.value = true;
   try {
-    const response = await api.get('/staff/seat-management', { params: { limit: 1000 } });
-    if (response.data.success) {
-      seats.value = response.data.data.seats;
-      statistics.value = response.data.data.statistics;
-    }
+    await fetchAvailability();
+    // Statistics can be calculated from bookedSeats
+    const booked = bookedSeats.value.length;
+    const capacity = totalCapacity.value;
+    statistics.value = {
+        totalCapacity: capacity,
+        totalBooked: booked,
+        available: capacity - booked,
+        occupancyRate: Math.round((booked / capacity) * 100),
+        guestSeats: bookedSeats.value.filter(b => b.seatType === 'guest').length
+    };
   } catch (error) {
     console.error('Error loading seat management data:', error);
   } finally {
@@ -453,10 +543,7 @@ const saveSeat = async () => {
     const res = await api.patch(`/seats/${selectedSeat.value.id}/admin-update`, { newSeatNumber });
     if (res.data.success) {
       toast.success(res.data.message || 'Seat updated!');
-      const idx = seats.value.findIndex(s => s.id === selectedSeat.value.id);
-      if (idx !== -1) {
-        seats.value[idx].seatNumber = newSeatNumber;
-      }
+      await loadSeatManagementData();
       closeSeatModal();
     }
   } catch (error) {
@@ -474,3 +561,33 @@ onActivated(() => {
   loadSeatManagementData();
 });
 </script>
+
+<style scoped>
+/* Custom Scrollbar for Seat Map */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 16px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 8px;
+  border: 4px solid #f1f5f9;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+  border: 4px solid #1e293b;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border: 4px solid #1e293b;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}
+</style>

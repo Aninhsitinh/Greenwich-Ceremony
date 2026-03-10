@@ -25,16 +25,9 @@
           <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
           <router-link 
             to="/login" 
-            class="text-sm font-semibold text-gray-900 dark:text-white hover:opacity-80 transition-opacity"
-          >
-            {{ $t('nav.login', 'Sign In') }}
-          </router-link>
-          <router-link 
-            to="/register" 
             class="text-sm font-semibold bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-full hover:opacity-90 transition-opacity"
           >
-            <!-- {{ $t('nav.register') }} -->
-            {{ $t('nav.register', 'Register') }}
+            {{ $t('nav.login', 'Sign In') }}
           </router-link>
           <LanguageSwitcher />
         </div>
@@ -58,14 +51,8 @@
             </p>
             <div class="flex flex-wrap gap-4">
               <router-link 
-                to="/register" 
-                class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-full hover:opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                Register Now
-              </router-link>
-              <router-link 
                 to="/programs" 
-                class="px-8 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-full hover:opacity-90 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center"
               >
                 View Programs
               </router-link>

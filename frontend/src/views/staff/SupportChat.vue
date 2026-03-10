@@ -1,10 +1,18 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('staff.support_chat')"
-  >
-    <div class="h-[calc(100vh-theme(spacing.16)-env(safe-area-inset-bottom))] lg:h-[calc(100vh-0px)] flex bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden m-4 lg:m-6">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </router-link>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.support_chat') }}</h1>
+      </div>
+    </div>
+
+    <!-- Main Content Flow -->
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
+      <div class="h-[calc(100vh-theme(spacing.32)-env(safe-area-inset-bottom))] flex bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
     
     <!-- Sidebar: Conversation List -->
     <div class="w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col">
@@ -183,8 +191,9 @@
       </div>
 
     </div>
+      </div>
+    </div>
   </div>
-  </ResponsiveLayout>
 </template>
 
 <script setup>
@@ -193,25 +202,6 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import socketService from '@/services/socketService';
 import api from '@/services/api';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
-
-const navigation = computed(() => [
-  { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
-  { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
-  { path: '/staff/settings', icon: 'settings', label: t('staff.nav_settings') },
-  { path: '/staff/chat', icon: 'support_agent', label: t('staff.nav_chat') }
-]);
-
-const bottomNavigation = computed(() => [
-  { path: '/staff', icon: 'home', label: t('staff.nav_home') },
-  { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
-  { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
-  { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
-]);
 
 const authStore = useAuthStore();
 const { t } = useI18n();

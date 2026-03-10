@@ -9,6 +9,8 @@ import {
     confirmRegistration,
     toggleRegistrationStatus,
     markGownCollected,
+    updateLogisticsStatus,
+    confirmSelfCollection,
 } from '../controllers/registrationController.js';
 import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/roleCheck.js';
@@ -25,11 +27,13 @@ const createRegistrationValidation = [
 // Routes
 router.post('/', protect, authorize('student'), createRegistrationValidation, validate, createRegistration);
 router.get('/me', protect, getMyRegistration);
+router.put('/me/logistics', protect, authorize('student'), confirmSelfCollection);
 router.get('/', protect, authorize('admin', 'staff'), getAllRegistrations);
 router.put('/:id', protect, updateRegistration);
 router.delete('/:id', protect, cancelRegistration);
 router.patch('/:id/status', protect, authorize('admin', 'staff'), toggleRegistrationStatus);
 router.put('/:id/confirm', protect, authorize('admin'), confirmRegistration);
 router.put('/:id/gown-collected', protect, authorize('staff', 'admin'), markGownCollected);
+router.patch('/:id/logistics', protect, authorize('staff', 'admin'), updateLogisticsStatus);
 
 export default router;

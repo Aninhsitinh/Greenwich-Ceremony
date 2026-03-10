@@ -44,7 +44,7 @@ const resetPasswordValidation = [
 ];
 
 // Routes
-router.post('/register', registerValidation, validate, register);
+// router.post('/register', registerValidation, validate, register);
 router.post('/login', loginValidation, validate, login);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);

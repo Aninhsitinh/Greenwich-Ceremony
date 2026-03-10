@@ -5,11 +5,11 @@
       <div class="bg-gray-900 dark:bg-white px-8 py-6 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-white dark:text-gray-900">Terms & Conditions</h1>
         <router-link 
-          to="/register" 
+          to="/" 
           class="text-gray-300 dark:text-gray-600 hover:text-white dark:hover:text-gray-900 transition-colors flex items-center gap-2"
         >
           <span class="material-symbols-outlined">arrow_back</span>
-          Back to Register
+          Back to Home
         </router-link>
       </div>
 
@@ -55,7 +55,7 @@
       <!-- Footer Action -->
       <div class="bg-gray-50 dark:bg-gray-700/50 px-8 py-6 flex justify-end">
         <router-link 
-          to="/register"
+          to="/"
           class="px-6 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
         >
           I Understand

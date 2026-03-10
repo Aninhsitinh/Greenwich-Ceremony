@@ -201,6 +201,8 @@ const navigation = computed(() => [
   { path: '/staff', icon: 'dashboard', label: t('staff.nav_dashboard') },
   { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_qr') },
   { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/logistics', icon: 'inventory_2', label: 'Logistics' },
+  { path: '/staff/finance', icon: 'payments', label: 'Refunds' },
   { path: '/staff/seat-management', icon: 'event_seat', label: t('staff.nav_seat') },
   { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') },
   { path: '/staff/monitor', icon: 'monitor_heart', label: t('staff.nav_monitor') },
@@ -212,6 +214,8 @@ const bottomNavigation = computed(() => [
   { path: '/staff', icon: 'home', label: t('staff.nav_home') },
   { path: '/staff/qr-scanner', icon: 'qr_code_scanner', label: t('staff.nav_scan') },
   { path: '/staff/gown-collection', icon: 'checkroom', label: t('staff.nav_gown') },
+  { path: '/staff/logistics', icon: 'inventory_2', label: 'Logistics' },
+  { path: '/staff/finance', icon: 'payments', label: 'Refunds' },
   { path: '/staff/student-list', icon: 'group', label: t('staff.nav_students') }
 ]);
 
@@ -299,6 +303,20 @@ const quickActions = [
     label: 'Seat Management', 
     path: '/staff/seat-management',
     description: 'View seat assignments'
+  },
+  { 
+    icon: 'inventory_2', 
+    label: 'Item Logistics', 
+    path: '/staff/logistics',
+    variant: 'secondary',
+    description: 'Invitations & Wristbands'
+  },
+
+  { 
+    icon: 'payments', 
+    label: 'Refunds', 
+    path: '/staff/finance',
+    description: 'Manage deposit refunds'
   },
   { 
     icon: 'group', 

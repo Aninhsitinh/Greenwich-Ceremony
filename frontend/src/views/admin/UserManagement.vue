@@ -5,6 +5,13 @@
         <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Accounts</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage user roles and monitor accounts.</p>
       </div>
+      <button 
+        @click="showAddStaffModal = true"
+        class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined text-sm">person_add</span>
+        Add Staff
+      </button>
     </div>
 
     <!-- Filters and Search -->
@@ -136,6 +143,69 @@
     </div>
 
   </div>
+
+  <!-- Add Staff Modal -->
+  <div v-if="showAddStaffModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="material-symbols-outlined">person_add</span>
+          Add Staff Account
+        </h3>
+        <button @click="closeAddStaffModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form @submit.prevent="handleAddStaff" class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+          <input 
+            v-model="addStaffForm.fullName"
+            type="text" 
+            required
+            placeholder="E.g., John Doe"
+            class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 dark:text-white"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+          <input 
+            v-model="addStaffForm.email"
+            type="email" 
+            required
+            placeholder="staff@example.com"
+            class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 dark:text-white"
+          />
+        </div>
+        
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg flex items-start gap-3 mt-4">
+          <span class="material-symbols-outlined text-blue-500 text-lg shrink-0">info</span>
+          <p class="text-xs text-blue-700 dark:text-blue-300">
+            The account will be created with the staff role and a default password of <strong>123456</strong>. They can change it later.
+          </p>
+        </div>
+
+        <div class="pt-4 flex gap-3">
+          <button 
+            type="button" 
+            @click="closeAddStaffModal"
+            class="flex-1 px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            :disabled="isAddingStaff"
+            class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <span v-if="isAddingStaff" class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+            <span v-else>Create Account</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -151,6 +221,19 @@ const users = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const filterRole = ref('');
+
+// Add Staff State
+const showAddStaffModal = ref(false);
+const isAddingStaff = ref(false);
+const addStaffForm = ref({
+  fullName: '',
+  email: ''
+});
+
+const closeAddStaffModal = () => {
+  showAddStaffModal.value = false;
+  addStaffForm.value = { fullName: '', email: '' }; // Reset form
+};
 
 const pagination = ref({
   current: 1,
@@ -198,6 +281,23 @@ const updateUserRole = async (userId, newRole) => {
      console.error('Error updating user role:', error);
      toast.error(error.response?.data?.message || 'Failed to update user role');
      loadUsers(pagination.value.current); // Revert UI
+  }
+};
+
+const handleAddStaff = async () => {
+  isAddingStaff.value = true;
+  try {
+    const response = await api.post('/admin/users/staff', addStaffForm.value);
+    if (response.data.success) {
+      toast.success(response.data.message || 'Staff account created successfully');
+      closeAddStaffModal();
+      loadUsers(1); // Refresh the list from the first page
+    }
+  } catch (error) {
+    console.error('Error creating staff account:', error);
+    toast.error(error.response?.data?.message || 'Failed to create staff account');
+  } finally {
+    isAddingStaff.value = false;
   }
 };
 
