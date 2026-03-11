@@ -1,55 +1,111 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
     <!-- Sticky Top Navigation -->
-    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+    <div 
+      :class="[
+        'sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl transition-all duration-500',
+        isFocusMode ? '-translate-y-full opacity-0 pointer-events-none absolute' : 'translate-y-0 opacity-100'
+      ]"
+    >
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
       <div class="flex items-center gap-4">
         <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
            <span class="material-symbols-outlined">arrow_back</span>
         </router-link>
-        <h1 class="text-xl font-black text-gray-900 dark:text-white">Seat Assignments</h1>
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl font-black text-gray-900 dark:text-white">Seat Assignments</h1>
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-red-500/10 border border-red-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="text-[10px] font-black text-red-500 uppercase tracking-tighter">Live Monitor</span>
+          </div>
+        </div>
       </div>
-      <!-- You could place quick stats here if needed, but keeping it clean for now -->
+
+      <div class="flex items-center gap-2">
+        <button 
+          @click="isFocusMode = true" 
+          class="btn glass-card border-white/10 text-xs py-1.5 px-4 flex items-center gap-2 hover:bg-white/20"
+        >
+          <span class="material-symbols-outlined text-sm text-primary">visibility_off</span>
+          Focus Mode
+        </button>
+      </div>
+    </div>
+
+    <!-- Exit Focus Mode Button -->
+    <div 
+      v-if="isFocusMode"
+      class="fixed bottom-6 right-6 z-50 animate-bounce-in"
+    >
+      <button 
+        @click="isFocusMode = false"
+        class="w-14 h-14 rounded-full bg-primary text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group"
+        title="Exit Focus Mode"
+      >
+        <span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform">visibility</span>
+      </button>
     </div>
 
     <!-- Main Content Flow (Full Width) -->
     <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Ultra Modern Hero -->
-      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 p-8 lg:p-10 shadow-2xl">
-        <div class="absolute inset-0">
-          <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-          <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-        </div>
+      <div 
+        :class="[
+          'glass-card mesh-gradient animate-mesh p-8 lg:p-10 border-none relative overflow-hidden group transition-all duration-700',
+          isFocusMode ? 'mt-0 scale-98 opacity-50 blur-sm pointer-events-none h-0 p-0 overflow-hidden mb-0' : 'mb-8'
+        ]"
+      >
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
         
-        <div class="relative z-10">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center border-2 border-white/30">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-3xl bg-white/20 backdrop-blur-xl flex items-center justify-center border-2 border-white/30 shadow-2xl">
               <span class="material-symbols-outlined text-4xl text-white">event_seat</span>
             </div>
             <div>
-              <p class="text-white/80 text-sm font-semibold uppercase tracking-wider">Venue Management</p>
-              <h1 class="text-4xl font-black text-white">Seat Assignments</h1>
+              <p class="text-white/60 text-xs font-black uppercase tracking-[0.2em] mb-1">Venue Management</p>
+              <h1 class="text-4xl font-black text-white drop-shadow-lg">Seat Assignments</h1>
             </div>
           </div>
-          <p class="text-white/90 text-lg max-w-2xl">Monitor guest seat bookings and venue capacity</p>
+          <div class="flex flex-col items-end">
+            <p class="text-white/80 text-lg font-medium drop-shadow-sm mb-2 text-right">Monitor guest seat bookings and venue capacity</p>
+            <div class="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white text-xs font-black uppercase tracking-widest">
+              Real-time synchronization active
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Animated Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <div 
-          v-for="(stat, index) in statCards"
-          :key="index"
-          class="group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
-        >
-          <div :class="`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${stat.gradient}`"></div>
-          <div class="relative z-10">
-            <div :class="`w-14 h-14 rounded-xl ${stat.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`">
-              <span :class="`material-symbols-outlined text-3xl ${stat.color}`">{{ stat.icon }}</span>
-            </div>
-            <p class="text-3xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-white transition-colors">{{ stat.value }}</p>
-            <p class="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/80 transition-colors">{{ stat.label }}</p>
+      <div 
+        :class="[
+          'grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 transition-all duration-700',
+          isFocusMode ? 'h-0 overflow-hidden opacity-0 mb-0' : ''
+        ]"
+      >
+        <template v-if="loading">
+          <div v-for="i in 4" :key="i" class="glass-card p-6 h-32 flex flex-col justify-between">
+            <SkeletonLoader width="40px" height="40px" variant="circle" />
+            <SkeletonLoader width="100%" height="24px" />
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div 
+            v-for="(stat, index) in statCards"
+            :key="index"
+            class="glass-card p-6 border-transparent hover-lift group"
+          >
+            <div :class="`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${stat.gradient}`"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-3 text-gray-500 dark:text-gray-400 group-hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-4xl opacity-80 group-hover:scale-110 transition-transform duration-500">{{ stat.icon }}</span>
+                <span class="text-[10px] font-black uppercase tracking-widest bg-gray-100 dark:bg-gray-700 group-hover:bg-white/20 px-2 py-1 rounded-full transition-colors">{{ stat.label.split(' ')[0] }}</span>
+              </div>
+              <p class="text-3xl font-black mb-1 text-gray-900 dark:text-white group-hover:text-white transition-colors">{{ stat.value }}</p>
+              <p class="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-white/80 uppercase tracking-tighter transition-colors">{{ stat.label }}</p>
+            </div>
+          </div>
+        </template>
       </div>
 
       <!-- Capacity Visualization -->
@@ -180,7 +236,8 @@
                         seat.status === 'occupied' 
                           ? (seat.type === 1 ? 'bg-blue-500 border-blue-600 text-white shadow-blue-500/20' : 'bg-purple-500 border-purple-600 text-white shadow-purple-500/20')
                             : 'bg-white border-gray-200 text-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500',
-                        !seat.matchesFilter && (searchQuery || filterType) ? 'opacity-20 grayscale-50 scale-95 blur-[0.5px]' : ''
+                        !seat.matchesFilter && (searchQuery || filterType) ? 'opacity-20 grayscale-50 scale-95 blur-[0.5px]' : '',
+                        seat.id === lastUpdatedId ? 'animate-pulse-update ring-4 ring-primary ring-opacity-50' : ''
                       ]"
                       :title="seat.occupant || seat.id"
                     >
@@ -211,7 +268,8 @@
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="closeSeatModal"></div>
         
         <!-- Modal Content -->
-        <div class="relative bg-white dark:bg-gray-800 rounded-3xl w-full max-w-md p-6 shadow-2xl transform transition-all">
+        <div class="relative glass-card border-white/20 w-full max-w-md p-6 shadow-2xl transform transition-all overflow-hidden">
+          <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
           <button @click="closeSeatModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
             <span class="material-symbols-outlined text-2xl">close</span>
           </button>
@@ -228,7 +286,7 @@
           </div>
 
           <div class="space-y-4 mb-8">
-            <div v-if="selectedSeat.status === 'occupied'" class="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-600">
+            <div v-if="selectedSeat.status === 'occupied'" class="p-5 glass-card bg-white/50 dark:bg-gray-700/30 border-white/20">
               <div class="flex items-center gap-4 mb-4">
                 <div class="w-16 h-16 rounded-2xl bg-white dark:bg-gray-600 flex items-center justify-center shadow-lg border-2 border-white dark:border-gray-700 overflow-hidden shrink-0">
                   <span v-if="!selectedSeat.booking?.user?.profilePhoto" class="text-3xl">🎓</span>
@@ -300,7 +358,9 @@ import { ref, computed, onMounted, onActivated } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 import api from '@/services/api';
+import SkeletonLoader from '@/components/SkeletonLoader.vue';
 
+const isFocusMode = ref(false);
 // Drag to scroll logic
 const scrollContainer = ref(null);
 const isDragging = ref(false);
@@ -337,6 +397,7 @@ const totalCapacity = ref(600);
 const selectedSeat = ref(null);
 const editSeatNumberValue = ref('');
 const isSavingSeat = ref(false);
+const lastUpdatedId = ref(null);
 
 // Filters
 const searchQuery = ref('');
@@ -539,12 +600,21 @@ const saveSeat = async () => {
   if (!newSeatNumber) return;
 
   isSavingSeat.value = true;
-  try {
+      try {
     const res = await api.patch(`/seats/${selectedSeat.value.id}/admin-update`, { newSeatNumber });
     if (res.data.success) {
+      const updatedId = selectedSeat.value.id;
       toast.success(res.data.message || 'Seat updated!');
       await loadSeatManagementData();
       closeSeatModal();
+      
+      // Trigger pulse
+      lastUpdatedId.value = updatedId;
+      setTimeout(() => {
+        if (lastUpdatedId.value === updatedId) {
+          lastUpdatedId.value = null;
+        }
+      }, 5000);
     }
   } catch (error) {
     toast.error(error.response?.data?.message || 'Error updating seat');

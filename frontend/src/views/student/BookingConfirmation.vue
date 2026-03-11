@@ -1,43 +1,45 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('student.payment_title')"
-  >
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl">
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
+
+      <div class="flex items-center gap-4">
+        <button @click="$router.push('/student/dashboard')" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('student.payment_title') }}</h1>
+      </div>
+    </div>
+
     <div class="w-full max-w-5xl mx-auto px-4 py-6 space-y-6">
       
-      <!-- Back Button -->
-      <div class="flex items-center justify-between">
-        <button @click="$router.push('/student/dashboard')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-          <span class="material-symbols-outlined">arrow_back</span>
-          <span class="text-sm font-semibold">Back to Dashboard</span>
-        </button>
-      </div>
+
 
       <!-- Loading State -->
-      <div v-if="loading" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
-        <div class="w-10 h-10 border-4 border-gray-900 dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Loading details...</p>
+      <div v-if="loading" class="glass-card p-12 text-center border-transparent">
+        <div class="spinner spinner-primary mx-auto mb-4"></div>
+        <p class="text-gray-500 dark:text-gray-400 font-medium font-lexend">Loading details...</p>
       </div>
 
       <!-- Main Content -->
       <div v-else class="grid lg:grid-cols-3 gap-6">
         <!-- Order Summary -->
         <div class="lg:col-span-2 space-y-6">
-          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
-              <span class="material-symbols-outlined text-gray-400">receipt_long</span>
-              <h2 class="text-xl font-bold text-gray-900 dark:text-white">Booking Summary</h2>
+          <div class="glass-card border-transparent overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary">receipt_long</span>
+              <h2 class="text-xl font-extrabold text-gray-900 dark:text-white font-lexend">Booking Summary</h2>
             </div>
 
             <div class="p-6">
               <!-- Empty State -->
               <div v-if="!gownCollection && seatBookings.length === 0" class="text-center py-8">
-                <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
+                <div class="w-16 h-16 rounded-3xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4 rotate-12">
                   <span class="material-symbols-outlined text-gray-400 text-3xl">shopping_cart_off</span>
                 </div>
-                <p class="text-gray-500 dark:text-gray-400 mb-6">No items to pay for</p>
-                <router-link to="/student/dashboard" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-bold transition-all">
+                <p class="text-gray-500 dark:text-gray-400 mb-6 font-medium">No items to pay for</p>
+                <router-link to="/student/dashboard" class="btn btn-primary mx-auto">
                   Go to Dashboard
                 </router-link>
               </div>
@@ -87,13 +89,14 @@
 
         <!-- Payment Actions -->
         <div class="lg:col-span-1">
-          <div v-if="totalAmount > 0 && !paymentCompleted" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 sticky top-24">
-            <h3 class="font-bold text-gray-900 dark:text-white mb-4">Complete Payment</h3>
-            <p class="text-sm text-gray-500 mb-6">Proceed to our secure gateway to choose your payment method.</p>
+          <div v-if="totalAmount > 0 && !paymentCompleted" class="glass-card border-transparent p-6 sticky top-24 relative overflow-hidden">
+            <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
+            <h3 class="font-extrabold text-gray-900 dark:text-white mb-4 font-lexend">Complete Payment</h3>
+            <p class="text-sm text-gray-500 mb-6 font-medium">Proceed to our secure gateway to choose your payment method.</p>
             
             <button 
               @click="navigateToGateway"
-              class="w-full py-4 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-all flex items-center justify-center gap-2 transform active:scale-[0.98] shadow-lg"
+              class="btn btn-primary w-full shadow-2xl"
             >
               <span>Pay {{ formatCurrency(totalAmount) }}</span>
               <span class="material-symbols-outlined">arrow_forward</span>
@@ -131,7 +134,7 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
@@ -140,7 +143,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import api from '@/services/api';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 
 const router = useRouter();
 const route = useRoute();

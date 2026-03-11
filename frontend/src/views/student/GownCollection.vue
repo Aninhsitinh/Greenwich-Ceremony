@@ -1,18 +1,20 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('student.gown_title')"
-  >
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl">
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
+
+      <div class="flex items-center gap-4">
+        <button @click="$router.push('/student/dashboard')" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('student.gown_title') }}</h1>
+      </div>
+    </div>
+
     <div class="w-full max-w-5xl mx-auto px-4 py-6 space-y-6">
       
-      <!-- Back Button & Header -->
-      <div class="flex items-center justify-between">
-        <button @click="$router.back()" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-          <span class="material-symbols-outlined">arrow_back</span>
-          <span class="text-sm font-semibold">Back</span>
-        </button>
-      </div>
+
 
       <!-- Prerequisites Check -->
       <div v-if="!canRequestGown" class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
@@ -32,7 +34,8 @@
       <!-- Existing Request View -->
       <div v-else-if="gownRequest && !showForm" class="space-y-6">
         <!-- Status Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div class="glass-card p-8 border-transparent relative overflow-hidden">
+          <div class="absolute inset-0 mesh-gradient opacity-5 -z-10"></div>
           <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
             <div class="flex items-center gap-4">
               <div class="w-16 h-16 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
@@ -56,12 +59,12 @@
 
           <!-- Info Grid -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+            <div class="glass-card p-6 border-transparent hover-lift">
               <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Gown Size</p>
               <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ gownRequest.size }}</p>
             </div>
 
-            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+            <div class="glass-card p-6 border-transparent hover-lift">
               <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Scheduled Date</p>
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-gray-400">calendar_today</span>
@@ -69,7 +72,7 @@
               </div>
             </div>
 
-            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+            <div class="glass-card p-6 border-transparent hover-lift">
               <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Location</p>
               <div class="flex items-start gap-2">
                 <span class="material-symbols-outlined text-gray-400">location_on</span>
@@ -94,7 +97,7 @@
         </div>
 
         <!-- Collection Instructions -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="glass-card p-6 border-transparent">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-blue-600">info</span>
             Collection Instructions
@@ -199,7 +202,7 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
@@ -208,7 +211,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import api from '@/services/api';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();

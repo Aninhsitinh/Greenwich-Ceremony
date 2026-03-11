@@ -1,38 +1,41 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('student.ceremony_title')"
-  >
-    <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
-      
-      <!-- Header Actions -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <button @click="$router.push('/student/dashboard')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors w-full sm:w-auto">
-          <span class="material-symbols-outlined">arrow_back</span>
-          <span class="text-sm font-semibold">Back to Dashboard</span>
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl">
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
+
+      <div class="flex items-center gap-4">
+        <button @click="$router.push('/student/dashboard')" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
         </button>
-        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <div class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 w-full sm:w-auto text-center">
-            <span class="text-sm font-bold">{{ selectedSeats.length }}/{{ maxTotalSeats }} Selected</span>
-          </div>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('student.ceremony_title') }}</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+          <span class="text-xs font-bold whitespace-nowrap">{{ selectedSeats.length }}/{{ totalAllowed }} Selected</span>
         </div>
       </div>
+    </div>
 
-      <!-- Success/Error Messages -->
-      <div v-if="successMessage" class="p-4 rounded-lg bg-green-50 border border-green-200 flex items-center gap-3 animate-fade-in">
+    <div class="w-full px-4 md:px-8 py-6 space-y-6">
+      <!-- Success/Error Messages (Moved inside main flow) -->
+      <div v-if="successMessage" class="p-4 rounded-lg bg-green-50 border border-green-200 flex items-center gap-3 animate-fade-in max-w-7xl mx-auto">
         <span class="material-symbols-outlined text-green-600">check_circle</span>
         <p class="text-green-700 font-medium">{{ successMessage }}</p>
       </div>
 
-      <div v-if="errorMessage" class="p-4 rounded-lg bg-red-50 border border-red-200 flex items-center gap-3 animate-fade-in">
+      <div v-if="errorMessage" class="p-4 rounded-lg bg-red-50 border border-red-200 flex items-center gap-3 animate-fade-in max-w-7xl mx-auto">
         <span class="material-symbols-outlined text-red-600">error</span>
         <p class="text-red-700 font-medium">{{ errorMessage }}</p>
       </div>
+      
+
+
+
 
       <!-- Stats Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-6 border-transparent hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Total Seats</span>
             <span class="material-symbols-outlined text-gray-400">event_seat</span>
@@ -40,7 +43,7 @@
           <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ totalCapacity }}</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div class="glass-card p-6 border-transparent hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Available</span>
             <span class="material-symbols-outlined text-green-500">check_circle</span>
@@ -48,7 +51,7 @@
           <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ availableSeats }}</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div class="glass-card p-6 border-transparent hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wider">Selected</span>
             <span class="material-symbols-outlined text-blue-500">bookmark</span>
@@ -58,7 +61,8 @@
       </div>
 
       <!-- Seat Selection Area -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+      <div class="glass-card p-8 border-transparent overflow-hidden relative">
+        <div class="absolute inset-0 mesh-gradient opacity-5 -z-10"></div>
         <!-- Legend -->
         <div class="flex flex-wrap items-center justify-center gap-6 mb-10 text-sm">
           <div class="flex items-center gap-2">
@@ -89,8 +93,16 @@
 
         <!-- Seat Map -->
         <!-- Seat Map -->
-        <div class="overflow-x-auto pb-8 custom-scrollbar">
-          <div class="flex flex-col lg:flex-row gap-12 justify-center min-w-[1000px] px-4">
+        <div 
+          class="overflow-x-auto pb-20 custom-scrollbar w-full"
+          ref="scrollContainer"
+          @mousedown="startDrag"
+          @mouseleave="stopDrag"
+          @mouseup="stopDrag"
+          @mousemove="doDrag"
+          :class="{ 'cursor-grab': !isDragging, 'cursor-grabbing select-none': isDragging }"
+        >
+          <div class="flex flex-col lg:flex-row gap-12 justify-center min-w-[2000px] px-8">
             <div v-for="stage in seatMap" :key="stage.name" class="flex flex-col items-center">
               <h3 class="mb-6 font-bold text-gray-400 uppercase tracking-[0.2em] text-xs border-b border-gray-200 dark:border-gray-700 pb-2 w-full text-center">{{ stage.name }}</h3>
               
@@ -149,7 +161,7 @@
       </div>
 
       <!-- Booking Form & My Bookings Grid -->
-      <div class="grid lg:grid-cols-2 gap-6">
+      <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-6">
         <!-- Guest Information Form -->
         <div v-if="selectedSeats.length > 0" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 animate-fade-in">
           <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
@@ -271,7 +283,7 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
@@ -281,7 +293,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import api from '@/services/api';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -295,6 +306,31 @@ const guestInfo = ref({});
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+
+// Drag to scroll logic
+const scrollContainer = ref(null);
+const isDragging = ref(false);
+const startX = ref(0);
+const scrollLeft = ref(0);
+
+const startDrag = (e) => {
+  if (e.target.closest('button')) return;
+  isDragging.value = true;
+  startX.value = e.pageX - scrollContainer.value.offsetLeft;
+  scrollLeft.value = scrollContainer.value.scrollLeft;
+};
+
+const stopDrag = () => {
+    isDragging.value = false;
+};
+
+const doDrag = (e) => {
+    if (!isDragging.value) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainer.value.offsetLeft;
+    const walk = (x - startX.value) * 2; // Scroll speed multiplier
+    scrollContainer.value.scrollLeft = scrollLeft.value - walk;
+};
 
 const totalCapacity = ref(500);
 const availableSeats = ref(500);
@@ -559,18 +595,35 @@ onMounted(() => {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  height: 16px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-700 rounded-full;
+  background: #f1f5f9;
+  border-radius: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  background-color: #cbd5e1;
+  border-radius: 8px;
+  border: 4px solid #f1f5f9;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 dark:bg-gray-500;
+  background-color: #94a3b8;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: #1e293b;
+  border: 4px solid #1e293b;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border: 4px solid #1e293b;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
 }
 </style>

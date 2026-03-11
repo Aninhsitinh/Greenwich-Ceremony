@@ -5,32 +5,36 @@
     :page-title="$t('staff.dashboard')"
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <!-- Minimalist Hero Section -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
-        <div class="flex items-start justify-between">
+      <!-- Hero Section -->
+      <div class="glass-card mesh-gradient animate-mesh p-8 border-none overflow-hidden relative group">
+        <!-- Subtle noise overlay for texture -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="flex items-start justify-between relative z-10">
           <div>
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 rounded-lg bg-gray-900 dark:bg-white flex items-center justify-center">
-                <span class="material-symbols-outlined text-2xl text-white dark:text-gray-900">workspace_premium</span>
+              <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-xl">
+                <span class="material-symbols-outlined text-2xl text-white">workspace_premium</span>
               </div>
               <div>
-                <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{{ $t('staff.dashboard') }}</p>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('auth.welcome_back') }}!</h1>
+                <p class="text-white/60 text-xs font-black uppercase tracking-[0.2em]">{{ $t('staff.dashboard') }}</p>
+                <h1 class="text-3xl font-black text-white drop-shadow-md">{{ $t('auth.welcome_back') }}!</h1>
               </div>
             </div>
-            <p class="text-xl font-medium text-gray-900 dark:text-white max-w-2xl">
+            <p class="text-xl font-black text-white max-w-2xl drop-shadow-sm">
               {{ user?.fullName }}
             </p>
-            <p class="text-gray-500 dark:text-gray-400 mt-1">Manage ceremony operations with confidence</p>
+            <p class="text-white/80 mt-1 font-medium italic">Manage ceremony operations with confidence</p>
           </div>
           
           <!-- Date Card -->
           <div class="hidden lg:block text-right">
-            <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Today</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ currentDate }}</p>
-            <div class="mt-2 flex items-center justify-end gap-2">
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span class="text-gray-500 text-xs font-medium">System Online</span>
+            <div class="glass-card bg-white/10 p-4 border-white/20 backdrop-blur-md neon-glow-success">
+              <p class="text-white/50 text-xs uppercase tracking-widest mb-1 font-bold">Today</p>
+              <p class="text-2xl font-black text-white drop-shadow-sm">{{ currentDate }}</p>
+              <div class="mt-2 flex items-center justify-end gap-2">
+                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]"></div>
+                <span class="text-white/70 text-xs font-bold uppercase tracking-tighter">System Online</span>
+              </div>
             </div>
           </div>
         </div>
@@ -38,45 +42,54 @@
 
       <!-- Stats Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div 
-          v-for="(stat, index) in stats" 
-          :key="index"
-          class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
-        >
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" :class="stat.iconBgClass">
-              <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold" :class="stat.badge.class">
-              {{ stat.badge.text }}
-            </span>
+        <template v-if="loading">
+          <div v-for="i in 4" :key="i" class="glass-card p-6 h-40 flex flex-col justify-between border-transparent">
+            <SkeletonLoader width="40px" height="40px" />
+            <SkeletonLoader width="60%" height="24px" />
+            <SkeletonLoader width="100%" height="8px" />
           </div>
-          
-          <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-            {{ stat.value }}
-          </h3>
-          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-            {{ stat.label }}
-          </p>
-          
-          <!-- Progress bar -->
-          <div v-if="stat.progress" class="mt-4">
-            <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                class="h-full rounded-full transition-all duration-1000"
-                :class="stat.progressClass"
-                :style="{ width: `${stat.progress}%` }"
-              ></div>
+        </template>
+        <template v-else>
+          <div 
+            v-for="(stat, index) in stats" 
+            :key="index"
+            class="glass-card p-6 border-transparent hover-lift group"
+          >
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white" :class="stat.iconBgClass">
+                <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold" :class="stat.badge.class">
+                {{ stat.badge.text }}
+              </span>
+            </div>
+            
+            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+              {{ stat.value }}
+            </h3>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+              {{ stat.label }}
+            </p>
+            
+            <!-- Progress bar -->
+            <div v-if="stat.progress" class="mt-4">
+              <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  class="h-full rounded-full transition-all duration-1000"
+                  :class="stat.progressClass"
+                  :style="{ width: `${stat.progress}%` }"
+                ></div>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
 
       <!-- Quick Actions & Recent Activity -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Quick Actions -->
         <div class="lg:col-span-1">
-          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <div class="glass-card p-6 border-transparent h-full">
             <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <span class="material-symbols-outlined text-gray-900 dark:text-white">bolt</span>
               {{ $t('student.quick_actions') }}
@@ -88,10 +101,10 @@
                 :to="action.path"
                 class="block group"
               >
-                <div class="flex items-center gap-4 p-4 rounded-lg border transition-all duration-200"
+                <div class="flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300 press-feedback"
                   :class="action.variant === 'primary' 
-                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white hover:opacity-90' 
-                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-900 dark:text-white'"
+                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' 
+                    : 'glass-card border-transparent hover:border-primary/30 text-gray-900 dark:text-white'"
                 >
                   <div class="w-10 h-10 rounded-lg flex items-center justify-center"
                     :class="action.variant === 'primary' ? 'bg-white/20' : 'bg-gray-100 dark:bg-gray-700'"
@@ -121,7 +134,7 @@
 
         <!-- Recent Activity Feed -->
         <div class="lg:col-span-2">
-          <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 h-full">
+          <div class="glass-card p-6 border-transparent h-full">
             <div class="flex items-center justify-between mb-6">
               <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <span class="material-symbols-outlined text-gray-900 dark:text-white">schedule</span>
@@ -131,23 +144,34 @@
             </div>
             
             <div class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
-              <div 
-                v-for="activity in recentActivity" 
-                :key="activity.id"
-                class="flex items-start gap-4 p-4 rounded-lg border border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all"
-              >
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" :class="activity.iconBgClass">
-                  <span class="material-symbols-outlined text-lg">{{ activity.icon }}</span>
+              <template v-if="loading">
+                <div v-for="i in 5" :key="i" class="flex items-start gap-4 p-4 rounded-lg border border-gray-100 dark:border-gray-700/50">
+                   <SkeletonLoader width="40px" height="40px" />
+                   <div class="flex-1 space-y-2">
+                     <SkeletonLoader width="40%" height="16px" />
+                     <SkeletonLoader width="70%" height="12px" />
+                   </div>
                 </div>
-                <div class="flex-1 min-w-0">
-                  <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ activity.title }}</p>
-                  <p class="text-xs text-gray-500 truncate mt-0.5">{{ activity.description }}</p>
-                  <p class="text-[10px] text-gray-400 mt-1">{{ activity.time }}</p>
+              </template>
+              <template v-else>
+                <div 
+                  v-for="activity in recentActivity" 
+                  :key="activity.id"
+                  class="flex items-start gap-4 p-4 rounded-lg border border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all"
+                >
+                  <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" :class="activity.iconBgClass">
+                    <span class="material-symbols-outlined text-lg">{{ activity.icon }}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ activity.title }}</p>
+                    <p class="text-xs text-gray-500 truncate mt-0.5">{{ activity.description }}</p>
+                    <p class="text-[10px] text-gray-400 mt-1">{{ activity.time }}</p>
+                  </div>
+                  <span class="px-2 py-1 rounded text-[10px] font-bold flex-shrink-0" :class="activity.badge.class">
+                    {{ activity.badge.text }}
+                  </span>
                 </div>
-                <span class="px-2 py-1 rounded text-[10px] font-bold flex-shrink-0" :class="activity.badge.class">
-                  {{ activity.badge.text }}
-                </span>
-              </div>
+              </template>
             </div>
           </div>
         </div>
@@ -175,7 +199,7 @@
             </div>
           </div>
           <div class="hidden lg:block relative">
-             <div class="flex items-center gap-2">
+             <div class="flex items-center gap-2 neon-glow-info px-4 py-2 rounded-xl">
                 <span class="text-4xl font-bold">{{ Math.round((scanStats.valid / scanStats.total) * 100) }}%</span>
                 <span class="text-sm font-medium opacity-70">Success Rate</span>
              </div>
@@ -192,6 +216,7 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
+import SkeletonLoader from '@/components/SkeletonLoader.vue';
 
 const authStore = useAuthStore();
 const { t } = useI18n();

@@ -13,52 +13,52 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border-l-4 border-green-500">
+        <div class="glass-card p-5 border-transparent border-l-4 border-l-green-500 hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="material-symbols-outlined text-green-600 text-3xl">check_circle</span>
             <Badge variant="success">Approved</Badge>
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ approvedCount }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Approved</p>
+          <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">{{ approvedCount }}</p>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Approved</p>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border-l-4 border-orange-500">
+        <div class="glass-card p-5 border-transparent border-l-4 border-l-orange-500 hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="material-symbols-outlined text-orange-600 text-3xl">pending</span>
             <Badge variant="warning">Pending</Badge>
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ pendingCount }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Pending Review</p>
+          <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">{{ pendingCount }}</p>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Pending Review</p>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border-l-4 border-red-500">
+        <div class="glass-card p-5 border-transparent border-l-4 border-l-red-500 hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="material-symbols-outlined text-red-600 text-3xl">cancel</span>
             <Badge variant="error">Rejected</Badge>
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ rejectedCount }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Rejected</p>
+          <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">{{ rejectedCount }}</p>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Rejected</p>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border-l-4 border-blue-500">
+        <div class="glass-card p-5 border-transparent border-l-4 border-l-blue-500 hover-lift">
           <div class="flex items-center justify-between mb-2">
             <span class="material-symbols-outlined text-blue-600 text-3xl">groups</span>
             <Badge variant="info">Total</Badge>
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ registrations.length }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Total Registrations</p>
+          <p class="text-3xl font-black text-gray-900 dark:text-white mb-1">{{ registrations.length }}</p>
+          <p class="text-xs font-bold text-gray-500 uppercase tracking-tighter">Total Registrations</p>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm mb-6">
+      <div class="glass-card p-6 border-transparent mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="🔍 Search student..."
-            class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary dark:text-white"
+            placeholder="Search student..."
+            class="px-4 py-3 bg-gray-50/50 dark:bg-gray-700/50 border-2 border-transparent focus:border-primary rounded-xl transition-all dark:text-white font-medium"
           />
           <select
             v-model="filterStatus"
-            class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary dark:text-white"
+            class="px-4 py-3 bg-gray-50/50 dark:bg-gray-700/50 border-2 border-transparent focus:border-primary rounded-xl transition-all dark:text-white font-medium cursor-pointer"
           >
             <option value="">All Status</option>
             <option value="pending">Pending</option>
@@ -67,7 +67,7 @@
           </select>
           <select
             v-model="sortBy"
-            class="px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary dark:text-white"
+            class="px-4 py-3 bg-gray-50/50 dark:bg-gray-700/50 border-2 border-transparent focus:border-primary rounded-xl transition-all dark:text-white font-medium cursor-pointer"
           >
             <option value="date">Sort by Date</option>
             <option value="name">Sort by Name</option>
@@ -81,7 +81,7 @@
         <div
           v-for="registration in filteredRegistrations"
           :key="registration._id"
-          class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+          class="glass-card p-6 border-transparent hover:border-primary/20 transition-all duration-300 group"
         >
           <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div class="flex items-start gap-4 flex-1">
@@ -134,7 +134,7 @@
               <button
                 v-if="registration.status === 'pending'"
                 @click="approveRegistration(registration)"
-                class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                class="btn bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 py-2"
               >
                 <span class="material-symbols-outlined text-lg">check_circle</span>
                 <span>Approve</span>
@@ -142,17 +142,17 @@
               <button
                 v-if="registration.status === 'pending'"
                 @click="rejectRegistration(registration)"
-                class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                class="btn bg-rose-500 hover:bg-rose-600 text-white shadow-lg shadow-rose-500/20 py-2"
               >
                 <span class="material-symbols-outlined text-lg">cancel</span>
                 <span>Reject</span>
               </button>
               <button
                 @click="viewDetails(registration)"
-                class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                class="btn glass-card border-transparent py-2 text-gray-700 dark:text-gray-300"
               >
                 <span class="material-symbols-outlined text-lg">visibility</span>
-                <span>View</span>
+                <span>View Details</span>
               </button>
             </div>
           </div>

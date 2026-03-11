@@ -1,30 +1,68 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
     <!-- Sticky Top Navigation -->
-    <div class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm px-4 md:px-6 py-3 flex items-center justify-between">
+    <div 
+      :class="[
+        'sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl transition-all duration-500',
+        isFocusMode ? '-translate-y-full opacity-0 pointer-events-none absolute' : 'translate-y-0 opacity-100'
+      ]"
+    >
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
       <div class="flex items-center gap-4">
         <router-link to="/staff" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
            <span class="material-symbols-outlined">arrow_back</span>
         </router-link>
-        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.ceremony_monitor') }}</h1>
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('staff.ceremony_monitor') }}</h1>
+          <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-blue-500/10 border border-blue-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <span class="text-[10px] font-black text-blue-500 uppercase tracking-tighter">Live Sync</span>
+          </div>
+        </div>
       </div>
+      <button 
+        @click="isFocusMode = true" 
+        class="btn glass-card border-white/10 text-xs py-1.5 px-4 flex items-center gap-2 hover:bg-white/20 press-feedback"
+      >
+        <span class="material-symbols-outlined text-sm text-primary">visibility_off</span>
+        Focus Mode
+      </button>
+    </div>
+
+    <!-- Exit Focus Mode Button -->
+    <div 
+      v-if="isFocusMode"
+      class="fixed bottom-6 right-6 z-50 animate-bounce-in"
+    >
+      <button 
+        @click="isFocusMode = false"
+        class="w-14 h-14 rounded-full bg-primary text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all group press-feedback"
+        title="Exit Focus Mode"
+      >
+        <span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform">visibility</span>
+      </button>
     </div>
 
     <!-- Main Content Flow -->
     <div class="w-full px-4 md:px-8 py-6 space-y-6">
       <!-- Header -->
-      <div class="flex items-center justify-between">
+      <div 
+        :class="[
+          'flex items-center justify-between transition-all duration-700',
+          isFocusMode ? 'h-0 overflow-hidden opacity-0 mb-0' : ''
+        ]"
+      >
         <div>
           <h2 class="text-2xl font-black text-gray-900 dark:text-white">Ceremony Monitor</h2>
-          <p class="text-gray-500 dark:text-gray-400 text-sm mt-0.5">Live bi-directional sync with MC — no need to refresh</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm mt-0.5 italic">Real-time procession management with bi-directional sync</p>
         </div>
-        <div class="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm"
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full glass-card border-none shadow-lg"
           :class="ceremonyConnected
-            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-            : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'">
+            ? 'neon-glow-success'
+            : 'neon-glow-error'">
           <span class="w-2.5 h-2.5 rounded-full" :class="ceremonyConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'"></span>
-          <span class="text-xs font-bold" :class="ceremonyConnected ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'">
-            {{ ceremonyConnected ? 'LIVE SYNC ACTIVE' : 'RECONNECTING...' }}
+          <span class="text-[10px] font-black tracking-widest uppercase" :class="ceremonyConnected ? 'text-green-500' : 'text-red-500'">
+            {{ ceremonyConnected ? 'Live Sync Active' : 'Disconnected' }}
           </span>
         </div>
       </div>
@@ -33,60 +71,62 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         <!-- On Stage Panel -->
-        <div class="relative overflow-hidden bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 rounded-3xl p-8 shadow-2xl min-h-[300px] flex flex-col">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative overflow-hidden glass-card mesh-gradient animate-mesh border-none p-6 md:p-8 shadow-2xl min-h-[250px] md:min-h-[300px] flex flex-col group hover-lift transition-all duration-700"
+             :class="isFocusMode ? 'lg:col-span-1' : ''">
+          <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
-          <h3 class="text-purple-300 text-xs font-bold tracking-widest uppercase mb-6 flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400 text-sm">theater_comedy</span>
+          <h3 class="text-white/60 text-[10px] font-black tracking-[0.2em] uppercase mb-6 flex items-center gap-2 relative z-10">
+            <span class="material-symbols-outlined text-white/80 text-sm">theater_comedy</span>
             Currently On Stage
           </h3>
 
-          <div v-if="onStageInfo" class="flex-1 flex flex-col justify-center items-center text-center gap-4">
-            <div class="w-20 h-20 bg-gradient-to-br from-pink-400 to-orange-400 rounded-3xl flex items-center justify-center shadow-xl shadow-pink-500/30">
-              <span class="text-4xl text-white font-black">{{ onStageInfo.studentName?.[0] || '?' }}</span>
+          <div v-if="onStageInfo" class="flex-1 flex flex-col justify-center items-center text-center gap-4 relative z-10">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl border-2 border-white/30 neon-glow-info">
+              <span class="text-4xl text-white font-black drop-shadow-lg">{{ onStageInfo.studentName?.[0] || '?' }}</span>
             </div>
             <div>
-              <h2 class="text-2xl lg:text-3xl font-black text-white leading-tight">{{ onStageInfo.studentName }}</h2>
-              <p class="text-purple-200 text-sm mt-1">{{ onStageInfo.major }} · Queue #{{ onStageInfo.queueNumber }}</p>
-              <span class="inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 bg-pink-500/20 text-pink-300 rounded-full text-xs font-bold border border-pink-500/30 animate-pulse">
+              <h2 class="text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-xl">{{ onStageInfo.studentName }}</h2>
+              <p class="text-white/70 text-sm mt-1 md:text-base font-medium italic">{{ onStageInfo.major }} · Queue #{{ onStageInfo.queueNumber }}</p>
+              <span class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-full text-[10px] font-black tracking-widest border border-white/20 neon-glow-success animate-pulse">
                 <span class="material-symbols-outlined text-xs">mic</span>
                 ON STAGE NOW
               </span>
             </div>
           </div>
 
-          <div v-else class="flex-1 flex flex-col justify-center items-center text-center">
-            <span class="material-symbols-outlined text-5xl text-purple-500/30 block mb-3">hourglass_empty</span>
-            <p class="text-purple-300/50 text-sm">Waiting for MC to call the next student...</p>
+          <div v-else class="flex-1 flex flex-col justify-center items-center text-center relative z-10">
+            <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+               <span class="material-symbols-outlined text-4xl text-white/20">hourglass_empty</span>
+            </div>
+            <p class="text-white/40 text-xs font-bold uppercase tracking-widest">Waiting for next student...</p>
           </div>
         </div>
 
         <!-- Recent Check-ins Panel -->
-        <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col min-h-[300px]">
-          <h3 class="text-gray-500 dark:text-gray-400 text-xs font-bold tracking-widest uppercase mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-green-500 text-sm">qr_code_scanner</span>
+        <div :class="['glass-card p-6 border-transparent flex flex-col min-h-[300px] hover-lift transition-all duration-700', isFocusMode ? 'h-0 scale-95 opacity-0 pointer-events-none overflow-hidden' : '']">
+          <h3 class="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-sm">qr_code_scanner</span>
             Recent Check-ins ({{ recentCheckins.length }})
           </h3>
 
-          <div v-if="recentCheckins.length > 0" class="flex-1 overflow-y-auto space-y-2">
+          <div v-if="recentCheckins.length > 0" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1">
             <div v-for="(checkin, idx) in recentCheckins" :key="idx"
-              class="flex items-center gap-3 p-3 rounded-xl transition-colors"
-              :class="idx === 0 ? 'bg-green-50 dark:bg-green-900/20 border border-green-200/50 dark:border-green-700/30' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white text-sm font-black shrink-0">
+              class="flex items-center gap-3 p-3 rounded-2xl glass-card border-none transition-all duration-300 hover:scale-[1.02]"
+              :class="idx === 0 ? 'neon-glow-success bg-green-500/5' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white text-sm font-black shrink-0 shadow-lg">
                 {{ checkin.studentName?.[0] || '?' }}
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-gray-900 dark:text-white text-sm font-semibold truncate">{{ checkin.studentName }}</p>
-                <p class="text-gray-500 text-xs truncate">{{ checkin.major || 'Student' }} · Seat {{ checkin.seatNumber || 'N/A' }}</p>
+                <p class="text-gray-900 dark:text-white text-sm font-bold truncate">{{ checkin.studentName }}</p>
+                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-tighter truncate">{{ checkin.major || 'Student' }} · Seat {{ checkin.seatNumber || 'N/A' }}</p>
               </div>
-              <span class="text-gray-400 text-xs shrink-0 font-mono">{{ formatTS(checkin.timestamp) }}</span>
+              <span class="text-gray-400 text-[10px] shrink-0 font-black italic">{{ formatTS(checkin.timestamp) }}</span>
             </div>
           </div>
 
-          <div v-else class="flex-1 flex flex-col items-center justify-center">
-            <span class="material-symbols-outlined text-5xl text-gray-200 dark:text-gray-700 block mb-3">how_to_reg</span>
-            <p class="text-gray-400 text-sm">No check-ins yet.</p>
-            <p class="text-gray-400 text-xs mt-1">They appear here as staff scan tickets.</p>
+          <div v-else class="flex-1 flex flex-col items-center justify-center opacity-40">
+            <span class="material-symbols-outlined text-5xl text-gray-400 block mb-3">how_to_reg</span>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">No check-ins yet.</p>
           </div>
         </div>
       </div>
@@ -94,25 +134,26 @@
       <!-- Queue Activity & Waiting List Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Waiting List Panel -->
-        <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col min-h-[350px]">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <h3 class="text-gray-500 dark:text-gray-400 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+        <div class="glass-card p-6 border-transparent flex flex-col min-h-[350px] md:min-h-[450px] transition-all duration-700" 
+             :class="isFocusMode ? 'lg:col-span-1 border-primary/20 neon-glow-info' : ''">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <h3 class="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] uppercase flex items-center gap-2">
               <span class="material-symbols-outlined text-yellow-500 text-sm">groups</span>
-              Waiting / Ready Status ({{ displayedWaitingList.length }} / {{ waitingList.length }})
+              Procession Queue ({{ displayedWaitingList.length }})
             </h3>
             <div class="flex items-center gap-2">
-              <select v-model="filterMajor" class="text-xs bg-gray-50 dark:bg-gray-700 border-none rounded-md px-2 py-1.5 focus:ring-0 text-gray-600 dark:text-gray-300 cursor-pointer">
+              <select v-model="filterMajor" class="text-[10px] font-black uppercase tracking-widest bg-gray-50/50 dark:bg-gray-700/50 border-none rounded-full px-4 py-2 focus:ring-1 focus:ring-primary text-gray-600 dark:text-gray-300 cursor-pointer">
                 <option value="">All Majors</option>
                 <option v-for="m in uniqueMajors" :key="m" :value="m">{{ m }}</option>
               </select>
-              <button @click="fetchQueue" :disabled="loadingQueue" class="text-blue-500 hover:text-blue-600 transition-colors p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50">
+              <button @click="fetchQueue" :disabled="loadingQueue" class="text-primary hover:text-white hover:bg-primary transition-all p-2 rounded-full glass-card border-none disabled:opacity-50 press-feedback shadow-lg">
                 <span class="material-symbols-outlined text-sm font-bold block" :class="{'animate-spin': loadingQueue}">sync</span>
               </button>
             </div>
           </div>
 
-          <div v-if="loadingQueue && waitingList.length === 0" class="flex-1 flex items-center justify-center">
-             <div class="w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+          <div v-if="loadingQueue && waitingList.length === 0" class="flex-1 space-y-3">
+             <div v-for="i in 5" :key="i" class="h-16 glass-card border-none bg-white/5 animate-shimmer"></div>
           </div>
           
           <draggable 
@@ -122,62 +163,59 @@
             item-key="id"
             @end="onQueueReorder"
             ghost-class="opacity-50"
-            class="flex-1 overflow-y-auto space-y-2 pr-2"
+            class="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar"
           >
             <template #item="{ element: student }">
               <div 
-                class="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-gray-700/50 cursor-move hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                :class="student.status === 'ready' ? 'bg-yellow-50 dark:bg-yellow-900/10' : 'bg-gray-50 dark:bg-gray-800'">
+                class="flex items-center gap-3 p-3 rounded-2xl glass-card border-none transition-all duration-300 hover:scale-[1.01] hover:bg-gray-50 dark:hover:bg-gray-700/50 group"
+                :class="student.status === 'ready' ? 'neon-glow-warning bg-yellow-500/5' : ''">
                 
-                <span class="material-symbols-outlined text-gray-400 cursor-grab active:cursor-grabbing text-sm shrink-0">drag_indicator</span>
+                <span class="material-symbols-outlined text-gray-400 cursor-grab active:cursor-grabbing text-sm shrink-0 group-hover:text-primary transition-colors">drag_indicator</span>
                 
-                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 shadow-sm"
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black shrink-0 shadow-lg transform group-hover:rotate-3 transition-transform"
                      :class="student.status === 'ready' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' : 'bg-gradient-to-br from-gray-400 to-gray-500'">
                   #{{ student.queueNumber }}
                 </div>
                 
                 <div class="flex-1 min-w-0 flex items-center justify-between">
                   <div>
-                    <p class="text-gray-900 dark:text-white text-sm font-bold truncate">{{ student.studentName }}</p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                      <span class="text-gray-500 text-xs truncate">{{ student.major }}</span>
-                    </div>
+                    <p class="text-gray-900 dark:text-white text-sm font-black truncate">{{ student.studentName }}</p>
+                    <p class="text-gray-500 text-[10px] font-bold uppercase tracking-tighter truncate mt-0.5">{{ student.major }}</p>
                   </div>
-                  <span class="px-2 py-0.5.rounded-full text-[10px] font-bold tracking-wider shrink-0"
-                        :class="student.status === 'ready' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
-                    {{ student.status.toUpperCase() }}
+                  <span class="px-2 py-1 rounded-md text-[10px] font-black tracking-widest shrink-0 uppercase"
+                        :class="student.status === 'ready' ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'">
+                    {{ student.status }}
                   </span>
                 </div>
               </div>
             </template>
           </draggable>
           
-          <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-4">
-             <span class="material-symbols-outlined text-5xl text-gray-200 dark:text-gray-700 block mb-3">event_seat</span>
-             <p class="text-gray-400 text-sm">Waiting list is empty or no matches found.</p>
-             <p class="text-gray-400 text-xs mt-1">Students will appear here as they are added to the procession queue.</p>
+          <div v-else class="flex-1 flex flex-col items-center justify-center text-center px-4 opacity-40">
+             <span class="material-symbols-outlined text-5xl text-gray-400 block mb-3">event_seat</span>
+             <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Queue is empty or filtered.</p>
           </div>
         </div>
 
         <!-- Queue Activity Log -->
-        <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col min-h-[350px]">
-          <h3 class="text-gray-500 dark:text-gray-400 text-xs font-bold tracking-widest uppercase mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-500 text-sm">format_list_numbered</span>
-            MC Queue Activity Log
+        <div :class="['glass-card p-6 border-transparent flex flex-col min-h-[350px] md:min-h-[450px] transition-all duration-700', isFocusMode ? 'h-0 scale-95 opacity-0 pointer-events-none overflow-hidden' : '']">
+          <h3 class="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-sm">format_list_numbered</span>
+            MC Live Queue Log
           </h3>
-          <div v-if="activityLog.length > 0" class="flex-1 overflow-y-auto space-y-2 pr-2">
+          <div v-if="activityLog.length > 0" class="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
             <div v-for="(log, idx) in activityLog" :key="idx"
-              class="flex items-center gap-3 text-sm py-2 border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/20 px-2 rounded-lg transition-colors">
-              <span class="w-2 h-2 rounded-full shrink-0" :class="statusDot(log.status)"></span>
-              <span class="text-gray-900 dark:text-white font-medium flex-1 truncate">{{ log.studentName }}</span>
-              <span class="text-gray-500 text-xs shrink-0 px-2 py-0.5 rounded-full"
+              class="flex items-center gap-3 text-sm py-3 border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/20 px-2 rounded-xl transition-colors group">
+              <span class="w-2 h-2 rounded-full shrink-0 animate-pulse" :class="statusDot(log.status)"></span>
+              <span class="text-gray-900 dark:text-white font-bold flex-1 truncate group-hover:text-primary transition-colors text-xs">{{ log.studentName }}</span>
+              <span class="text-gray-500 text-[10px] font-black uppercase tracking-widest shrink-0 px-3 py-1 rounded-full border border-transparent group-hover:border-white/10"
                 :class="statusBadge(log.status)">{{ statusLabel(log.status) }}</span>
-              <span class="text-gray-400 text-[10px] shrink-0 font-mono">{{ formatTS(log.updatedAt) }}</span>
+              <span class="text-gray-400 text-[10px] shrink-0 font-black italic">{{ formatTS(log.updatedAt) }}</span>
             </div>
           </div>
-          <div v-else class="flex-1 flex flex-col items-center justify-center text-center">
-            <span class="material-symbols-outlined text-4xl text-gray-200 dark:text-gray-700 block mb-2">receipt_long</span>
-            <p class="text-gray-400 text-sm">MC queue changes will appear here in real-time.</p>
+          <div v-else class="flex-1 flex flex-col items-center justify-center text-center opacity-40">
+            <span class="material-symbols-outlined text-4xl text-gray-400 block mb-2">receipt_long</span>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Real-time log waiting...</p>
           </div>
         </div>
       </div>
@@ -192,6 +230,8 @@ import { useI18n } from 'vue-i18n';
 import { io } from 'socket.io-client';
 import api from '@/services/api';
 import draggable from 'vuedraggable';
+
+const isFocusMode = ref(false);
 
 // Same nav as all other staff pages — just added monitor entry
 // Data state

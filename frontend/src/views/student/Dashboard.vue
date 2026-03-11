@@ -4,9 +4,15 @@
     :bottom-navigation="bottomNavigation"
     :page-title="$t('student.dashboard')"
   >
+    <!-- Celebration Trigger -->
+    <Celebration :trigger="progressPercentage === 100" />
+
     <div class="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <!-- Minimalist Hero Section -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
+      <!-- Hero Section -->
+      <div class="glass-card mesh-gradient animate-mesh p-8 border-none overflow-hidden relative group">
+        <!-- Subtle noise overlay for texture -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+
         <div class="flex items-start justify-between flex-wrap gap-6">
           <div class="flex-1">
             <!-- Logo & Status Badge -->
@@ -19,54 +25,54 @@
                 />
               </div>
               <div class="h-10 w-px bg-gray-200 dark:bg-gray-700"></div>
-              <div class="px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 flex items-center gap-2">
+              <div class="px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 flex items-center gap-2 neon-glow-success">
                 <span class="w-2 h-2 rounded-full bg-green-600 animate-pulse"></span>
                 <span class="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wide">{{ $t('student.active_registration') }}</span>
               </div>
             </div>
             
             <!-- Welcome Message -->
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 class="text-4xl font-extrabold text-white mb-2 drop-shadow-md">
               {{ $t('student.welcome') }}, {{ user?.fullName || 'Student' }}!
             </h1>
-            <p class="text-gray-600 dark:text-gray-400 text-lg mb-6">{{ $t('student.graduation_ceremony') }}</p>
+            <p class="text-white/80 text-lg mb-6 drop-shadow-sm font-medium">{{ $t('student.graduation_ceremony') }}</p>
             
             <!-- Progress Bar -->
-            <div class="max-w-md">
+            <div class="max-w-md bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 shadow-xl">
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $t('student.journey_progress') }}</span>
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ completedTasks }}/{{ checklist.length }} {{ $t('student.steps') }}</span>
+                <span class="text-sm font-bold text-white">{{ $t('student.journey_progress') }}</span>
+                <span class="text-sm font-medium text-white/90">{{ completedTasks }}/{{ checklist.length }} {{ $t('student.steps') }}</span>
               </div>
-              <div class="h-2 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+              <div class="h-2.5 rounded-full bg-white/20 overflow-hidden relative">
                 <div 
-                  class="h-full bg-gray-900 dark:bg-white transition-all duration-500 ease-out"
+                  class="h-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-1000 ease-out neon-glow-info"
                   :style="{ width: progressPercentage + '%' }"
                 ></div>
               </div>
-              <p class="text-xs text-gray-500 mt-2">{{ progressPercentage }}% {{ $t('student.complete') }}</p>
+              <p class="text-xs text-white/70 mt-2 font-bold tracking-tight">{{ progressPercentage }}% {{ $t('student.complete') }}</p>
             </div>
           </div>
           
           <!-- Countdown Card -->
-          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 min-w-[220px] border border-gray-200 dark:border-gray-600">
-            <p class="text-xs uppercase tracking-wider mb-3 font-semibold text-gray-500 dark:text-gray-400">{{ $t('student.ceremony_in') }}</p>
+          <div class="glass-card p-6 min-w-[220px] border-white/20 text-center relative z-10">
+            <p class="text-xs uppercase tracking-[0.2em] mb-4 font-black text-white/60 drop-shadow-sm">{{ $t('student.ceremony_in') }}</p>
             <div class="grid grid-cols-3 gap-3 mb-4">
-              <div class="text-center">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.days }}</div>
-                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.days') }}</p>
+              <div class="text-center group-hover:scale-110 transition-transform duration-500">
+                <div class="text-4xl font-black text-white mb-1 drop-shadow-lg">{{ countdown.days }}</div>
+                <p class="text-[10px] uppercase tracking-widest text-white/60 font-bold">{{ $t('student.days') }}</p>
               </div>
-              <div class="text-center">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.hours }}</div>
-                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.hours') }}</p>
+              <div class="text-center group-hover:scale-110 transition-transform duration-500 delay-75">
+                <div class="text-4xl font-black text-white mb-1 drop-shadow-lg">{{ countdown.hours }}</div>
+                <p class="text-[10px] uppercase tracking-widest text-white/60 font-bold">{{ $t('student.hours') }}</p>
               </div>
-              <div class="text-center">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ countdown.mins }}</div>
-                <p class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('student.mins') }}</p>
+              <div class="text-center group-hover:scale-110 transition-transform duration-500 delay-150">
+                <div class="text-4xl font-black text-white mb-1 drop-shadow-lg">{{ countdown.mins }}</div>
+                <p class="text-[10px] uppercase tracking-widest text-white/60 font-bold">{{ $t('student.mins') }}</p>
               </div>
             </div>
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-600">
-              <p class="text-sm font-medium text-gray-900 dark:text-white flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-gray-900 dark:text-white text-lg">event</span>
+            <div class="pt-4 border-t border-white/20">
+              <p class="text-sm font-black text-white flex items-center justify-center gap-2 drop-shadow-sm">
+                <span class="material-symbols-outlined text-white text-lg">event</span>
                 {{ ceremonyDate ? new Date(ceremonyDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Loading...' }}
               </p>
             </div>
@@ -74,30 +80,42 @@
         </div>
       </div>
 
+
+
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div
-          v-for="stat in stats"
-          :key="stat.label"
-          class="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
-        >
-          <div class="flex items-start justify-between mb-3">
-            <div 
-              class="w-10 h-10 rounded-lg flex items-center justify-center text-white"
-              :class="stat.iconBgClass"
-            >
-              <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
-            </div>
-            <span v-if="stat.badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase" :class="stat.badgeClass">{{ stat.badge }}</span>
+        <template v-if="loading">
+          <div v-for="i in 5" :key="i" class="glass-card p-5 h-28 flex flex-col justify-between border-transparent">
+            <SkeletonLoader width="32px" height="32px" />
+            <SkeletonLoader width="100%" height="20px" />
           </div>
-          <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ stat.value }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">{{ stat.label }}</p>
-        </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="stat in stats"
+            :key="stat.label"
+            class="glass-card p-5 hover-lift group border-transparent"
+          >
+            <div class="flex items-start justify-between mb-3">
+              <div 
+                class="w-10 h-10 rounded-lg flex items-center justify-center text-white"
+                :class="stat.iconBgClass"
+              >
+                <span class="material-symbols-outlined text-xl">{{ stat.icon }}</span>
+              </div>
+              <span v-if="stat.badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase" :class="stat.badgeClass">{{ stat.badge }}</span>
+            </div>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1">{{ stat.value }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">{{ stat.label }}</p>
+          </div>
+        </template>
       </div>
+
+
 
       <!-- Journey Checklist -->
       <div class="flex flex-col gap-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="glass-card p-6 border-transparent">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
               <span class="material-symbols-outlined text-gray-900 dark:text-white">checklist</span>
@@ -109,57 +127,73 @@
           </div>
 
           <div class="space-y-3">
-            <div
-              v-for="item in checklist"
-              :key="item.label"
-              @click="!item.locked && $router.push(item.path)"
-              class="group p-4 rounded-lg border transition-all"
-              :class="[
-                item.locked 
-                  ? 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 opacity-60 cursor-not-allowed' 
-                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer'
-              ]"
-            >
-              <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" 
-                  :class="item.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'">
-                  {{ checklist.indexOf(item) + 1 }}
-                </div>
-                
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="{
-                  'bg-gray-900 text-white dark:bg-white dark:text-gray-900': !item.locked && !item.completed,
-                  'bg-green-600 text-white': item.completed,
-                  'bg-gray-200 text-gray-400 dark:bg-gray-700': item.locked
-                }">
-                  <span v-if="item.locked" class="material-symbols-outlined text-xl">lock</span>
-                  <span v-else-if="item.completed" class="material-symbols-outlined text-xl">check</span>
-                  <span v-else class="material-symbols-outlined text-xl">{{ item.icon }}</span>
-                </div>
-
-                <div class="flex-1 min-w-0">
-                  <p class="font-semibold text-base" :class="{
-                    'text-gray-900 dark:text-white': !item.locked,
-                    'text-gray-500 dark:text-gray-500': item.locked,
-                    'text-green-600 dark:text-green-400': item.completed
+            <template v-if="loading">
+               <div v-for="i in 5" :key="i" class="p-4 rounded-2xl border-2 border-gray-100 dark:border-gray-800 flex items-center gap-4">
+                  <SkeletonLoader width="32px" height="32px" variant="circle" />
+                  <SkeletonLoader width="40px" height="40px" />
+                  <div class="flex-1 space-y-2">
+                    <SkeletonLoader width="60%" height="16px" />
+                    <SkeletonLoader width="40%" height="12px" />
+                  </div>
+               </div>
+            </template>
+            <template v-else>
+              <div
+                v-for="item in checklist"
+                :key="item.label"
+                @click="!item.locked && $router.push(item.path)"
+                class="group p-4 rounded-2xl border-2 transition-all relative overflow-hidden"
+                :class="[
+                  item.locked 
+                    ? 'bg-gray-50/50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-800 opacity-60 cursor-not-allowed' 
+                    : item.completed
+                      ? 'bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-800/50 hover:border-green-200 cursor-pointer'
+                      : 'bg-white/50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 cursor-pointer'
+                ]"
+              >
+                <!-- Background progress line for the whole list (visual only) -->
+                <div v-if="checklist.indexOf(item) !== checklist.length - 1" class="absolute left-[2.25rem] top-12 bottom-0 w-1 bg-gray-100 dark:bg-gray-800 z-0 hidden md:block"></div>
+                <div class="flex items-center gap-4">
+                  <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" 
+                    :class="item.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'">
+                    {{ checklist.indexOf(item) + 1 }}
+                  </div>
+                  
+                  <div class="w-10 h-10 rounded-xl flex items-center justify-center relative z-10 transition-transform group-hover:scale-110 shadow-lg" :class="{
+                    'bg-primary text-white': !item.locked && !item.completed,
+                    'bg-green-500 text-white shadow-green-500/20': item.completed,
+                    'bg-gray-200 text-gray-400 dark:bg-gray-700': item.locked
                   }">
-                    {{ item.label }}
-                  </p>
-                  <p class="text-sm text-gray-500 truncate">{{ item.description }}</p>
-                </div>
+                    <span v-if="item.locked" class="material-symbols-outlined text-xl">lock</span>
+                    <span v-else-if="item.completed" class="material-symbols-outlined text-xl">check</span>
+                    <span v-else class="material-symbols-outlined text-xl">{{ item.icon }}</span>
+                  </div>
 
-                <button
-                  v-if="!item.completed && !item.locked"
-                  class="px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold transition-colors"
-                  @click.stop="$router.push(item.path)"
-                >
-                  {{ item.action }}
-                </button>
-                <div v-else-if="item.completed" class="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-semibold">
-                  <span>Completed</span>
-                  <span class="material-symbols-outlined text-sm">check_circle</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-base" :class="{
+                      'text-gray-900 dark:text-white': !item.locked,
+                      'text-gray-500 dark:text-gray-500': item.locked,
+                      'text-green-600 dark:text-green-400': item.completed
+                    }">
+                      {{ item.label }}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate">{{ item.description }}</p>
+                  </div>
+
+                  <button
+                    v-if="!item.completed && !item.locked"
+                    class="px-4 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold transition-colors"
+                    @click.stop="$router.push(item.path)"
+                  >
+                    {{ item.action }}
+                  </button>
+                  <div v-else-if="item.completed" class="flex items-center gap-1 text-green-600 dark:text-green-400 text-sm font-semibold">
+                    <span>Completed</span>
+                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
         <div v-if="registrationData" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
@@ -315,6 +349,8 @@
         </div>
       </div>
     </div>
+
+
   </ResponsiveLayout>
 </template>
 
@@ -326,6 +362,59 @@ import { useAuthStore } from '@/stores/auth';
 import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import api from '@/services/api';
 import socketService from '@/services/socketService';
+import Celebration from '@/components/Celebration.vue';
+import SkeletonLoader from '@/components/SkeletonLoader.vue';
+import html2canvas from 'html2canvas';
+
+const shareTemplate = ref(null);
+const isGeneratingCard = ref(false);
+const currentPulseKey = ref('registered'); // registered, in_queue, ready, on_stage, completed
+const estWaitTime = ref(15);
+
+const pulseSteps = [
+  { key: 'registered', label: 'Registered', icon: 'app_registration' },
+  { key: 'in_queue', label: 'In Queue', icon: 'hourglass_empty' },
+  { key: 'ready', label: 'Get Ready', icon: 'notifications_active' },
+  { key: 'on_stage', label: 'On Stage', icon: 'mic' },
+  { key: 'completed', label: 'Completed', icon: 'auto_awesome' }
+];
+
+const currentPulseLabel = computed(() => {
+  return pulseSteps.find(s => s.key === currentPulseKey.value)?.label || 'Awaiting Status';
+});
+
+const isPulseStepCompleted = (key) => {
+  const stepsKeys = pulseSteps.map(s => s.key);
+  const currentIdx = stepsKeys.indexOf(currentPulseKey.value);
+  const targetIdx = stepsKeys.indexOf(key);
+  return targetIdx < currentIdx;
+};
+
+const formatDateShort = (date) => {
+    if (!date) return '2026';
+    return new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+};
+
+const generateShareCard = async () => {
+    isGeneratingCard.value = true;
+    try {
+        await new Promise(r => setTimeout(r, 500)); // Brief delay for styles
+        const canvas = await html2canvas(shareTemplate.value, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: '#0a0f1d'
+        });
+        
+        const link = document.createElement('a');
+        link.download = `Greenwich_Journey_${user.value?.fullName?.replace(/\s+/g, '_')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch (err) {
+        console.error('Failed to generate share card:', err);
+    } finally {
+        isGeneratingCard.value = false;
+    }
+};
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -512,6 +601,8 @@ onMounted(() => {
         };
     }
   });
+
+
 });
 
 // Reload data when navigating back to Dashboard

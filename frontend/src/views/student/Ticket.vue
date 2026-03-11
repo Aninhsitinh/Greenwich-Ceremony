@@ -1,32 +1,34 @@
 <template>
-  <ResponsiveLayout
-    :navigation="navigation"
-    :bottom-navigation="bottomNavigation"
-    :page-title="$t('nav.ceremony')"
-  >
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-10">
+    <!-- Sticky Top Navigation -->
+    <div class="sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-2xl border-b border-white/20 px-4 md:px-6 py-3 flex items-center justify-between shadow-xl">
+      <div class="absolute inset-0 mesh-gradient opacity-10 -z-10"></div>
+
+      <div class="flex items-center gap-4">
+        <button @click="$router.push('/student/dashboard')" class="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors flex items-center justify-center">
+           <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="text-xl font-black text-gray-900 dark:text-white">{{ $t('nav.ceremony') }}</h1>
+      </div>
+    </div>
+
     <div class="w-full max-w-3xl mx-auto px-4 py-6 space-y-6">
       
-      <!-- Back Button & Header -->
-      <div class="flex items-center justify-between">
-        <button @click="$router.push('/student/dashboard')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-          <span class="material-symbols-outlined">arrow_back</span>
-          <span class="text-sm font-semibold">Back to Dashboard</span>
-        </button>
-      </div>
+
 
       <!-- Loading State -->
-      <div v-if="loading" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
-        <div class="w-10 h-10 border-4 border-gray-900 dark:border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-gray-500 dark:text-gray-400 font-medium">Loading your ticket...</p>
+      <div v-if="loading" class="glass-card p-12 text-center border-transparent">
+        <div class="spinner spinner-primary mx-auto mb-4"></div>
+        <p class="text-gray-500 dark:text-gray-400 font-medium font-lexend">Loading your ticket...</p>
       </div>
 
       <!-- No Ticket State -->
-      <div v-else-if="!ticket" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
-        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span class="material-symbols-outlined text-4xl text-gray-400">confirmation_number</span>
+      <div v-else-if="!ticket" class="glass-card p-12 text-center border-transparent hover-lift">
+        <div class="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-12">
+          <span class="material-symbols-outlined text-4xl text-primary">confirmation_number</span>
         </div>
         
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Ticket Found</h2>
+        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-2 font-lexend">No Ticket Found</h2>
         <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
           Generate your digital graduation ticket to access the ceremony.
         </p>
@@ -34,23 +36,23 @@
         <button 
           @click="generateTicket" 
           :disabled="generating" 
-          class="px-8 py-3 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
+          class="btn btn-primary"
         >
-          <div v-if="generating" class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+          <div v-if="generating" class="spinner"></div>
           <template v-else>
             <span class="material-symbols-outlined">qr_code_2</span>
-            <span>Generate Ticket</span>
+            <span>Generate Ticket Now</span>
           </template>
         </button>
       </div>
 
       <!-- Ticket Display -->
       <div v-else class="space-y-6">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="glass-card border-transparent overflow-hidden shadow-2xl scale-95 hover:scale-100 transition-transform duration-500">
           <!-- Ticket Header -->
-          <div class="bg-gray-900 dark:bg-gray-700 p-8 text-white relative overflow-hidden">
+          <div class="mesh-gradient animate-mesh p-8 text-white relative overflow-hidden">
              <!-- Background Pattern -->
-            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
             <div class="relative z-10">
                 <div class="flex items-start justify-between mb-6">
@@ -316,7 +318,7 @@
         </div>
       </div>
     </div>
-  </ResponsiveLayout>
+  </div>
 </template>
 
 <script setup>
@@ -325,7 +327,6 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useI18n } from 'vue-i18n';
 import api from '@/services/api';
-import ResponsiveLayout from '@/components/ResponsiveLayout.vue';
 import QRCodeStyling from 'qr-code-styling';
 
 const router = useRouter();

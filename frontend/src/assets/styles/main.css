@@ -128,13 +128,57 @@ body.dark {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--radius-2xl);
-    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .dark .glass-card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(10, 15, 29, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* ============================================
+   Neon Accent Tokens (Pro States)
+   ============================================ */
+:root {
+    --neon-success: #10b981;
+    --neon-success-glow: rgba(16, 185, 129, 0.3);
+    --neon-error: #ef4444;
+    --neon-error-glow: rgba(239, 68, 68, 0.3);
+    --neon-warning: #f59e0b;
+    --neon-warning-glow: rgba(245, 158, 11, 0.3);
+    --neon-info: #3b82f6;
+    --neon-info-glow: rgba(59, 130, 246, 0.3);
+    --neon-primary: #6366f1;
+}
+
+.dark {
+    --neon-success: #34d399;
+    --neon-success-glow: rgba(52, 211, 153, 0.4);
+    --neon-error: #f87171;
+    --neon-error-glow: rgba(248, 113, 113, 0.4);
+    --neon-warning: #fbbf24;
+    --neon-warning-glow: rgba(251, 191, 36, 0.4);
+}
+
+.neon-glow-success {
+    box-shadow: 0 0 15px var(--neon-success-glow);
+    border-color: var(--neon-success);
+}
+
+.neon-glow-error {
+    box-shadow: 0 0 15px var(--neon-error-glow);
+    border-color: var(--neon-error);
+}
+
+.neon-glow-warning {
+    box-shadow: 0 0 15px var(--neon-warning-glow);
+    border-color: var(--neon-warning);
+}
+
+.neon-glow-info {
+    box-shadow: 0 0 15px var(--neon-info-glow);
+    border-color: var(--neon-info);
 }
 
 /* ============================================
@@ -148,13 +192,17 @@ body.dark {
     padding: 0.875rem 1.75rem;
     border: none;
     border-radius: var(--radius-xl);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9375rem;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: all var(--transition-bounce);
     text-decoration: none;
     position: relative;
     overflow: hidden;
+}
+
+.btn:active {
+    transform: scale(0.95);
 }
 
 .btn::before {
@@ -170,6 +218,51 @@ body.dark {
 
 .btn:hover::before {
     left: 100%;
+}
+
+@keyframes pulse-update {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(10, 71, 194, 0.4);
+    }
+
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(10, 71, 194, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(10, 71, 194, 0);
+    }
+}
+
+.animate-pulse-update {
+    animation: pulse-update 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================
+   Skeleton Loading Utilities
+   ============================================ */
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton-glass {
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0.05) 25%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.05) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 2s infinite linear;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary {
@@ -435,7 +528,21 @@ body.dark {
 }
 
 .hover-scale {
-    transition: transform var(--transition-fast);
+    transition: transform var(--transition-bounce);
+}
+
+.hover-lift {
+    transition: all var(--transition-bounce);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.press-feedback:active {
+    transform: scale(0.96);
+    transition: transform 0.1s;
 }
 
 .hover-scale:hover {
@@ -941,3 +1048,42 @@ body.dark {
     background: var(--primary);
     color: white;
 }
+
+/* ============================================
+   Global Page Transitions
+   ============================================ */
+.page-fade-enter-active,
+.page-fade-leave-active {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-fade-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.page-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Mesh Gradient Animation */
+.animate-mesh {
+    background-size: 200% 200%;
+    animation: mesh-flow 15s ease infinite;
+}
+
+@keyframes mesh-flow {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 100% 100%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+

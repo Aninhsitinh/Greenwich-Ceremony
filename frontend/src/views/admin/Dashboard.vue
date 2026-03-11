@@ -7,15 +7,16 @@
   >
     <div class="w-full max-w-7xl mx-auto px-4 py-6">
       <!-- Header -->
-      <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 lg:p-8 text-white mb-6 shadow-xl">
-        <div class="flex items-center justify-between">
+      <div class="glass-card mesh-gradient animate-mesh p-6 lg:p-8 border-none text-white mb-6 shadow-2xl relative overflow-hidden group">
+        <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
+        <div class="relative z-10 flex items-center justify-between">
           <div>
             <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined">admin_panel_settings</span>
-              <span class="text-sm uppercase tracking-wider opacity-90">Admin Portal</span>
+              <span class="material-symbols-outlined text-white/80">admin_panel_settings</span>
+              <span class="text-xs font-black uppercase tracking-[0.2em] text-white/70">Admin Portal</span>
             </div>
-            <h1 class="text-3xl font-bold mb-2">System Overview</h1>
-            <p class="text-purple-100">Manage students, registrations, and ceremony operations</p>
+            <h1 class="text-4xl font-black mb-2 drop-shadow-lg font-lexend">System Overview</h1>
+            <p class="text-white/80 font-medium italic">Manage students, registrations, and ceremony operations</p>
           </div>
         </div>
       </div>
@@ -25,7 +26,7 @@
         <div
           v-for="stat in stats"
           :key="stat.label"
-          class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+          class="glass-card p-5 border-transparent hover-lift group"
         >
           <div class="flex items-center justify-between mb-3">
             <div :class="['w-12 h-12 rounded-xl flex items-center justify-center', stat.bgColor]">
@@ -43,7 +44,7 @@
       <!-- Charts Row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Registration Trends -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <div class="glass-card p-6 border-transparent">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Registration Trends</h2>
           <div style="height: 300px">
             <Chart type="line" :data="registrationChartData" />
@@ -51,7 +52,7 @@
         </div>
 
         <!-- Status Distribution -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+        <div class="glass-card p-6 border-transparent">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Status Distribution</h2>
           <div style="height: 300px">
             <Chart type="doughnut" :data="statusChartData" />
@@ -67,7 +68,7 @@
             v-for="shortcut in managementShortcuts"
             :key="shortcut.label"
             @click="$router.push(shortcut.path)"
-            class="flex flex-col items-start p-6 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-primary transition-all group"
+            class="flex flex-col items-start p-6 glass-card border-transparent hover:border-primary/50 transition-all group press-feedback"
           >
             <div :class="['w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform', shortcut.bgColor]">
               <span class="material-symbols-outlined text-2xl" :class="shortcut.textColor">{{ shortcut.icon }}</span>
@@ -82,7 +83,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Recent Activities -->
         <div class="lg:col-span-2">
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div class="glass-card p-6 border-transparent">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-bold text-gray-900 dark:text-white">Recent Activities</h2>
               <button class="text-primary text-sm font-semibold hover:underline">View All</button>
@@ -109,8 +110,9 @@
         <!-- System Status -->
         <div class="space-y-6">
           <!-- System Health -->
-          <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
-            <div class="flex items-start gap-3">
+          <div class="glass-card mesh-gradient animate-mesh p-6 border-none text-white shadow-lg relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="relative z-10 flex items-start gap-3">
               <span class="material-symbols-outlined text-3xl">verified</span>
               <div>
                 <h3 class="font-bold text-lg mb-1">All Systems Healthy</h3>
@@ -120,7 +122,7 @@
           </div>
 
           <!-- Quick Actions -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+          <div class="glass-card p-6 border-transparent">
             <h3 class="font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
             <div class="space-y-2">
               <button
